@@ -1,6 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
- 
+
 from mgps import *
 import time
 import sys
@@ -81,16 +81,19 @@ def mainRoutine(target):
 	
 	speed = SPEED #ueberfluessig, da speed kein Attribut von navigator ist
 	#Hindernis checken
-	watcher.obstancle()
+	#watcher.obstancle()
 	# GPS-Position bekommen
 	curPos = tracker.getPosition()
+	print curPos
 	time.sleep(2) #TODO: reichen 2 s hier aus?
 	line = None
 	circle = None
 	while True:
 		if is_at(curPos, tracker.getPosition()):	# car stands still
+			print "standing"
 			# Entweder: (Re-)Initialisierung – geradeausfahren, Orientierung holen (Kompass koennen wir glaub ich nicht vertrauen)
 			start = time.time()
+			print "driving at", speed
 			drive(speed)			#drive for 5m
 			while abs(time.time() - start) < 3:	#while driving (ca. 3 s) save positions to tracker TODO: abs()???
 				# TODO: check for obstacles ... all the time! :)
@@ -100,6 +103,7 @@ def mainRoutine(target):
 		else:
 			driving = True
 		if is_at(tracker.getPosition(), target):
+			print "target reached"
 			stop()
 			# stunt()
 			break
@@ -107,6 +111,7 @@ def mainRoutine(target):
 		if not on_track(line):
 			# wenn line noch nicht gesetzt ist (1. Mal), landen wir auch hier
 			# jetzt: kreiseln, bis man drauf zuschaut, anfangen, geradeaus zu fahren
+			print "not on track"
 			stop() # wuerde ich weglassen
 			circle, line = navigator.navigate(target)
 			correct_course(*circle)
@@ -114,13 +119,13 @@ def mainRoutine(target):
 		if driving:
 		# Oder: Wir fahren noch - TODO: merge with first else?
 		# 	immer mal wieder Position updaten
+			print "driving"
 			curPos = tracker.getPosition()
 			watcher.obstancle()
 #			orientation = tracker.getOrientation()	
 	
 # Ausweich-Subroutine: Lenk solange vom Hindernis weg, bis es nicht mehr da ist
 # Wenn es nicht weggeht oder auf beiden Seiten eines gemessen wird… vielleicht rückwärts fahren?
-
 if __name__ == '__main__':
 	target = sys.argv
 	mainRoutine(target)
