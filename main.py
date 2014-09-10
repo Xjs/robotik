@@ -70,20 +70,21 @@ def is_at(current, target):
 		return dis < STDEV
 	
 def correct_course(direction, angle, radius, speed=SPEED, watcher=None):
+	CAL = 1.2
 	print "this is correct_course!"
 	print "direction = ", direction
 	print "angle = ", angle
 	print "radius = ", radius
-	time_for_circle = 1/angular_speed(radius, speed)
+	time_for_circle = 1/angular_speed(0.64, 1.1) # TODO: these are measured values
 	amount_of_circle = angle/(2*pi)
 	time_needed = abs(amount_of_circle * time_for_circle) # abs is important so the robot doesn't circle infinitely because it thinks it needs a negative amount of time
 	print "time_for_circle = ", time_for_circle
 	print "amount_of_circle = ", amount_of_circle
 	print "time_needed = ", time_needed
-	
+
 	start = time.time()
 	steer_at(direction*radius, speed)
-	while ((time.time() - start) < time_needed):
+	while ((time.time() - start) < time_needed+CAL):
 		try:
 			watcher.obstancle()
 		except AttributeError:
