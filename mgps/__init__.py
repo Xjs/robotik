@@ -1,13 +1,14 @@
 #!/usr/bin/python
 
-#from gps import *
+from gps import *
 from math import acos, atan, sqrt, pi
 from helpers import angle_to_north
+from time import sleep
 import threading
 gpsd = None
 
-MAX_POSITIONS = 6
-N_AVERAGES = 10
+MAX_POSITIONS = 20
+N_AVERAGES = 3
 
 class GPSPoller(threading.Thread):
 	def __init__(self):
@@ -30,7 +31,7 @@ class GPSTracker:
 		self.altitude = -1
 		self.lastPositions = []
 		self.poller.start()
-		self.n_averages = float(n_averages)
+		self.n_averages = n_averages
 	
 	def getRawPosition(self):
 		if gpsd.fix.mode == MODE_NO_FIX:
@@ -48,6 +49,7 @@ class GPSTracker:
 			lat += n_lat
 			lon += n_lon
 			alt += n_alt
+			sleep(0.1)
 		
 		lat, lon, alt = (value/self.n_averages for value in (lat, lon, alt))
 		
