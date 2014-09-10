@@ -1,10 +1,13 @@
 import RPi.GPIO as GPIO
 import time
 
+MAX_DIST = 4.
+SPEED_OF_SOUND = 343.
+
 GPIO.setmode(GPIO.BCM)
 
 #LEFT, RIGHT
-trig = [18, 22]
+trig = [18, 27]
 echo = [24, 23]
 
 for t, e in zip(trig, echo):
@@ -18,13 +21,14 @@ def distance(sensor):
 	
 	startTime = time.time()
 	stopTime = time.time()
+	st = startTime
 	
 	#write startTime
-	while GPIO.input(echo[sensor]) == 0:
+	while GPIO.input(echo[sensor]) == 0 and st-startTime < 0.00001: 
 		startTime = time.time()
 	
 	 #write time of signal reaching sensor
-	while GPIO.input(echo[sensor]) == 1:
+	while GPIO.input(echo[sensor]) == 1 and stopTime-startTime < 2.*MAX_DIST/SPEED_OF_SOUND:
 		stopTime = time.time()
 	
 	timeElapsed = stopTime - startTime
