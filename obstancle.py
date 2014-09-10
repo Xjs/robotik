@@ -39,7 +39,7 @@ deaththreshold = 0.3
 bias = 0.05
 class Watcher():
 
-(2)     def __init__(self):
+        def __init__(self):
                 #threading.Thread.__init__(self)ecover" oder "vim -r obstancle.py"
                 self.watchlistL = []
                 self.watchlistR = []
@@ -47,7 +47,7 @@ class Watcher():
         def alarm(self):
 
                 alarmL=self.watchlistL[-1]
-				alarmR=self.watchlistR[-1]
+		alarmR=self.watchlistR[-1]
 
                 if((self.watchlistL[-1]-self.watchlistR[-1])*(self.watchlistL[-2]-self.watchlistR[-2]) < 0):
                         if(alarmL < alarmR):
@@ -112,14 +112,15 @@ class Watcher():
                                         print("Fahr nicht gegen ne Wand du Arsch")
 
                                 (L,R) = self.alarm()
+				self.watch()
                 else:
                         if (L < R):
-                                steerat(0.715,-1)
+                                steer_at(0.715,-1)
 
                                 ##Test
                                 print("Rueckwaerts nach links" , L,-L*movefactor)
                         if (R < L):
-                                steerat(-0.715,-1)
+                                steer_at(-0.715,-1)
                                 print("Rueckwaerts nach rechts" , R, R*movefactor)
 
 
