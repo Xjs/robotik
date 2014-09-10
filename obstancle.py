@@ -89,9 +89,9 @@ class Watcher():
                                 if (self.watchlistL[-1] > deaththreshold and self.watchlistR[-1] > deaththreshold):
                                         if (L < R):
                                                 if(L*movefactor > 0.715):
-                                                       steer(-L*movefactor) #negative curve radius steers to the right
-												##Test
-												print("Ich lenke nach rechts" , L,-L*movefactor)
+							steer(-L*movefactor) #negative curve radius steers to the right
+							##Test
+							print("Ich lenke nach rechts" , L,-L*movefactor)
                                                 else:
                                                         steer(-0.715)
                                                         ##Test

@@ -3,7 +3,7 @@
 import time
 from controlServos import *
 
-DEFAULT = -0.07
+DEFAULT = 0.07
 
 def stop():
 	driveS(0)
@@ -54,4 +54,4 @@ def stunt():
 	steerat(0.0, 0.0)
 	
 if __name__ == "__main__":
-	drive(1.3)
+	drive(0.0)
