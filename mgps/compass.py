@@ -10,23 +10,23 @@ SCALE = 0.92
 
 class Compass:
 	def read_byte(self, adr):
-		return bus.read_byte_data(self.address, adr)
+		return self.bus.read_byte_data(self.address, adr)
 	
 	def read_word(self, adr):
-		high = bus.read_byte_data(self.address, adr)
-		low = bus.read_byte_data(self.address, adr+1)
+		high =self.bus.read_byte_data(self.address, adr)
+		low = self.bus.read_byte_data(self.address, adr+1)
 		val = (high << 8) + low
 		return val
 	
 	def read_word_2c(self, adr):
-		val = read_word(adr)
+		val = self.read_word(adr)
 		if (val >= 0x8000):
 			return -((65535 - val) + 1)
 		else:
 			return val
 	
 	def write_byte(self, adr, value):
-		bus.write_byte_data(self.address, adr, value)
+		self.bus.write_byte_data(self.address, adr, value)
 	 
 	def __init__(self, bus=BUS, address=ADDR, scale=SCALE):
 		self.bus = smbus.SMBus(bus)
@@ -52,9 +52,9 @@ class Compass:
 		max_y = 0
 		
 		for i in xrange(500):
-			x = read_word_2c(3)
-			y = read_word_2c(7)
-			z = read_word_2c(5)
+			x = self.read_word_2c(3)
+			y = self.read_word_2c(7)
+			z = self.read_word_2c(5)
 
 			if x < min_x:
 				min_x = x
@@ -83,23 +83,24 @@ class Compass:
 			print "x offset: ", x_offset
 			print "y offset: ", y_offset
 			
-			return x_offset, y_offset
+		return x_offset, y_offset
 	
 	def getOrientation(self):
 		self.initialize_compass()
 		
-		x = (read_word_2c(3) - self.x_offset) * self.scale
-		y = (read_word_2c(7) - self.y_offset) * self.scale
-		z = read_word_2c(5) * self.scale
+		x = (self.read_word_2c(3) - self.x_offset) * self.scale
+		y = (self.read_word_2c(7) - self.y_offset) * self.scale
+		z = self.read_word_2c(5) * self.scale
 		
-		bearing = (atan2(y, x) - angle_offset)%(2*pi)
+		bearing = (atan2(y, x) - self.angle_offset)%(2*pi)
 		bearing = 2*pi - bearing # we want the clockwise angle between north and the compass
 		
 		return bearing
 
 if __name__ == "__main__":
 	c = Compass()
-	x_offset, y_offset = c.calibrate() # muss nur einmal gemacht werden; währenddessen den Kompass einmal komplett rumdrehen
+#	x_offset, y_offset = c.calibrate() # muss nur einmal gemacht werden; waehrenddessen den Kompass einmal komplett rumdrehen
 	# am Ende stehen zwei Werte da, x_offset und y_offset
-	c.set_offset(x_offset, y_offset, 0.0) # das hier muss man immer ausfuehren, wenn man den Kompass initialisiert (also das Programm neu startet oder so)
-	c.getOrientation()*360/(2*pi) # hiermit kriegt man dann die Ausrichtung
+	c.set_offset(-55.0, -78.0, 0.0) # das hier muss man immer ausfuehren, wenn man den Kompass initialisiert (also das Programm neu startet oder so)
+	print c.getOrientation()*360/(2*pi) # hiermit kriegt man dann die Ausrichtung
+	
