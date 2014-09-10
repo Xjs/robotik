@@ -5,8 +5,7 @@ import time
 #to-do: Ueberlegen wie man aus Sackgassen und aehnlichen Fallen wieder rauskommt (Rueckwaerts fahren und so)
 #threshold in [m] gibt die Maximaldistanz zu beachtender Objekte aus.
 threshold = 2
-bullshitdist = 4
-tolerance = 0.005
+bullshitdist = 3
 lowpass = 0.2
 measrange = 6
 movefactor = 2
@@ -26,13 +25,13 @@ class Watcher():
 		averagesL = []
 		
 		for eins, zwei in zip(self.watchlistL, self.watchlistL[1:]):
-			if (abs(eins - zwei) > lowpass and eins < bullshitdist and zwei < bullshitdist):
+			if (abs(eins - zwei) < lowpass and eins < bullshitdist and zwei < bullshitdist):
 				averagesL.append((eins+zwei)/2)
 				
 		averagesR = []
 		
 		for eins, zwei in zip(self.watchlistR, self.watchlistR[1:]):
-			if (abs(eins - zwei) > lowpass and eins < bullshitdist and zwei < bullshitdist):
+			if (abs(eins - zwei) < lowpass and eins < bullshitdist and zwei < bullshitdist):
 				averagesR.append((eins+zwei)/2)
 		
 		alarmL = bullshitdist
@@ -63,9 +62,8 @@ class Watcher():
 		self.watchlistL.append(distance(0))
 		if (len(self.watchlistL) > measrange):
 			self.watchlistL = self.watchlistL[1:]
-			
-		b = distance(1)
-		self.watchlistR.append(b)
+		
+		self.watchlistR.append(distance(1))
 		if (len(self.watchlistR) > measrange):
 			self.watchlistR = self.watchlistR[1:]
 					
