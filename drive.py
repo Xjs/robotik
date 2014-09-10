@@ -12,8 +12,9 @@ def drive(speed):
 	driveS(speedmessage)
 	
 def drivefor(m):
-	s = m/1.6
-	drive(1.6)
+	speed = 1.3
+	s = m/1.3
+	drive(1.3)
 	time.sleep(s)
 	stop()
 
@@ -49,4 +50,4 @@ def stunt():
 	steerat(0.0, 0.0)
 	
 if __name__ == "__main__":
-	drive(1.6)
+	drive(1.3)

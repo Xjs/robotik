@@ -28,7 +28,7 @@ class GPSTracker:
 		self.poller.start()
 	
 	def getPosition(self):
-		if gpsd.status == STATUS_NO_FIX:
+		if gpsd.fix.mode == MODE_NO_FIX:
 			return None
 		self.latitude = gpsd.fix.latitude
 		self.longitude = gpsd.fix.longitude
@@ -52,7 +52,7 @@ class GPSTracker:
 		
 		a = y2 - x2
 		b = y1 - x1
-		c = sqrt(a^2+b^2)
+		c = sqrt(a**2+b**2)
 		
 		if y1 == x1:
 			if y2 < x2:

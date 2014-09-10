@@ -11,7 +11,7 @@ from mgps import GPSTracker
 from mgps.navigate import Navigator, THRESHOLD
 
 RADIUS = 0.715
-SPEED = 1.6
+SPEED = 1.3
 DEFAULT = -0.07
 
 def angular_speed(radius):
@@ -112,7 +112,7 @@ def mainRoutine(target):
 			start = time.time()
 			print "driving at", speed
 			drive(speed)			#drive for 5m
-			while abs(time.time() - start) < 3:	#while driving (ca. 3 s) save positions to tracker TODO: abs()???
+			while abs(time.time() - start) < 1:	#while driving (ca. 3 s) save positions to tracker TODO: abs()???
 				# TODO: check for obstacles ... all the time! :)
 				watcher.obstancle()
 				tracker.getPosition()
@@ -130,7 +130,7 @@ def mainRoutine(target):
 			break
 		
 		# 	mit der Linie vergleichen, und wenn wir zu sehr abweichen, mal wieder von vorn
-		if not on_track(line):
+		if not navigator.on_track(line):
 			# wenn line noch nicht gesetzt ist (1. Mal), landen wir auch hier
 			# jetzt: kreiseln, bis man drauf zuschaut, anfangen, geradeaus zu fahren
 			print "not on track"
