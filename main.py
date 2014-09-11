@@ -65,7 +65,7 @@ def is_at(current, target):
 		return False
 	else:
 		dis = great_circle_distance(current, target)
-		#dis = approxDistance(current, target)
+#		dis = approxDistance(current, target)
 		print("approximated Distance = ", dis)
 		return dis < STDEV
 	
@@ -96,13 +96,15 @@ def mainRoutine(target):
 		print "no reasonable target given"
 		return
 		
-	tracker = GPSTracker(n_averages = 3, x_offset = 0, y_offset = 0, angle_offset = 0.0) # TODO: enter calibrated values
+	tracker = GPSTracker(n_averages = 3, x_offset = -112.0, y_offset = 51.0, angle_offset = 2*pi-83.088772881) # TODO: enter calibrated values
 	navigator = Navigator(tracker)
 	navigator.setRadius(RADIUS)
 	
 	watcher = Watcher()
 	
 	speed = SPEED # nicht ueberfluessig?! Vielleicht soll das Programm spaeter mal mit variabler Geschwindigkeit fahren koennen...
+
+	steer(0)
 	
 	#Hindernis checken
 	#watcher.obstancle()
