@@ -101,6 +101,6 @@ if __name__ == "__main__":
 	c = Compass()
 #	x_offset, y_offset = c.calibrate() # muss nur einmal gemacht werden; waehrenddessen den Kompass einmal komplett rumdrehen
 	# am Ende stehen zwei Werte da, x_offset und y_offset
-	c.set_offset(-55.0, -78.0, 0.0) # das hier muss man immer ausfuehren, wenn man den Kompass initialisiert (also das Programm neu startet oder so)
+	c.set_offset(-112.0, 51.0,2*pi-83.088772881) # das hier muss man immer ausfuehren, wenn man den Kompass initialisiert (also das Programm neu startet oder so)
 	print c.getOrientation()*360/(2*pi) # hiermit kriegt man dann die Ausrichtung
 	
