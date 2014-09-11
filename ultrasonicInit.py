@@ -1,4 +1,5 @@
 from getDistance import *
+from time import sleep
 
 # This is an initialisation skript for running before starting the car.
 # Due to technical properties of the ultrasonic sensors, they seem to need 
@@ -16,6 +17,6 @@ def init():
 if __name__ == "__main__":
 	for i in range(500):
 		init()
-		sleep(0.02) #wait 20 ms because sensors can only make one measurement every 20 ms
+		time.sleep(0.02) #wait 20 ms because sensors can only make one measurement every 20 ms
 	
 	#this takes 10 s  

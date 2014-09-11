@@ -39,92 +39,98 @@ deaththreshold = 0.3
 bias = 0.05
 class Watcher():
 
-        def __init__(self):
-                #threading.Thread.__init__(self)ecover" oder "vim -r obstancle.py"
-                self.watchlistL = []
-                self.watchlistR = []
+	def __init__(self):
+		#threading.Thread.__init__(self)
+		self.watchlistL = []
+		self.watchlistR = []
 
-        def alarm(self):
-
-                alarmL=self.watchlistL[-1]
+	def alarm(self):
+		alarmL=self.watchlistL[-1]
 		alarmR=self.watchlistR[-1]
 
-                if((self.watchlistL[-1]-self.watchlistR[-1])*(self.watchlistL[-2]-self.watchlistR[-2]) < 0):
-                        if(alarmL < alarmR):
-                                alarmR = alarmR - bias
-                        if(alarmL > alarmR):
-                                alarmL = alarmL - bias
+		if((self.watchlistL[-1]-self.watchlistR[-1])*(self.watchlistL[-2]-self.watchlistR[-2]) < 0):
+			if(alarmL < alarmR):
+				alarmR = alarmR - bias
+			if(alarmL > alarmR):
+				alarmL = alarmL - bias
+		
+		return (alarmL, alarmR)
 
-
-                return (alarmL, alarmR)
-
-        def watch(self):
-
-                a=distance(0)
-                if(a>0):
-                        self.watchlistL.append(a)
-                        if (len(self.watchlistL) > measrange):
-                                self.watchlistL = self.watchlistL[1:]
-                else:
-                        self.watchlistL.append(bullshitdist)
-                b=distance(1)
-                if(b>0):
-                        self.watchlistR.append(b)
-                        if (len(self.watchlistR) > measrange):
-                                self.watchlistR = self.watchlistR[1:]
-                else:
-                        self.watchlistR.append(bullshitdist)
-        def obstancle(self):
+	def watch(self):
+		a=distance(0)
+		if(a>0):
+			self.watchlistL.append(a)
+			if (len(self.watchlistL) > measrange):
+				self.watchlistL = self.watchlistL[1:]
+		else:
+			self.watchlistL.append(bullshitdist)
+		b=distance(1)
+		if(b>0):
+			self.watchlistR.append(b)
+			if (len(self.watchlistR) > measrange):
+				self.watchlistR = self.watchlistR[1:]
+		else:
+			self.watchlistR.append(bullshitdist)
+	
+	def obstancle(self):
 #		return
-                self.watch()
-
-                while(len(self.watchlistL) < measrange and len(self.watchlistR) < measrange):
-                        self.watch()
-
-                (L,R) = self.alarm()
-
-                if (L > deaththreshold and R > deaththreshold):
-
-                        while min(L,R) < bullshitdist:
-                                if (self.watchlistL[-1] > deaththreshold and self.watchlistR[-1] > deaththreshold):
-                                        if (L < R):
-                                                if(L*movefactor > 0.715):
+		start = time.time()
+		self.watch()
+		
+		while(len(self.watchlistL) < measrange and len(self.watchlistR) < measrange):
+			self.watch()
+		
+		(L,R) = self.alarm()
+		
+		if (L > deaththreshold and R > deaththreshold):
+			while min(L,R) < bullshitdist:
+				if (self.watchlistL[-1] > deaththreshold and self.watchlistR[-1] > deaththreshold):
+					if (L < R):
+						if(L*movefactor > 0.715):
 							steer(-L*movefactor) #negative curve radius steers to the right
 							##Test
 							print("Ich lenke nach rechts" , L,-L*movefactor)
-                                                else:
-                                                        steer(-0.715)
-                                                        ##Test
-                                                        print("Ich lenke nach rechts, maximal" , L, 0.715)
-                                        if (R < L):
-                                                if(R*movefactor > 0.715):
-                                                        steer(R*movefactor)
-                                                        ##Test
-                                                        print("Ich lenke nach links" , R, R*movefactor)
-                                                else:
-                                                        steer(0.715)
-                                                        ##Test
-                                                        print("Ich lenke nach links, maximal" , R, 0.715)
-                                else:
-                                        drive(-2)
-                                        time.sleep(0.5)
-                                        stop()
-                                        print("Fahr nicht gegen ne Wand du Arsch")
+							end = time.time()
+							print "this took", end-start
+						else:
+							steer(-0.715)
+							##Test
+							print("Ich lenke nach rechts, maximal" , L, 0.715)
+							end = time.time()
+							print "this took", end-start
+					if (R < L):
+						if(R*movefactor > 0.715):
+							steer(R*movefactor)
+							##Test
+							print("Ich lenke nach links" , R, R*movefactor)
+							end = time.time()
+							print "this took", end-start
+						else:
+							steer(0.715)
+							##Test
+							print("Ich lenke nach links, maximal" , R, 0.715)
+							end = time.time()
+							print "this took", end-start
+				else:
+					drive(-2)
+					time.sleep(0.5)
+					stop()
+					print("Fahr nicht gegen ne Wand du Arsch")
 
-                                (L,R) = self.alarm()
+				(L,R) = self.alarm()
 				self.watch()
-                else:
-                        if (L < R):
-                                steer_at(0.715,-1)
+		else:
+			if (L < R):
+				steer_at(0.715,-1)
 
-                                ##Test
-                                print("Rueckwaerts nach links" , L,-L*movefactor)
-                        if (R < L):
-                                steer_at(-0.715,-1)
-                                print("Rueckwaerts nach rechts" , R, R*movefactor)
+				##Test
+				print("Rueckwaerts nach links" , L,-L*movefactor)
+			if (R < L):
+				steer_at(-0.715,-1)
+				print("Rueckwaerts nach rechts" , R, R*movefactor)
 
 
-                                                                                                                                                                                   
+																						   
 if __name__ == "__main__":
 	o = Watcher()
 	o.obstancle()
