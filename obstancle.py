@@ -1,6 +1,6 @@
-from getDistance import *
-from drive import *
-import time
+from getDistance import * 
+from drive import * 
+import time 
 from math import *
 
 #-----------------INTRODUCTION-------------------------------------------#
@@ -75,7 +75,7 @@ class Watcher():
                 else:
                         self.watchlistR.append(bullshitdist)
         def obstancle(self):
-
+#		return
                 self.watch()
 
                 while(len(self.watchlistL) < measrange and len(self.watchlistR) < measrange):
@@ -125,3 +125,6 @@ class Watcher():
 
 
                                                                                                                                                                                    
+if __name__ == "__main__":
+	o = Watcher()
+	o.obstancle()
