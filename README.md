@@ -2,15 +2,21 @@
 GPS auf Rädern – Robotik-Fortgeschrittenenpraktikum an der Universität Heidelberg
 
 Name:                       Jannis Andrija Schnitzer
+
 Studienfach:             Physik
+
 Fachsemester:        7
 
 Name:                        Gloria Feher 
+
 Studienfach:              Angewandte Informatik 
+
 Fachsemester:          3
 
 Name:                       Jonathan Förste
+
 Studienfach:             Physik
+
 Fachsemester:        7
 
 Das Projekt:
