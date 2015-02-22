@@ -13,9 +13,11 @@ def sendMessage(deg=0.0, speed=0.0):
 
 	pi.set_mode(TXD,pigpio.OUTPUT)
 	pi.wave_clear()
+
 	
 	prep_message = array('B',[deg,speed]) #create an array of unsigned chars 
 	message = array('B', [255, prep_message, 0]) #create an array started off by 0xFF, followed by the message in machine values and ended with 0x00
+
 	
 	pi.wave_add_serial(TXD, 9600, message)
 	wid = wave_create()
