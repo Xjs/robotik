@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 from gps import *
+from math import acos, sqrt, pi
 import threading
 gpsd = None
 
@@ -66,11 +67,12 @@ class GPSTracker:
 		
 		if y1 > x1:
 			if y2 > x2:
-				return arccos(a/c)
+				return acos(a/c)
 			else:
-				return 0.5 * pi + arccos(a/c)
+				return 0.5 * pi + acos(a/c)
 		else:
 			if y2 > x2:
-				return 1.5 * pi + arccos(a/c)
+				return 1.5 * pi + acos(a/c)
 			else:
-				return pi + arccos(a/c)
+				return pi + acos(a/c)
+				
