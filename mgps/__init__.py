@@ -13,7 +13,7 @@ class GPSPoller:
 		self.current_value = None
 		self.running = True
 	
-	def run(self)
+	def run(self):
 		global gpsd
 		while self.running:
 			gpsd.next()
@@ -54,13 +54,13 @@ class GPSTracker:
 		if y1 == x1:
 			if y2 < x2:
 				return pi
-			else if y2 > x2:
+			elif y2 > x2:
 				return 0
 		
 		if y2 == x2:
 			if y1 < x1:
 				return 1.5 * pi
-			else if y1 > x1:
+			elif y1 > x1:
 				return 0.5 * pi
 			else:
 				return -1
