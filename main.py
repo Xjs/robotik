@@ -1,3 +1,6 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+ 
 from mgps import *
 import time
 import drive.py
@@ -14,7 +17,7 @@ if __name__ == '__main__':
 	time.sleep(2)
 	while True:
 		if curPos == tracker.getPosition:	#car stands still
-			# Entweder: (Re-)Initialisierung – geradeausfahren, Orientierung holen (Kompaß können wir glaub ich nicht vertrauen), kreiseln, bis man drauf zuschaut, 			  anfangen, geradeaus zu fahren
+			# Entweder: (Re-)Initialisierung – geradeausfahren, Orientierung holen (Kompass koennen wir glaub ich nicht vertrauen), kreiseln, bis man drauf zuschaut, 			  anfangen, geradeaus zu fahren
 			start = time.time()
 			drive(5)			#drive for 5m
 			while (time.time() - start) < 3:	#while driving (ca. 3 s) save positions to tracker
