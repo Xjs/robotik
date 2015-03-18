@@ -3,7 +3,7 @@
 import time
 from sendMessage import *
 
-speed = 1.6
+#speed = 1.6
 
 
 #drives for m meters at speed of 1.6 m/s
