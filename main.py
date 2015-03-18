@@ -7,6 +7,7 @@ import sys
 from math import sin, cos, acos
 import drive.py
 import steer.py
+import obstacle.py
 
 tracker = GPSTracker()
 #----------------
@@ -50,6 +51,8 @@ def approxDistance(target):
 	return 6366000*tt
 
 def main(target):
+	#Hindernis checken
+	obstacle()
 	# GPS-Position bekommen
 	curPos = tracker.getPosition
 	time.sleep(2)
@@ -86,7 +89,7 @@ def main(target):
 			else:
 				#if not: use steer.py to correct orientation
 				
-		# 	Hindernis? Wenn ja: Ausweich-Subroutine und dann von vorn
+		
 	
 # Ausweich-Subroutine: Lenk solange vom Hindernis weg, bis es nicht mehr da ist
 # Wenn es nicht weggeht oder auf beiden Seiten eines gemessen wird… vielleicht rückwärts fahren?
