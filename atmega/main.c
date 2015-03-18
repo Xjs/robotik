@@ -11,6 +11,7 @@
 #include "timer.h"
 #include "servo.h"
 
+#define NULL 0
 
 void init();
 
@@ -49,31 +50,31 @@ int main(void)
 
 	
 	while (1){
-		//unsigned char *message;
-		//if((message = uart_gets()) != NULL){
-		//	unsigned char m_deg[sizeof(float)];
-		//	unsigned char m_speed[sizeof(float)];
+		unsigned char *message;
+		if((message = uart_gets()) != NULL){
+			unsigned char m_deg[sizeof(float)];
+			unsigned char m_speed[sizeof(float)];
 			
-		//	int i;
-		//	for (i=0; i < sizeof(float); i++) {
-		//		m_deg[i] = message[i+1];
-		//		m_speed[i] = message[i+sizeof(float)+1];
-		//	}
-		//	float deg;
-		//	float speed;
-		//	deg = (float) &m_deg;
-		//	deg -= 0.07; //Gauge to straight ahead.
-		//	speed = (float) &m_speed;
+			int i;
+			for (i=0; i < sizeof(float); i++) {
+				m_deg[i] = message[i+1];
+				m_speed[i] = message[i+sizeof(float)+1];
+			}
+			float deg;
+			float speed;
+			deg = (float) *m_deg;
+			deg -= 0.07; //Gauge to straight ahead.
+			speed = (float) *m_speed;
 			
 			//Dummy
-			float deg = 0.5;
-			deg -= 0.07;
-			float speed = 0.15;
+			//float deg = 0.5;
+			//deg -= 0.07;
+			//float speed = 0.15;
 			//Dummy END
 			
 			steer(deg);
 			drive(speed);
-		//}	
+		}	
 		
 		
 	}	
