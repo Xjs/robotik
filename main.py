@@ -65,9 +65,10 @@ def main(target):
 			#check if orientation is correct
 			if orientation == True: # WE NEED TO FIND THE CORRECT ORIENTATION FIRST - HOW?
 				#if so: drive for approximate number of meters until destination
-				drive(approxDistance(target))
+				drive()
 				if tracker.getPosition == target: #target reached, stop car
-					drive(0)
+					stop()
+					break
 			else:
 				#if not: use steer.py to correct orientation
 			
@@ -79,9 +80,9 @@ def main(target):
 		# 	mit der Linie vergleichen, und wenn wir zu sehr abweichen, mal wieder von vorn
 			orientation = tracker.getOrientation()
 			if orientation == True:
-				drive(approxDistance(target)) #update of amount of meters still to be driven
+				drive() 
 				if tracker.getPosition == target: #target reached, stop car
-					drive(0)
+					stop()
 			else:
 				#if not: use steer.py to correct orientation
 				
