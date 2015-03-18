@@ -16,7 +16,7 @@ GPIO.setup(trig2, GPIO.OUT)
 GPIO.setup(echo2, GPIO.IN)
 
 
-def distance(sensor)
+def distance(sensor):
 
         if(sensor==0)
                 GPIO.output(trig, True)
