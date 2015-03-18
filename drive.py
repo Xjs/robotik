@@ -15,7 +15,7 @@ speed = 1.6
 #	sendMessage(0.0, 0.0) #stop car
 
 def drive():
-	sendMessage(0.0, 0.2)
+	sendMessage(0.5, 0.2)
 
 if __name__ == "__main__":
 	drive()
