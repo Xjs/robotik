@@ -53,7 +53,7 @@ def distance(sensor)
 
         #distance equals elapsed time times sonic speed divided by two
         #because the distance is traveled twice
-        distance = (timeElapsed * 34300) / 2
+        distance = (timeElapsed * 343) / 2
 
         return distance
 
