@@ -67,9 +67,9 @@ int main(void)
 			speed = (float) *m_speed;
 			
 			//Dummy
-			//float deg = 0.5;
-			//deg -= 0.07;
-			//float speed = 0.15;
+		//	float deg = 0.5;
+		//	deg -= 0.07;
+		//	float speed = 0.15;
 			//Dummy END
 			
 			steer(deg);
