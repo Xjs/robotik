@@ -1,7 +1,7 @@
 #!/usr/bin/python
 
 import time
-import sendMessage.py
+from sendMessage import *
 
 speed = 1.6
 
@@ -16,3 +16,6 @@ speed = 1.6
 
 def drive():
 	sendMessage(0.0, 0.2)
+
+if __name__ == "__main__":
+	drive()
