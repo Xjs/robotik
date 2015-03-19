@@ -81,7 +81,7 @@ unsigned char *uart_gets(void) {
 				}
 			}
 		}
-		buffer[MESSAGE_SIZE-1] = '\0';
+		//buffer[MESSAGE_SIZE-1] = '\0';
 		return buffer; 
 	}
 	else {
