@@ -18,6 +18,7 @@ def checksum(string):
 		else:
 			appendix = '0'
 		result = ''.join([result, appendix])
+	return result
 
 #def handler(signum, frame):
 #	print "Exiting..."
