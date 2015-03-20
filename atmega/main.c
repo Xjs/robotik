@@ -52,6 +52,11 @@ int main(void)
 	while (1){
 		unsigned char *message;
 		if((message = uart_gets()) != NULL){
+			
+			// DEBUG
+			steer(-0.7);
+			// END DEBUG
+			
 			unsigned char m_deg[sizeof(float)];
 			unsigned char m_speed[sizeof(float)];
 			

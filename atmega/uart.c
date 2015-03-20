@@ -68,6 +68,7 @@ unsigned char *uart_gets(void) {
 	unsigned char *buffer = (unsigned char *) malloc(sizeof(char)*(MESSAGE_SIZE));
 	
 	if (buffer != NULL) {
+		int i;
 		for(i = 0; i < MESSAGE_SIZE; i++) {
 			unsigned char c;
 			
