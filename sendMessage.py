@@ -7,6 +7,18 @@ import serial
 from struct import pack
 from array import array
 
+def parity(c):
+    return sum([ord(c) & (1 << i) > 0 for i in range(8)])
+   	
+def checksum(string):
+	result = ''
+	for c in string:
+		if parity(c) % 2 == 0:
+			appendix = '1'
+		else
+			appendix = '0'
+		result.append(appendix)
+
 #def handler(signum, frame):
 #	print "Exiting..."
 #	pi.bb_serial_read_close(RXD)
@@ -39,7 +51,9 @@ def sendMessage(deg=0.0, speed=0.0):
 
 	prep_message = bytes()
 	num = [deg,speed]
-	prep_message = prep_message.join((pack('f', val) for val in num))
+	strings = [pack('f', val) for val in num]
+	checksums = [pack('c', int(''.join('0b0000', checksum(string)))) for string in strings]
+	prep_message = bytes.join(bytes.join(tuple) for tuple in zip(strings, checksums))
 	for i in range(len(prep_message)):
 		if prep_message[i] == '\xff':
 			prep_message[i] = '\xfe'
