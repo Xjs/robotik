@@ -25,7 +25,11 @@
   #error "Systematischer Fehler der Baudrate groesser 1% und damit zu hoch!"
 #endif
 
-#define MESSAGE_SIZE 10 
+// size of message equals size of parts plus one checksum byte per part plus start plus end
+#define MESSAGE_SIZE (PART_SIZE+1)*PARTS + 1 + 1
+#define PART_SIZE 4
+#define PARTS 2 
+#define STRIPPED_SIZE PART_SIZE*PARTS + 1 + 1
 
 //Schnittstelle initialisieren
 void uartInit();

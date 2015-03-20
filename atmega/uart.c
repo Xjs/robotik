@@ -5,7 +5,9 @@
 
 #include <avr/io.h>
 #include <stdlib.h> // enthaelt itoa, ltoa
+#include <util/delay.h>
 #include "uart.h"
+#include "servo.h"
 
 //Schnittstelle initialisieren:
 // USART-Init
@@ -62,36 +64,122 @@ unsigned char uart_getc(void)
 		return UDR0;		// Zeichen aus UDR an Aufrufer zurueckgeben
 }
 
+void uart_putm(unsigned char *message)
+{
+	int i;
+	for (i = 0; i < MESSAGE_SIZE; i++)
+		uart_putc(message[i]);
+}
+
+int parity(unsigned char byte)
+{
+	int i;
+	int result = 0;
+	for (i = 0; i < 8 * sizeof(byte); i++)
+	{
+		if (byte & (1 << i))
+			result++;
+	}
+	return result;
+}
+
+int check(unsigned char *part, unsigned char checksum)
+{
+	int i;
+	if (checksum & 0xf0)
+		return 0;
+	
+	for (i = 0; i < PART_SIZE; i++)
+	{
+		int p1, p2;
+		p1 = checksum & (1 << (PART_SIZE - i - 1));
+		p2 = (parity(part[i]) % 2) == 0;
+		if ((p1 && !p2) || (!p1 && p2))
+			return 0;
+	}
+	
+	return 1;
+}
 
 //Zeichenkette empfangen (Laenge: 10 Byte)
-unsigned char *uart_gets(void) {
-	unsigned char *buffer = (unsigned char *) malloc(sizeof(char)*(MESSAGE_SIZE));
+unsigned char *uart_gets(unsigned char *buffer) {
+	int i, j, count;
+	unsigned char c;
 	
-	if (buffer != NULL) {
-		int i;
-		for(i = 0; i < MESSAGE_SIZE; i++) {
-			unsigned char c;
-			
+	count = 0;
+
+	buffer[count++] = '\xff';
+	buffer[STRIPPED_SIZE-1] = '\xff';
+	/*
+	for(i = 0; i < MESSAGE_SIZE; i++)
+	{
+		buffer[i] = '\xff';
+	}
+	*/
+	while (!uart_data_waiting())
+		_delay_ms(10);
+	
+	while (c = uart_getc()) // ignore part of previous message
+	{
+		if (c == '\xff')
+			break;
+	}
+	
+	for (j = 0; j < PARTS; i++)
+	{
+		for(i = 1; i < PART_SIZE+1; i++) {
 			// get first char in any case, block until one is there
 			// after first char, try to read whole message, but don't block
-			if (i == 0 || uart_data_waiting()) {
-				c = uart_getc();
+			c = uart_getc();
+			if (i == PART_SIZE) // checksum byte
+			{
+				// buffer+(j*(PART_SIZE+1))+1 is the start of the j-th part
+				if (!check(buffer+(j*(PART_SIZE+1))+1, c))
+				{
+					// message doesn't match checksum
+					buffer[0] = 0;
+				}
 			}
-			if (buffer[i] = c) {
-				continue;
-			}
-			else {
-				return buffer;
+			else
+			{
+				buffer[count++] = c;
 			}
 		}
-		//buffer[MESSAGE_SIZE-1] = '\0';
-		// Check if message is complete
-		if (buffer[MESSAGE_SIZE-1] == 0)
-			return buffer; 
-		else
-			return NULL;
 	}
-	else {
-		return NULL;
-	} 	
+	
+	c = uart_getc();
+	buffer[count++] = c;
+	
+	assert(count == STRIPPED_SIZE);
+	
+	// count should now be MESSAGE_SIZE
+	//buffer[MESSAGE_SIZE-1] = '\0';
+	// Check if message is complete
+	if (buffer[STRIPPED_SIZE-1] == 0)
+		return buffer; 
+	else
+	{
+		buffer[0] = 0;
+		return buffer;
+	}
 }
+/*	
+	unsigned char *uart_gets(unsigned char *buffer){
+	int i;
+	unsigned char c;
+	
+	while (!uart_data_waiting())
+		_delay_ms(10);
+	
+	for(i = 0; i < MESSAGE_SIZE; i++) {		
+		// get first char in any case, block until one is there
+		// after first char, try to read whole message, but don't block
+		c = uart_getc();
+		buffer[i] = c;
+	}
+	
+	return buffer;
+	
+	}
+}
+*/

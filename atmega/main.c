@@ -5,6 +5,7 @@
 #include <avr/io.h>
 #include <inttypes.h>
 #include <util/delay.h>
+#include <stdlib.h>
 #include "uart.h"
 #include "adc.h"
 #include "pwm.h"
@@ -46,17 +47,18 @@ int main(void)
 	//setServo(1, (BASE + (0.9)*FORWARD));
 	//_delay_ms(2000);
 
-	
+	unsigned char *message = (unsigned char *) malloc(sizeof(char)*(STRIPPED_SIZE));
+	if (!message)
+		return -1;
 
-	
 	while (1){
-		unsigned char *message;
-		if((message = uart_gets()) != NULL){
-			
-			// DEBUG
-			steer(-0.7);
-			// END DEBUG
-			
+		uart_gets(message);
+		
+		if(message[0] == (unsigned char)'\xff' && message[STRIPPED_SIZE-1] == (unsigned char) '\x00') {
+			//uart_puts("valid data=");
+			uart_putm(message);
+			uart_puts("=");
+
 			unsigned char m_deg[sizeof(float)];
 			unsigned char m_speed[sizeof(float)];
 			
@@ -74,15 +76,22 @@ int main(void)
 			//Dummy
 		//	float deg = 0.5;
 		//	deg -= 0.07;
-		//	float speed = 0.15;
+		//	speed = 0.15;
 			//Dummy END
 			
 			steer(deg);
 			drive(speed);
 		}	
-		
-		
+		else
+		{
+			_delay_ms(1);
+			//uart_puts("Inv");
+			//uart_putm(message);
+			//uart_puts(":");
+		}
 	}	
+
+	free(message);
 }
 
 
