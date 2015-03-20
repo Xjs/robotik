@@ -68,21 +68,27 @@ unsigned char *uart_gets(void) {
 	unsigned char *buffer = (unsigned char *) malloc(sizeof(char)*(MESSAGE_SIZE));
 	
 	if (buffer != NULL) {
-		while(uart_data_waiting()) {
-			int i;
-			for(i = 0; i < MESSAGE_SIZE; i++) {
-				unsigned char c;
-				
+		for(i = 0; i < MESSAGE_SIZE; i++) {
+			unsigned char c;
+			
+			// get first char in any case, block until one is there
+			// after first char, try to read whole message, but don't block
+			if (i == 0 || uart_data_waiting()) {
 				c = uart_getc();
-				if (buffer[i] = c) { 
-				}
-				else {
-					return buffer;
-				}
+			}
+			if (buffer[i] = c) {
+				continue;
+			}
+			else {
+				return buffer;
 			}
 		}
 		//buffer[MESSAGE_SIZE-1] = '\0';
-		return buffer; 
+		// Check if message is complete
+		if (buffer[MESSAGE_SIZE-1] == 0)
+			return buffer; 
+		else
+			return NULL;
 	}
 	else {
 		return NULL;
