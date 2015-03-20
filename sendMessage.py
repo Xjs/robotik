@@ -53,7 +53,7 @@ def sendMessage(deg=0.0, speed=0.0):
 	prep_message = bytes()
 	num = [deg,speed]
 	strings = [pack('f', val) for val in num]
-	checksums = [pack('c', int(''.join(['0b0000', checksum(string)]),2)) for string in strings]
+	checksums = [pack('c', chr(int(''.join(['0b0000', checksum(string)]),2))) for string in strings]
 	prep_message = bytes.join(bytes.join(tuple) for tuple in zip(strings, checksums))
 	for i in range(len(prep_message)):
 		if prep_message[i] == '\xff':
