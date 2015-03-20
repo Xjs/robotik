@@ -49,6 +49,7 @@ def steerat(speed,rad):
 def stunt:
 	sendMessage(-0.6, 0.5)
 	time.sleep(0.5)
+	sendMessage(0.0, 0.0)
 	
 if __name__ == "__main__":
 	drive()
