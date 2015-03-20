@@ -15,9 +15,9 @@ def checksum(string):
 	for c in string:
 		if parity(c) % 2 == 0:
 			appendix = '1'
-		else
+		else:
 			appendix = '0'
-		result.append(appendix)
+		result = ''.join([result, appendix])
 
 #def handler(signum, frame):
 #	print "Exiting..."
