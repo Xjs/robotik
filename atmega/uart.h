@@ -55,6 +55,14 @@ unsigned char uart_getc();
 //Liegt ein Zeichen im Eingangspuffer?
 #define uart_data_waiting() (UCSR0A & (1<<RXC0))
 
+// Output message of size STRIPPED_SIZE
+void uart_putm(unsigned char *message);
+
+// Calculate parity (number of one bits) in a byte
+int parity(unsigned char byte);
+
+// Check if message part matches checksum byte (parities)
+int check(unsigned char *part, unsigned char checksum);
 
 // eine Art uart_gets kann man sich noch ausdenken, sollte dann nicht mehr schwer sein
 // --> Lookie here:

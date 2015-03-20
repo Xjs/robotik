@@ -12,8 +12,6 @@
 #include "timer.h"
 #include "servo.h"
 
-#define NULL 0
-
 void init();
 
 int main(void)

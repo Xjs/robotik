@@ -67,7 +67,7 @@ unsigned char uart_getc(void)
 void uart_putm(unsigned char *message)
 {
 	int i;
-	for (i = 0; i < MESSAGE_SIZE; i++)
+	for (i = 0; i < STRIPPED_SIZE; i++)
 		uart_putc(message[i]);
 }
 
