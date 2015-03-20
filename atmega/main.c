@@ -50,9 +50,11 @@ int main(void)
 		return -1;
 
 	while (1){
+//		_delay_ms(6000000);
+		
 		uart_gets(message);
 		
-		if(message[0] == (unsigned char)'\xff' && message[STRIPPED_SIZE-1] == (unsigned char) '\x00') {
+		if(0 && message[0] == (unsigned char)'\xff' && message[STRIPPED_SIZE-1] == (unsigned char) '\x00') {
 			uart_puts("=");
 			uart_putm(message);
 			uart_puts("=");
@@ -60,7 +62,7 @@ int main(void)
 			unsigned char m_deg[sizeof(float)];
 			unsigned char m_speed[sizeof(float)];
 			
-			int i;
+			unsigned short int i;
 			for (i=0; i < sizeof(float); i++) {
 				m_deg[i] = message[i+1];
 				m_speed[i] = message[i+sizeof(float)+1];
@@ -85,8 +87,9 @@ int main(void)
 			_delay_ms(1);
 			uart_puts(":");
 			uart_putm(message);
-			uart_puts(":");
+			uart_puts(":@");
 		}
+
 	}	
 
 	free(message);

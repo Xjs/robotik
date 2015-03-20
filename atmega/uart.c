@@ -5,9 +5,11 @@
 
 #include <avr/io.h>
 #include <stdlib.h> // enthaelt itoa, ltoa
+#include <assert.h>
 #include <util/delay.h>
 #include "uart.h"
 #include "servo.h"
+
 
 //Schnittstelle initialisieren:
 // USART-Init
@@ -66,16 +68,16 @@ unsigned char uart_getc(void)
 
 void uart_putm(unsigned char *message)
 {
-	int i;
+	unsigned short int i;
 	for (i = 0; i < STRIPPED_SIZE; i++)
 		uart_putc(message[i]);
 }
 
-int parity(unsigned char byte)
+unsigned short int parity(unsigned char byte)
 {
-	int i;
-	int result = 0;
-	for (i = 0; i < 8 * sizeof(byte); i++)
+	unsigned short int i;
+	unsigned short int result = 0;
+	for (i = 0; i < 8 * sizeof(unsigned char); i++)
 	{
 		if (byte & (1 << i))
 			result++;
@@ -83,15 +85,15 @@ int parity(unsigned char byte)
 	return result;
 }
 
-int check(unsigned char *part, unsigned char checksum)
+unsigned short int check(unsigned char *part, unsigned char checksum)
 {
-	int i;
+	unsigned short int i;
 	if (checksum & 0xf0)
 		return 0;
 	
 	for (i = 0; i < PART_SIZE; i++)
 	{
-		int p1, p2;
+		unsigned short int p1, p2;
 		p1 = checksum & (1 << (PART_SIZE - i - 1));
 		p2 = (parity(part[i]) % 2) == 0;
 		if ((p1 && !p2) || (!p1 && p2))
@@ -103,7 +105,7 @@ int check(unsigned char *part, unsigned char checksum)
 
 //Zeichenkette empfangen (Laenge: 10 Byte)
 unsigned char *uart_gets(unsigned char *buffer) {
-	int i, j, count;
+	unsigned short int i, j, count;
 	unsigned char c;
 	
 	count = 0;
@@ -116,6 +118,7 @@ unsigned char *uart_gets(unsigned char *buffer) {
 		buffer[i] = '\xff';
 	}
 	*/
+	
 	while (!uart_data_waiting())
 		_delay_ms(10);
 	
@@ -125,28 +128,32 @@ unsigned char *uart_gets(unsigned char *buffer) {
 			break;
 	}
 	
-	for (j = 0; j < PARTS; i++)
+	for (j = 0; j < PARTS; j++)
 	{
 		for(i = 1; i < PART_SIZE+1; i++) {
 			// get first char in any case, block until one is there
 			// after first char, try to read whole message, but don't block
+			if(!uart_data_waiting())
+				return NULL;
 			c = uart_getc();
 			if (i == PART_SIZE) // checksum byte
 			{
 				// buffer+(j*(PART_SIZE+1))+1 is the start of the j-th part
-				if (!check(buffer+(j*(PART_SIZE+1))+1, c))
-				{
+				//if (!check(buffer+(j*(PART_SIZE+1))+1, c))
+				//{
 					// message doesn't match checksum
-					buffer[0] = 0;
-				}
+				//	buffer[0] = 0;
+				//}
 			}
 			else
 			{
-				buffer[count++] = c;
+				//buffer[count++] = c;
 			}
 		}
 	}
 	
+	uart_puts("hallo");
+		
 	c = uart_getc();
 	buffer[count++] = c;
 	
@@ -183,3 +190,4 @@ unsigned char *uart_gets(unsigned char *buffer) {
 	}
 }
 */
+

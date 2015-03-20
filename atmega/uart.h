@@ -59,14 +59,13 @@ unsigned char uart_getc();
 void uart_putm(unsigned char *message);
 
 // Calculate parity (number of one bits) in a byte
-int parity(unsigned char byte);
+unsigned short int parity(unsigned char byte);
 
 // Check if message part matches checksum byte (parities)
-int check(unsigned char *part, unsigned char checksum);
+unsigned short int check(unsigned char *part, unsigned char checksum);
 
 // eine Art uart_gets kann man sich noch ausdenken, sollte dann nicht mehr schwer sein
 // --> Lookie here:
 unsigned char* uart_gets(); // gibt Zeichenkette mit max. Laenge von 8 + 1 Byte zurück (letzter Byte ist reserviert für '\0')
-
 
 #endif
