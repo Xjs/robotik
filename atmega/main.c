@@ -67,9 +67,9 @@ int main(void)
 			}
 			float deg;
 			float speed;
-			deg = (float) *m_deg;
+			deg = (float) *((float*)m_deg);
 			deg -= 0.07; //Gauge to straight ahead.
-			speed = (float) *m_speed;
+			speed = (float) *((float*)m_speed);
 			
 			//Dummy
 		//	float deg = 0.5;
