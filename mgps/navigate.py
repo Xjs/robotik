@@ -25,6 +25,12 @@ class Navigator:
 	def __init__(self, tracker):
 		# Tracker be a mgps.GPSTracker object
 		self.tracker = tracker
+		self.radius = RADIUS
+	
+	def setRadius(self, r):
+		"""Set curve radius used for internal calculations"""
+		# TODO: needs to be converted to lat/lon units
+		self.radius = r
 		
 	def navigate(self, target):
 		"""
@@ -40,7 +46,7 @@ class Navigator:
 				start point of line (tangent to circle)
 				end point of line (target)
 		"""
-		r = RADIUS
+		r = self.radius
 		t_latitude, t_longitude = target
 		target = Point(*target)
 		my_latitude, my_longitude = self.tracker.getPosition()
