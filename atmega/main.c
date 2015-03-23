@@ -103,7 +103,8 @@ int main(void)
 //	unsigned char *message = (unsigned char *) malloc(sizeof(char)*(STRIPPED_SIZE));
 //	if (!message)
 //		return -1;
-
+	uart_puts("initalized!");
+	
 	while (1)
 	{
 		while (buffer_status[ab] < BUFFER_END)
