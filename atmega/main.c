@@ -33,8 +33,8 @@ unsigned short int buffer_status[2]; // 0: nothing special, 1: start byte receiv
 #define BUFFER_END 2
 #define BUFFER_FULL 3
 
-#define START_BYTE '\xff'
-#define END_BYTE '\0'
+#define START_OF_MESSAGE '\xff'
+#define END_OF_MESSAGE '\0'
 
 void switch_buffers(void)
 {
@@ -54,11 +54,11 @@ char *find_message(unsigned char *buffer, size_t buffer_size)
 	char *result = NULL;
 	for (i = 0; i < buffer_size && buffer[i]; i++)
 	{
-		if (buffer[i] == START_BYTE)
+		if (buffer[i] == START_OF_MESSAGE)
 		{
 			result = buffer+i;
 		}
-		else if (result && buffer[i] == END_BYTE)
+		else if (result && buffer[i] == END_OF_MESSAGE)
 		{
 			found = 1;
 		}
