@@ -183,7 +183,7 @@ void init()
 ISR(USART_RXC_vect)
 {
 	char received_byte;
-	received_byte = UDR;
+	received_byte = UDR0;
 	if (buffer_level[ab] < BUFFER_SIZE)
 	{
 		buffer[ab][buffer_level[ab]++] = received_byte;
