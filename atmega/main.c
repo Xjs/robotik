@@ -123,6 +123,7 @@ int main(void)
 			uart_puts(message);
 			uart_puts(";");
 		}
+		empty_buffer(rb);
 //		_delay_ms(6000000);
 /*		
 		uart_gets(message);
