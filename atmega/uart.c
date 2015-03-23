@@ -17,7 +17,7 @@ void uartInit()
 {
 	UCSR0B |= (1 << TXEN0 )|(1 << RXEN0 );	// UART Senden und empfangen einschalten
 	UBRR0 = UBRR_VAL;				//Baudrate einstellen, die im Header-File definiert wurde
-	UCSR0B |= (1 << RCXIE0); // // Enable the USART Recieve Complete interrupt (USART_RXC)
+	UCSR0B |= (1 << RXCIE0); // // Enable the USART Recieve Complete interrupt (USART_RXC)
 }
 
 // Ein Zeichen senden
