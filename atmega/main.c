@@ -106,7 +106,7 @@ int main(void)
 
 	while (1)
 	{
-		while (buffer_status[ab] != BUFFER_END)
+		while (buffer_status[ab] < BUFFER_END)
 		{
 			// no message received -- do nothing
 			;
