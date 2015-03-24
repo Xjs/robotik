@@ -48,18 +48,20 @@ def drive(speed):
 		val = int(BASE + (-speed)*BACK)
 		val -= (val%10)
 		servo2.set_servo(22, val)
-		servo2.stop_servo(22)		
+		time.sleep(0.5)
+		#servo2.stop_servo(22)		
 	
 	elif (speed > 0):
 		val = int(BASE + speed*FORWARD)
 		val -= (val%10)
 		servo2.set_servo(22, val)
-		time.sleep(0.1)
+		time.sleep(0.5)
 		#servo2.stop_servo(22)
 	
 	elif (speed == 0):
 		servo2.set_servo(22, BASE)
-		servo2.stop_servo(22)
+		time.sleep(0.5)
+		#servo2.stop_servo(22)
 
 def test():
 	# Set servo on GPIO17 (BCM) to (1.2ms)
@@ -89,7 +91,7 @@ def test():
 def test2():
 	steer(0.5)
 	steer(-0.5)
-	steer(0)
+	#steer(0)
 	drive(0.3)
 	drive(0)
 	drive(-0.3)
