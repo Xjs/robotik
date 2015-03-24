@@ -32,13 +32,13 @@ def drive(speed):
 	if(speed < -1 or speed > 1)
 		return
 		
-	elif (speed < 0)
+	elif (speed < 0):
 		servo2.set_servo(22, BASE + (-speed)*BACK)
 	
-	elif (speed > 0)
+	elif (speed > 0):
 		servo2.set_servo(22, BASE + speed*FORWARD)
 	
-	elif (speed == 0)
+	elif (speed == 0):
 		servo2.set_servo(22, BASE)
 
 def test():
