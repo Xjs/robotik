@@ -28,7 +28,7 @@ def steer(deg):
 		val = int(BASE + deg*RIGHT)
 		val -= (val%10)
 		servo1.set_servo(17, val)
-		servo1.stop_servo(17)
+		#servo1.stop_servo(17)
 		
 	elif (deg == 0):
 		servo1.set_servo(17, BASE)
@@ -85,7 +85,10 @@ def test():
 def test2():
 	steer(0.5)
 	steer(-0.5)
+	steer(0)
 	drive(0.2)
+	drive(0)
+	drive(-0.2)
 
 if __name__ == '__main__':
 	test2()
