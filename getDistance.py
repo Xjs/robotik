@@ -3,9 +3,11 @@ import time
 
 GPIO.setmode(GPIO.BCM)
 
+#LEFT
 trig = 18
 echo = 24
 
+#RIGHT
 trig2 = 22
 echo2 = 23
 
