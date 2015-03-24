@@ -19,6 +19,15 @@ def test():
 
 	# Clear servo on GPIO17
 	servo.stop_servo(17)
+	
+	# Set servo on GPIO22 (BCM) to (1.2ms)
+	servo.set_servo(17, 1600)
+
+	# Set servo on GPIO22 (BCM) (2.0ms)
+	#servo.set_servo(17, 1200)
+
+	# Clear servo on GPIO22
+	servo.stop_servo(17)
 
 if __name__ == '__main__':
 	test()
