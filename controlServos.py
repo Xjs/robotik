@@ -14,7 +14,7 @@ BACK = (1000-1500)
 
 def steer(deg):
 	#Sets steering degree from -1 == hard left to 1 == hard right
-	if(deg < -1 || deg > 1):
+	if(deg < -1 or deg > 1):
 		return
 	
 	elif (deg < 0)
@@ -29,7 +29,7 @@ def steer(deg):
 def drive(speed):
 	#Sets engine to drive at a speed between -1 == full throttle backwards and 
 	#1 == full throttle forwards
-	if(speed < -1 || speed > 1)
+	if(speed < -1 or speed > 1)
 		return
 		
 	elif (speed < 0)
