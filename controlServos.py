@@ -19,12 +19,15 @@ def steer(deg):
 	
 	elif (deg < 0):
 		servo1.set_servo(17, BASE + (-deg)*LEFT)
+		servo1.stop_servo(17)
 		
 	elif (deg > 0):
 		servo1.set_servo(17, BASE + deg*RIGHT)
+		servo1.stop_servo(17)
 		
 	elif (deg == 0):
 		servo1.set_servo(17, BASE)
+		servo1.stop_servo(17)
 		
 def drive(speed):
 	#Sets engine to drive at a speed between -1 == full throttle backwards and 
@@ -34,12 +37,15 @@ def drive(speed):
 		
 	elif (speed < 0):
 		servo2.set_servo(22, BASE + (-speed)*BACK)
+		servo2.stop_servo(22)		
 	
 	elif (speed > 0):
 		servo2.set_servo(22, BASE + speed*FORWARD)
+		servo2.stop_servo(22)
 	
 	elif (speed == 0):
 		servo2.set_servo(22, BASE)
+		servo2.stop_servo(22)
 
 def test():
 	# Set servo on GPIO17 (BCM) to (1.2ms)
