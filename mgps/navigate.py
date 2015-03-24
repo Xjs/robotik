@@ -81,5 +81,8 @@ class Navigator:
 	
 	def on_track(self, line):
 		"""Are we still on track? If not, better re-navigate"""
-		return (distance(Line(*line), self.tracker.getPosition()) < TRESHOLD)
+		if line is None:
+			return False
+		else:
+			return (distance(Line(*line), self.tracker.getPosition()) < TRESHOLD)
 		
