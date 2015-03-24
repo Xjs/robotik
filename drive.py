@@ -43,4 +43,4 @@ def stunt():
 	steerat(0.0, 0.0)
 	
 if __name__ == "__main__":
-	drive(1)
+	drive(1.6)
