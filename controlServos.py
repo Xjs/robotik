@@ -14,15 +14,20 @@ BACK = (1000-1500)
 
 def steer(deg):
 	#Sets steering degree from -1 == hard left to 1 == hard right
+	#The value val for the PWM signal is floored to a multiple of 10
 	if(deg < -1 or deg > 1):
 		return
 	
 	elif (deg < 0):
-		servo1.set_servo(17, int(BASE + (-deg)*LEFT))
+		val = int(BASE + (-deg)*LEFT)
+		val -= (val%10)
+		servo1.set_servo(17, val)
 		servo1.stop_servo(17)
 		
 	elif (deg > 0):
-		servo1.set_servo(17, int(BASE + deg*RIGHT))
+		val = int(BASE + deg*RIGHT)
+		val -= (val%10)
+		servo1.set_servo(17, val)
 		servo1.stop_servo(17)
 		
 	elif (deg == 0):
@@ -32,15 +37,20 @@ def steer(deg):
 def drive(speed):
 	#Sets engine to drive at a speed between -1 == full throttle backwards and 
 	#1 == full throttle forwards
+	#The value val for the PWM signal is floored to a multiple of 10
 	if(speed < -1 or speed > 1):
 		return
 		
 	elif (speed < 0):
-		servo2.set_servo(22, int(BASE + (-speed)*BACK))
+		val = int(BASE + (-speed)*BACK)
+		val -= (val%10)
+		servo2.set_servo(22, val)
 		servo2.stop_servo(22)		
 	
 	elif (speed > 0):
-		servo2.set_servo(22, int(BASE + speed*FORWARD))
+		val = int(BASE + speed*FORWARD)
+		val -= (val%10)
+		servo2.set_servo(22, val)
 		servo2.stop_servo(22)
 	
 	elif (speed == 0):
