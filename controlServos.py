@@ -22,19 +22,20 @@ def steer(deg):
 		val = int(BASE + (-deg)*LEFT)
 		val -= (val%10)
 		servo1.set_servo(17, val)
-		time.sleep(0.5)
-		servo1.stop_servo(17)
+		time.sleep(0.06)
+		#servo1.stop_servo(17)
 		
 	elif (deg > 0):
 		val = int(BASE + deg*RIGHT)
 		val -= (val%10)
 		servo1.set_servo(17, val)
-		time.sleep(2)
+		time.sleep(0.05)
 		#servo1.stop_servo(17)
 		
 	elif (deg == 0):
 		servo1.set_servo(17, BASE)
-		servo1.stop_servo(17)
+		time.sleep(0.07)
+		#servo1.stop_servo(17)
 		
 def drive(speed):
 	#Sets engine to drive at a speed between -1 == full throttle backwards and 
@@ -53,7 +54,7 @@ def drive(speed):
 		val = int(BASE + speed*FORWARD)
 		val -= (val%10)
 		servo2.set_servo(22, val)
-		time.sleep(2)
+		time.sleep(0.1)
 		#servo2.stop_servo(22)
 	
 	elif (speed == 0):
