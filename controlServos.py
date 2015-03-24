@@ -12,7 +12,7 @@ FORWARD = (1952-1500)
 BACK = (1000-1500)
 
 
-def steer(float deg):
+def steer(deg):
 	#Sets steering degree from -1 == hard left to 1 == hard right
 	if(deg < -1 || deg > 1):
 		return
@@ -26,7 +26,7 @@ def steer(float deg):
 	elif (deg == 0):
 		servo1.set_servo(17, BASE)
 		
-def drive(float speed):
+def drive(speed):
 	#Sets engine to drive at a speed between -1 == full throttle backwards and 
 	#1 == full throttle forwards
 	if(speed < -1 || speed > 1)
