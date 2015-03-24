@@ -12,6 +12,35 @@ FORWARD = (1952-1500)
 BACK = (1000-1500)
 
 
+def steer(float deg):
+	#Sets steering degree from -1 == hard left to 1 == hard right
+	if(deg < -1 || deg > 1):
+		return
+	
+	elif (deg < 0)
+		servo1.set_servo(17, BASE + (-deg)*LEFT)
+		
+	elif (deg > 0):
+		servo1.set_servo(17, BASE + deg*RIGHT)
+		
+	elif (deg == 0):
+		servo1.set_servo(17, BASE)
+		
+def drive(float speed):
+	#Sets engine to drive at a speed between -1 == full throttle backwards and 
+	#1 == full throttle forwards
+	if(speed < -1 || speed > 1)
+		return
+		
+	elif (speed < 0)
+		servo2.set_servo(22, BASE + (-speed)*BACK)
+	
+	elif (speed > 0)
+		servo2.set_servo(22, BASE + speed*FORWARD)
+	
+	elif (speed == 0)
+		servo2.set_servo(22, BASE)
+
 def test():
 	# Set servo on GPIO17 (BCM) to (1.2ms)
 	servo1.set_servo(17, 1600)
@@ -36,6 +65,11 @@ def test():
 
 	# Clear servo on GPIO22
 	servo2.stop_servo(22)
+	
+def test2():
+	steer(0.5)
+	steer(-0.5)
+	drive(0.2)
 
 if __name__ == '__main__':
-	test()
+	test2()
