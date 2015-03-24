@@ -22,46 +22,39 @@ def steer(deg):
 		val = int(BASE + (-deg)*LEFT)
 		val -= (val%10)
 		servo1.set_servo(17, val)
-		time.sleep(0.06)
-		#servo1.stop_servo(17)
+		time.sleep(0.5)
 		
 	elif (deg > 0):
 		val = int(BASE + deg*RIGHT)
 		val -= (val%10)
 		servo1.set_servo(17, val)
-		time.sleep(0.05)
-		#servo1.stop_servo(17)
+		time.sleep(0.5)
 		
 	elif (deg == 0):
 		servo1.set_servo(17, BASE)
-		time.sleep(0.07)
-		#servo1.stop_servo(17)
+		time.sleep(0.5)
 		
 def drive(speed):
 	#Sets engine to drive at a speed between -1 == full throttle backwards and 
 	#1 == full throttle forwards
 	#The value val for the PWM signal is floored to a multiple of 10
+	#Caution: minimum positive value for speed is 0.36
+	#		  maximum negative value for speed is about -0.001
 	if(speed < -1 or speed > 1):
 		return
 		
 	elif (speed < 0):
 		val = int(BASE + (-speed)*BACK)
 		val -= (val%10)
-		servo2.set_servo(22, val)
-		time.sleep(0.5)
-		#servo2.stop_servo(22)		
+		servo2.set_servo(22, val)	
 	
 	elif (speed > 0):
 		val = int(BASE + speed*FORWARD)
 		val -= (val%10)
 		servo2.set_servo(22, val)
-		time.sleep(0.5)
-		#servo2.stop_servo(22)
 	
 	elif (speed == 0):
 		servo2.set_servo(22, BASE)
-		time.sleep(0.5)
-		#servo2.stop_servo(22)
 
 def test():
 	# Set servo on GPIO17 (BCM) to (1.2ms)
