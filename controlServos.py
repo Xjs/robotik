@@ -22,6 +22,7 @@ def steer(deg):
 		val = int(BASE + (-deg)*LEFT)
 		val -= (val%10)
 		servo1.set_servo(17, val)
+		time.sleep(0.5)
 		servo1.stop_servo(17)
 		
 	elif (deg > 0):
