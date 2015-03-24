@@ -53,7 +53,7 @@ def drive(speed):
 		val -= (val%10)
 		servo2.set_servo(22, val)
 		time.sleep(2)
-		servo2.stop_servo(22)
+		#servo2.stop_servo(22)
 	
 	elif (speed == 0):
 		servo2.set_servo(22, BASE)
