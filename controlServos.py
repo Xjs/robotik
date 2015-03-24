@@ -12,7 +12,7 @@ FORWARD = (1952-1500)
 BACK = (1000-1500)
 
 
-def steer(deg):
+def steerS(deg):
 	#Sets steering degree from -1 == hard left to 1 == hard right
 	#The value val for the PWM signal is floored to a multiple of 10
 	if(deg < -1 or deg > 1):
@@ -34,7 +34,7 @@ def steer(deg):
 		servo1.set_servo(17, BASE)
 		time.sleep(0.5)
 		
-def drive(speed):
+def driveS(speed):
 	#Sets engine to drive at a speed between -1 == full throttle backwards and 
 	#1 == full throttle forwards
 	#The value val for the PWM signal is floored to a multiple of 10
