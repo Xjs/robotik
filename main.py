@@ -4,12 +4,16 @@
 from mgps import *
 import time
 import sys
-from math import sin, cos, acos
-import drive.py
-import steer.py
-import obstacle.py
+from math import sin, cos, acos, pi
+from obstancle import *
+from drive import *
+from mgps/navigate import *
+
+angularSpeed = 1.6 * (2*pi) #per second
 
 tracker = GPSTracker()
+navi = Navigator(tracker)
+navi.setRadius(0.715)
 #----------------
 #A simple function that takes two GPS coordinates as input and outputs the distance between them in meter. More approaches can be found here
 
@@ -49,45 +53,56 @@ def approxDistance(target):
 	tt = acos(t1 + t2 + t3)
 	
 	return 6366000*tt
+	
+def correctCourse():
+	(direction, angle, rad),(start,target) = navigate(target)
+	s = angle/angularSpeed
+	
+	start = time.time()
+	steer(0.715)
+	while ((time.time() - start) < s):
+		pass
+	steer(-0.07)
 
-def main(target):
+def mainRoutine(target):
 	#Hindernis checken
-	obstacle()
+	obstancle()
 	# GPS-Position bekommen
-	curPos = tracker.getPosition
+	curPos = tracker.getPosition()
 	time.sleep(2)
 	while True:
-		if curPos == tracker.getPosition:	#car stands still
+		if curPos == tracker.getPosition():	#car stands still
 			# Entweder: (Re-)Initialisierung – geradeausfahren, Orientierung holen (Kompass koennen wir glaub ich nicht vertrauen), kreiseln, bis man drauf zuschaut, 			  anfangen, geradeaus zu fahren
 			start = time.time()
-			drive()			#drive for 5m
+			drive(1.6)			#drive for 5m
 			while (time.time() - start) < 3:	#while driving (ca. 3 s) save positions to tracker
 				stop()
-				tracker.getPosition
-			orientation = tracker.getOrientation()
+				tracker.getPosition()
+#			orientation = tracker.getOrientation()
 			#check if orientation is correct
-			if orientation == True: # WE NEED TO FIND THE CORRECT ORIENTATION FIRST - HOW?
+			(direction, angle, rad),(start,target) = navigate(target)
+			if on_track((start,target)) == True:
 				#if so: drive for approximate number of meters until destination
-				drive()
+				drive(1.6)
 				if tracker.getPosition == target: #target reached, stop car
 					stop()
 					break
 			else:
-				#if not: use steer.py to correct orientation
-			
-		 
+				correctCourse()
+				
 		else: #car is moving
 		# Oder: Wir fahren noch
 		# 	immer mal wieder Position updaten
 			tracker.getPosition()
 		# 	mit der Linie vergleichen, und wenn wir zu sehr abweichen, mal wieder von vorn
-			orientation = tracker.getOrientation()
-			if orientation == True:
-				drive() 
+#			orientation = tracker.getOrientation()
+			(direction, angle, rad),(start,target) = navigate(target)
+			if on_track((start,target)) == True:
+				drive(1.6) 
 				if tracker.getPosition == target: #target reached, stop car
 					stop()
 			else:
-				#if not: use steer.py to correct orientation
+				correctCourse()
 				
 		
 	
@@ -96,5 +111,4 @@ def main(target):
 
 if __name__ == '__main__':
 	target = sys.argv
-	if 
-	main(target)
+	mainRoutine(target)
