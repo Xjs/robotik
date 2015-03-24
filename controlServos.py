@@ -28,6 +28,7 @@ def steer(deg):
 		val = int(BASE + deg*RIGHT)
 		val -= (val%10)
 		servo1.set_servo(17, val)
+		time.sleep(2)
 		#servo1.stop_servo(17)
 		
 	elif (deg == 0):
@@ -51,6 +52,7 @@ def drive(speed):
 		val = int(BASE + speed*FORWARD)
 		val -= (val%10)
 		servo2.set_servo(22, val)
+		time.sleep(2)
 		servo2.stop_servo(22)
 	
 	elif (speed == 0):
