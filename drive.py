@@ -1,27 +1,15 @@
 #!/usr/bin/python
 
 import time
-from sendMessage import *
+from controlServos import *
 
-#speed = 1.6
-
-
-#drives for m meters at speed of 1.6 m/s
-
-#def drive(m):
-#	s = m/speed
-#	sendMessage(0.0, 0.2) #start driving
-#	time.sleep(s)		  #drive m meters
-#	sendMessage(0.0, 0.0) #stop car
 def stop():
-	sendMessage(0.0, 0.0)
+	driveS(0)
 
-def drive():
-	sendMessage(0.5, 0.2)
-
-def driveat(speed):
+#drives at speed m/s
+def drive(speed):
 	speedmessage = (speed/1.6)*0.2
-	sendMessage(0.0, speedmessage)
+	driveS(speedmessage)
 
 	
 #method that steers by input of curve radius in m and drives at lowest speed
@@ -35,21 +23,24 @@ def steer(rad):
 		return
 	else:
 		deg = 0.715/rad
-		sendMessage(deg, 0.2)
+		steerS(deg)
+		driveS(0.2)
 		return
-def steerat(speed,rad):
+
+def steerat(rad, speed):
 	if (abs(rad) < 0.715):
 		return
 	else:
 		speedmessage = (speed/1.6)*0.2
 		deg = 0.715/rad
-		sendMessage(deg, speedmessage)
+		steerS(deg)
+		driveS(speedmessage)
 		return
 	
-def stunt:
-	sendMessage(-0.6, 0.5)
+def stunt():
+	steerat(0.5, -0.6)
 	time.sleep(0.5)
-	sendMessage(0.0, 0.0)
+	steerat(0.0, 0.0)
 	
 if __name__ == "__main__":
-	drive()
+	drive(1)
