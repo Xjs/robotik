@@ -38,8 +38,8 @@ def drive(speed):
 	#Sets engine to drive at a speed between -1 == full throttle backwards and 
 	#1 == full throttle forwards
 	#The value val for the PWM signal is floored to a multiple of 10
-	#Caution: minimum positive value for speed is 0.36
-	#		  maximum negative value for speed is about -0.001
+	#Caution: minimum positive value for speed is 0.2
+	#		  maximum negative value for speed is about -0.15
 	if(speed < -1 or speed > 1):
 		return
 		
