@@ -17,7 +17,7 @@ def steer(deg):
 	if(deg < -1 or deg > 1):
 		return
 	
-	elif (deg < 0)
+	elif (deg < 0):
 		servo1.set_servo(17, BASE + (-deg)*LEFT)
 		
 	elif (deg > 0):
@@ -29,7 +29,7 @@ def steer(deg):
 def drive(speed):
 	#Sets engine to drive at a speed between -1 == full throttle backwards and 
 	#1 == full throttle forwards
-	if(speed < -1 or speed > 1)
+	if(speed < -1 or speed > 1):
 		return
 		
 	elif (speed < 0):
