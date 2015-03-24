@@ -10,6 +10,12 @@ def stop():
 def drive(speed):
 	speedmessage = (speed/1.6)*0.2
 	driveS(speedmessage)
+	
+def drivefor(m):
+	s = m/1.6
+	drive(1.6)
+	time.sleep(s)
+	stop()
 
 	
 #method that steers by input of curve radius in m and drives at lowest speed
