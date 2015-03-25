@@ -14,10 +14,10 @@ RADIUS = 0.715
 SPEED = 1.6
 DEFAULT = -0.07
 
-def angular_speed(radius):
+def angular_speed(radius = 1.6):
 	# TODO: this isn't radius-dependent yet
 	# TODO: measure
-	return 1.6 * (2*pi) #per second
+	return radius * (2*pi) #per second
 
 #----------------
 #A simple function that takes two GPS coordinates as input and outputs the distance between them in meter. More approaches can be found here
