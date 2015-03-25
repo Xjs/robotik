@@ -60,7 +60,7 @@ class Navigator:
 		if distance_a < distance_b:
 			direction = CCW
 			midpoint = Point(*midpoint_a)
-		else
+		else:
 			direction = CW
 			midpoint = Point(*midpoint_b)
 		c = Circle(midpoint, r)
