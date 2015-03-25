@@ -3,7 +3,7 @@ from drive.py import *
 from math.py import abs
 import time
 
-#to-do: Überlegen wie man aus Sackgassen und ähnlichen Fallen wieder rauskommt (Rückwärts fahren und so)
+#to-do: Ueberlegen wie man aus Sackgassen und aehnlichen Fallen wieder rauskommt (Rueckwaerts fahren und so)
 #threshold in [m] gibt die Maximaldistanz zu beachtender Objekte aus.
 threshold = 2
 bullshitdist = 4
@@ -74,17 +74,22 @@ class watch:
 		
 		watch()
 		
-		while(len(watchlistL) < measrange and len(watchlistR) < measrange):
+		while(len(self.watchlistL) < measrange and len(self.watchlistR) < measrange):
 			watch()
-			
-		if (watchlistL[len(watchlistL)-1] > deaththreshold and watchlistR[len(watchlistR)-1] > deaththreshold):
-			
-			(L,R) = alarm()
-			
-			if (L < R)
-				steer(-alarmL*movefactor)
-			if (R < L)
-				steer(alarmR*movefactor)
+		
+		(L,R) = alarm()
+		
+		if (self.watchlistL[len(self.watchlistL)-1] > deaththreshold and self.watchlistR[len(self.watchlistR)-1] > deaththreshold)::
+		
+			while(L < bullshitdist or R < bullshitdist):
+				
+				if (L < R):
+					steer(-alarmL*movefactor)
+				if (R < L):
+					steer(alarmR*movefactor)
+				watch()
+				
+				(L,R) = alarm()
 		else:
 			drive(-2)
 			time.sleep(0.5)
