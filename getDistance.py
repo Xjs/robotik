@@ -4,12 +4,12 @@ import time
 GPIO.setmode(GPIO.BCM)
 
 #LEFT
-trig = 18
+trig = 23
 echo = 24
 
 #RIGHT
-trig2 = 22
-echo2 = 23
+trig2 = 25
+echo2 = 8
 
 GPIO.setup(trig, GPIO.OUT)
 GPIO.setup(echo, GPIO.IN)
