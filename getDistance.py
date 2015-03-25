@@ -7,7 +7,7 @@ GPIO.setmode(GPIO.BCM)
 trig = [18, 22]
 echo = [24, 23]
 
-for t, e in zip(trig, echo)
+for t, e in zip(trig, echo):
 	GPIO.setup(t, GPIO.OUT)
 	GPIO.setup(e, GPIO.IN)
 
