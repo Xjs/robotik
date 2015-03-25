@@ -1,6 +1,5 @@
 from getDistance import *
 from drive import *
-from math import abs
 import time
 
 #to-do: Ueberlegen wie man aus Sackgassen und aehnlichen Fallen wieder rauskommt (Rueckwaerts fahren und so)
