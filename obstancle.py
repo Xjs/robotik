@@ -1,9 +1,8 @@
-from getDistance.py import *
-from drive.py import *
-from math.py import abs
+from getDistance import *
+from drive import *
 import time
 
-#to-do: Überlegen wie man aus Sackgassen und ähnlichen Fallen wieder rauskommt (Rückwärts fahren und so)
+#to-do: Ueberlegen wie man aus Sackgassen und aehnlichen Fallen wieder rauskommt (Rueckwaerts fahren und so)
 #threshold in [m] gibt die Maximaldistanz zu beachtender Objekte aus.
 threshold = 2
 bullshitdist = 4
@@ -15,31 +14,31 @@ averageminimum = 2
 deathreshold = 0.3
 
 
-class watch:
+class Watcher():
 
 	def __init__(self):
 		#threading.Thread.__init__(self)
 		self.watchlistL = []
 		self.watchlistR = []
 	
-	def alarm():
+	def alarm(self):
 		
 		averagesL = []
 		
 		for eins, zwei in zip(self.watchlistL, self.watchlistL[1:]):
-			if (abs(eins - zwei) > lowpass and eins < bullshitdist and zwei < bullshitdist)
+			if (abs(eins - zwei) > lowpass and eins < bullshitdist and zwei < bullshitdist):
 				averagesL.append((eins+zwei)/2)
 				
 		averagesR = []
 		
 		for eins, zwei in zip(self.watchlistR, self.watchlistR[1:]):
-			if (abs(eins - zwei) > lowpass and eins < bullshitdist and zwei < bullshitdist)
+			if (abs(eins - zwei) > lowpass and eins < bullshitdist and zwei < bullshitdist):
 				averagesR.append((eins+zwei)/2)
 		
 		alarmL = bullshitdist
 		alarmR = bullshitdist
 		
-		if (averagesL[len(averagesL)-1] < threshold and len(averagesL) > averageminimum)
+		if (averagesL[len(averagesL)-1] < threshold and len(averagesL) > averageminimum):
 			
 			for eins, zwei in zip(averagesL, averagesL[1:]):
 				if (eins < zwei):
@@ -48,7 +47,7 @@ class watch:
 				else:
 					alarmL = averagesL[len(averagesL)-1]
 		
-		if (averagesR[len(averagesR)-1] < threshold and len(averagesR) > averageminimum)
+		if (averagesR[len(averagesR)-1] < threshold and len(averagesR) > averageminimum):
 			
 			for eins, zwei in zip(averagesR, averagesR[1:]):
 				if (eins < zwei):
@@ -59,32 +58,37 @@ class watch:
 					
 		return (alarmL, alarmR)
 	
-	def watch():
+	def watch(self):
 	
 		self.watchlistL.append(distance(0))
-		if len(self.watchlistL) > measrange:
+		if (len(self.watchlistL) > measrange):
 			self.watchlistL = self.watchlistL[1:]
 			
 		b = distance(1)
 		self.watchlistR.append(b)
-		if len(self.watchlistR) > measrange:
+		if (len(self.watchlistR) > measrange):
 			self.watchlistR = self.watchlistR[1:]
 					
-	def obstancle():
+	def obstancle(self):
 		
 		watch()
 		
-		while(len(watchlistL) < measrange and len(watchlistR) < measrange):
+		while(len(self.watchlistL) < measrange and len(self.watchlistR) < measrange):
 			watch()
-			
-		if (watchlistL[len(watchlistL)-1] > deaththreshold and watchlistR[len(watchlistR)-1] > deaththreshold):
-			
-			(L,R) = alarm()
-			
-			if (L < R)
-				steer(-alarmL*movefactor)
-			if (R < L)
-				steer(alarmR*movefactor)
+		
+		(L,R) = alarm()
+		
+		if (self.watchlistL[len(self.watchlistL)-1] > deaththreshold and self.watchlistR[len(self.watchlistR)-1] > deaththreshold):
+		
+			while(L < bullshitdist or R < bullshitdist):
+				
+				if (L < R):
+					steer(-alarmL*movefactor)
+				if (R < L):
+					steer(alarmR*movefactor)
+				watch()
+				
+				(L,R) = alarm()
 		else:
 			drive(-2)
 			time.sleep(0.5)

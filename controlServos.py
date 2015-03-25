@@ -82,12 +82,12 @@ def test():
 	servo2.stop_servo(22)
 	
 def test2():
-	steer(0.5)
-	steer(-0.5)
-	#steer(0)
-	drive(0.3)
-	drive(0)
-	drive(-0.3)
+	steerS(0.5)
+	steerS(-0.5)
+	#steerS(0)
+	driveS(0.3)
+	driveS(0)
+	driveS(-0.3)
 
 if __name__ == '__main__':
 	test2()

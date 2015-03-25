@@ -5,8 +5,8 @@ from math import sin, cos, sqrt, atan2, pi
 
 RADIUS = 0.5 # meters, TODO: measured value
 # TODO: make this radius-independent
-CCW = 1
-CW = -1
+CCW = -1 #TODO: glevF changed signs for CCW and CW to match steer function - does this affect navigation calculations?
+CW = 1
  # TODO: measure what distance between line and GPS position can be deemed
  # a deviation from our path
 TRESHOLD = 0.00001
@@ -60,7 +60,7 @@ class Navigator:
 		if distance_a < distance_b:
 			direction = CCW
 			midpoint = Point(*midpoint_a)
-		else
+		else:
 			direction = CW
 			midpoint = Point(*midpoint_b)
 		c = Circle(midpoint, r)
