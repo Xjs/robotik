@@ -68,7 +68,7 @@ def correct_course(direction, angle, radius):
 	start = time.time()
 	steer(direction*radius)
 	while ((time.time() - start) < s):
-		# TODO: obstancle()? 
+		# TODO: watcher.obstancle()? 
 		pass
 	steer(DEFAULT)
 
@@ -76,9 +76,12 @@ def mainRoutine(target):
 	tracker = GPSTracker()
 	navigator = Navigator(tracker)
 	navigator.setRadius(RADIUS)
+	
+	watcher = Watcher()
+	
 	speed = SPEED #ueberfluessig, da speed kein Attribut von navigator ist
 	#Hindernis checken
-	obstancle()
+	watcher.obstancle()
 	# GPS-Position bekommen
 	curPos = tracker.getPosition()
 	time.sleep(2) #TODO: reichen 2 s hier aus?
@@ -91,7 +94,7 @@ def mainRoutine(target):
 			drive(speed)			#drive for 5m
 			while abs(time.time() - start) < 3:	#while driving (ca. 3 s) save positions to tracker TODO: abs()???
 				# TODO: check for obstacles ... all the time! :)
-				obstancle()
+				watcher.obstancle()
 				tracker.getPosition()
 			stop()
 		else:
@@ -112,7 +115,7 @@ def mainRoutine(target):
 		# Oder: Wir fahren noch - TODO: merge with first else?
 		# 	immer mal wieder Position updaten
 			curPos = tracker.getPosition()
-			obstancle()
+			watcher.obstancle()
 #			orientation = tracker.getOrientation()	
 	
 # Ausweich-Subroutine: Lenk solange vom Hindernis weg, bis es nicht mehr da ist
