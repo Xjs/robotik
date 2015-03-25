@@ -21,11 +21,11 @@ def distance(sensor):
 	
 	#write startTime
 	while GPIO.input(echo[sensor]) == 0:
-	startTime = time.time()
+		startTime = time.time()
 	
 	 #write time of signal reaching sensor
 	while GPIO.input(echo[sensor]) == 1:
-			stopTime = time.time()
+		stopTime = time.time()
 	
 	timeElapsed = stopTime - startTime
 	
