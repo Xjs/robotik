@@ -27,19 +27,19 @@ class watch:
 		averagesL = []
 		
 		for eins, zwei in zip(self.watchlistL, self.watchlistL[1:]):
-			if (abs(eins - zwei) > lowpass and eins < bullshitdist and zwei < bullshitdist)
+			if (abs(eins - zwei) > lowpass and eins < bullshitdist and zwei < bullshitdist):
 				averagesL.append((eins+zwei)/2)
 				
 		averagesR = []
 		
 		for eins, zwei in zip(self.watchlistR, self.watchlistR[1:]):
-			if (abs(eins - zwei) > lowpass and eins < bullshitdist and zwei < bullshitdist)
+			if (abs(eins - zwei) > lowpass and eins < bullshitdist and zwei < bullshitdist):
 				averagesR.append((eins+zwei)/2)
 		
 		alarmL = bullshitdist
 		alarmR = bullshitdist
 		
-		if (averagesL[len(averagesL)-1] < threshold and len(averagesL) > averageminimum)
+		if (averagesL[len(averagesL)-1] < threshold and len(averagesL) > averageminimum):
 			
 			for eins, zwei in zip(averagesL, averagesL[1:]):
 				if (eins < zwei):
@@ -48,7 +48,7 @@ class watch:
 				else:
 					alarmL = averagesL[len(averagesL)-1]
 		
-		if (averagesR[len(averagesR)-1] < threshold and len(averagesR) > averageminimum)
+		if (averagesR[len(averagesR)-1] < threshold and len(averagesR) > averageminimum):
 			
 			for eins, zwei in zip(averagesR, averagesR[1:]):
 				if (eins < zwei):
@@ -62,12 +62,12 @@ class watch:
 	def watch():
 	
 		self.watchlistL.append(distance(0))
-		if len(self.watchlistL) > measrange:
+		if (len(self.watchlistL) > measrange):
 			self.watchlistL = self.watchlistL[1:]
 			
 		b = distance(1)
 		self.watchlistR.append(b)
-		if len(self.watchlistR) > measrange:
+		if (len(self.watchlistR) > measrange):
 			self.watchlistR = self.watchlistR[1:]
 					
 	def obstancle():
@@ -79,7 +79,7 @@ class watch:
 		
 		(L,R) = alarm()
 		
-		if (self.watchlistL[len(self.watchlistL)-1] > deaththreshold and self.watchlistR[len(self.watchlistR)-1] > deaththreshold)::
+		if (self.watchlistL[len(self.watchlistL)-1] > deaththreshold and self.watchlistR[len(self.watchlistR)-1] > deaththreshold):
 		
 			while(L < bullshitdist or R < bullshitdist):
 				
