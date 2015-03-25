@@ -5,7 +5,7 @@ from math import acos, sqrt, pi
 import threading
 gpsd = None
 
-class GPSPoller:
+class GPSPoller(threading.Thread):
 	def __init__(self):
 		threading.Thread.__init__(self)
 		global gpsd
