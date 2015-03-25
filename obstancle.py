@@ -14,7 +14,7 @@ averageminimum = 2
 deathreshold = 0.3
 
 
-class watch:
+class Watcher():
 
 	def __init__(self):
 		#threading.Thread.__init__(self)
