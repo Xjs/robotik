@@ -71,12 +71,12 @@ class Watcher():
 					
 	def obstancle(self):
 		
-		watch()
+		self.watch()
 		
 		while(len(self.watchlistL) < measrange and len(self.watchlistR) < measrange):
-			watch()
+			self.watch()
 		
-		(L,R) = alarm()
+		(L,R) = self.alarm()
 		
 		if (self.watchlistL[len(self.watchlistL)-1] > deaththreshold and self.watchlistR[len(self.watchlistR)-1] > deaththreshold):
 		
@@ -86,9 +86,9 @@ class Watcher():
 					steer(-alarmL*movefactor)
 				if (R < L):
 					steer(alarmR*movefactor)
-				watch()
+				self.watch()
 				
-				(L,R) = alarm()
+				(L,R) = self.alarm()
 		else:
 			drive(-2)
 			time.sleep(0.5)
