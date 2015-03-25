@@ -20,7 +20,7 @@ GPIO.setup(echo2, GPIO.IN)
 
 def distance(sensor):
 
-        if(sensor==0)
+        if(sensor==0):
                 GPIO.output(trig, True)
                 time.sleep(0.00001)
                 GPIO.output(trig, False)
@@ -30,12 +30,13 @@ def distance(sensor):
 
                 #write startTime
                 while GPIO.input(echo) == 0:
+                        pass
                 startTime = time.time()
 
                  #write time of signal reaching sensor
                 while GPIO.input(echo) == 1:
                         stopTime = time.time()
-        else
+        else:
                 GPIO.output(trig2, True)
                 time.sleep(0.00001)
                 GPIO.output(trig2, False)
@@ -45,6 +46,7 @@ def distance(sensor):
 
                 #write startTime
                 while GPIO.input(echo2) == 0:
+                        pass
                 startTime = time.time()
 
                  #write time of signal reaching sensor
