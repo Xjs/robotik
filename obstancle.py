@@ -21,7 +21,7 @@ class Watcher():
 		self.watchlistL = []
 		self.watchlistR = []
 	
-	def alarm():
+	def alarm(self):
 		
 		averagesL = []
 		
@@ -58,7 +58,7 @@ class Watcher():
 					
 		return (alarmL, alarmR)
 	
-	def watch():
+	def watch(self):
 	
 		self.watchlistL.append(distance(0))
 		if (len(self.watchlistL) > measrange):
@@ -69,7 +69,7 @@ class Watcher():
 		if (len(self.watchlistR) > measrange):
 			self.watchlistR = self.watchlistR[1:]
 					
-	def obstancle():
+	def obstancle(self):
 		
 		watch()
 		
