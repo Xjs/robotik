@@ -15,6 +15,7 @@ for t, e in zip(trig, echo):
 	GPIO.setup(e, GPIO.IN)
 
 def distance(sensor):
+	time.sleep(0.01) # give the sensor some time to relax
 	GPIO.output(trig[sensor], True)
 	time.sleep(0.00001)
 	GPIO.output(trig[sensor], False)
@@ -24,7 +25,7 @@ def distance(sensor):
 	st = startTime
 	
 	#write startTime
-	while GPIO.input(echo[sensor]) == 0 and st-startTime < 0.00001: 
+	while GPIO.input(echo[sensor]) == 0 and startTime-st < 2.*MAX_DIST/SPEED_OF_SOUND:
 		startTime = time.time()
 	
 	 #write time of signal reaching sensor
@@ -36,5 +37,7 @@ def distance(sensor):
 	#distance equals elapsed time times sonic speed divided by two
 	#because the distance is traveled twice
 	distance = (timeElapsed * 343) / 2
-	
-	return distance
+	if distance > 4:
+		return -1.0
+	else:
+		return distance
