@@ -9,7 +9,7 @@ CCW = -1 #TODO: glevF changed signs for CCW and CW to match steer function - doe
 CW = 1
  # TODO: measure what distance between line and GPS position can be deemed
  # a deviation from our path
-TRESHOLD = 0.00001
+THRESHOLD = 0.00001
 
 def distance(a, b):
 	x1, y1 = a

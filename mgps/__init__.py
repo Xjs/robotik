@@ -27,6 +27,8 @@ class GPSTracker:
 		self.lastPositions = []
 	
 	def getPosition(self):
+		if gpsd.status == STATUS_NO_FIX:
+			return None
 		self.latitude = gpsd.fix.latitude
 		self.longitude = gpsd.fix.longitude
 		self.altitude = gpsd.fix.altitude

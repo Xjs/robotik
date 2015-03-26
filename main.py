@@ -8,16 +8,17 @@ from math import sin, cos, acos, pi
 from obstancle import *
 from drive import *
 from mgps import GPSTracker
-from mgps.navigate import Navigator, TRESHOLD
+from mgps.navigate import Navigator, THRESHOLD
 
 RADIUS = 0.715
 SPEED = 1.6
 DEFAULT = -0.07
 
-def angular_speed(radius = 1.6):
+def angular_speed(radius):
 	# TODO: this isn't radius-dependent yet
 	# TODO: measure
-	return radius * (2*pi) #per second
+	# something like
+	return (1/radius) * (2*pi) #per second
 
 #----------------
 #A simple function that takes two GPS coordinates as input and outputs the distance between them in meter. More approaches can be found here
@@ -43,7 +44,7 @@ def approxDistance(current, target):
 	a = current
 	b = target
 	
-	pk = 180/3.14169
+	pk = 180/pi
 	
 	a_lat = a[0] / pk
 	a_long = a[1] / pk
@@ -60,16 +61,18 @@ def approxDistance(current, target):
 	return 6366000*tt
 	
 def is_at(current, target):
-	return approxDistance(current, target) < TRESHOLD #TODO: TRESHOLD deklarieren
+	return approxDistance(current, target) < THRESHOLD #TODO: THRESHOLD deklarieren
 	
-def correct_course(direction, angle, radius):
+def correct_course(direction, angle, radius, watcher = None):
 	s = angle/angular_speed(radius)
 	
 	start = time.time()
 	steer(direction*radius)
 	while ((time.time() - start) < s):
-		# TODO: watcher.obstancle()? 
-		pass
+		try:
+			watcher.obstancle()
+		except AttributeError:
+			pass
 	steer(DEFAULT)
 
 def mainRoutine(target):
@@ -79,15 +82,22 @@ def mainRoutine(target):
 	
 	watcher = Watcher()
 	
-	speed = SPEED #ueberfluessig, da speed kein Attribut von navigator ist
+	speed = SPEED # nicht ueberfluessig?! Vielleicht soll das Programm spaeter mal mit variabler Geschwindigkeit fahren koennen...
+	
 	#Hindernis checken
 	#watcher.obstancle()
 	# GPS-Position bekommen
-	curPos = tracker.getPosition()
+	curPos = None
+	while curPos is None:
+		# no fix yet
+		print "no fix yet, sleeping a bit"
+		time.sleep(1)
+		curPos = tracker.getPosition()
 	print curPos
-	time.sleep(2) #TODO: reichen 2 s hier aus?
+	
 	line = None
 	circle = None
+	
 	while True:
 		if is_at(curPos, tracker.getPosition()):	# car stands still
 			print "standing"
@@ -100,29 +110,35 @@ def mainRoutine(target):
 				watcher.obstancle()
 				tracker.getPosition()
 			stop()
+			# renavigate
+			line = None
 		else:
 			driving = True
+		
+		# target reached
 		if is_at(tracker.getPosition(), target):
 			print "target reached"
 			stop()
 			# stunt()
 			break
+		
 		# 	mit der Linie vergleichen, und wenn wir zu sehr abweichen, mal wieder von vorn
 		if not on_track(line):
 			# wenn line noch nicht gesetzt ist (1. Mal), landen wir auch hier
 			# jetzt: kreiseln, bis man drauf zuschaut, anfangen, geradeaus zu fahren
 			print "not on track"
-			stop() # wuerde ich weglassen
+			stop() # wuerde ich weglassen # ist aber noetig, sonst funktioniert correct_course ja nicht.
 			circle, line = navigator.navigate(target)
-			correct_course(*circle)
+			correct_course(*circle, watcher=watcher)
 			drive(speed)
+			driving = True
+		
 		if driving:
-		# Oder: Wir fahren noch - TODO: merge with first else?
+		# Wir fahren noch, muessten eigentlich auf unserer Linie sein.
 		# 	immer mal wieder Position updaten
 			print "driving"
 			curPos = tracker.getPosition()
 			watcher.obstancle()
-#			orientation = tracker.getOrientation()	
 	
 # Ausweich-Subroutine: Lenk solange vom Hindernis weg, bis es nicht mehr da ist
 # Wenn es nicht weggeht oder auf beiden Seiten eines gemessen wird… vielleicht rückwärts fahren?
