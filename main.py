@@ -61,7 +61,10 @@ def approxDistance(current, target):
 	return 6366000*tt
 	
 def is_at(current, target):
-	return approxDistance(current, target) < THRESHOLD #TODO: THRESHOLD deklarieren
+	if current is None or target is None:
+		return False
+	else:
+		return approxDistance(current, target) < THRESHOLD #TODO: THRESHOLD deklarieren
 	
 def correct_course(direction, angle, radius, watcher = None):
 	s = angle/angular_speed(radius)
@@ -76,6 +79,10 @@ def correct_course(direction, angle, radius, watcher = None):
 	steer(DEFAULT)
 
 def mainRoutine(target):
+	if target is None or len(target) != 2:
+		print "no reasonable target given"
+		return
+		
 	tracker = GPSTracker()
 	navigator = Navigator(tracker)
 	navigator.setRadius(RADIUS)
@@ -143,5 +150,8 @@ def mainRoutine(target):
 # Ausweich-Subroutine: Lenk solange vom Hindernis weg, bis es nicht mehr da ist
 # Wenn es nicht weggeht oder auf beiden Seiten eines gemessen wird… vielleicht rückwärts fahren?
 if __name__ == '__main__':
-	target = sys.argv
+	try:
+		target = tuple(float(i) for i in sys.argv[1:3])
+	except ValueError:
+		target = None
 	mainRoutine(target)
