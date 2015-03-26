@@ -63,9 +63,8 @@ class Watcher():
 		self.watchlistL.append(distance(0))
 		if (len(self.watchlistL) > measrange):
 			self.watchlistL = self.watchlistL[1:]
-			
-		b = distance(1)
-		self.watchlistR.append(b)
+		
+		self.watchlistR.append(distance(1))
 		if (len(self.watchlistR) > measrange):
 			self.watchlistR = self.watchlistR[1:]
 					
