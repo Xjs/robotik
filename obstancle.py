@@ -69,12 +69,12 @@ class Watcher():
 	def watch(self):
 		
 		a=distance(0)
-		if(a>0):
+		if(a!=-1):
 			self.watchlistL.append(a)
 			if (len(self.watchlistL) > measrange):
 				self.watchlistL = self.watchlistL[1:]
 		b=distance(1)
-		if(b>0):
+		if(b!=-1):
 			self.watchlistR.append(b)
 			if (len(self.watchlistR) > measrange):
 				self.watchlistR = self.watchlistR[1:]
@@ -90,16 +90,21 @@ class Watcher():
 		
 		if (self.watchlistL[len(self.watchlistL)-1] > deaththreshold and self.watchlistR[len(self.watchlistR)-1] > deaththreshold):
 		
-			while(L < bullshitdist or R < bullshitdist):
-				
-				if (L < R):
-					steer(-L*movefactor)
-					##Test
-					print("Uch lenke nach Links" , L)
-				if (R < L):
-					steer(R*movefactor)
-					print("Ich lenke nach rechts" , R)
-				self.watch()
+			while min(L,R) < bullshitdist:
+				if (self.watchlistL[len(self.watchlistL)-1] > deaththreshold and self.watchlistR[len(self.watchlistR)-1] > deaththreshold):
+					if (L < R):
+						steer(-L*movefactor)
+						##Test
+						print("Ich lenke nach Links" , L,-L*movefactor)
+					if (R < L):
+						steer(R*movefactor)
+						print("Ich lenke nach rechts" , R, R*movefactor)
+					self.watch()
+				else:
+					drive(-2)
+					time.sleep(0.5)
+					stop()
+					print("Fahr nicht gegen ne Wand du Arsch")
 				
 				(L,R) = self.alarm()
 		else:
