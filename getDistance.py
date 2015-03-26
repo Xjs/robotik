@@ -3,10 +3,11 @@ import time
 
 MAX_DIST = 4.
 SPEED_OF_SOUND = 343.
+PULSE_WIDTH = 0.00001
 
 GPIO.setmode(GPIO.BCM)
 
-#LEFT, RIGHT
+# channels: LEFT, RIGHT
 trig = [18, 27]
 echo = [24, 23]
 
@@ -17,7 +18,7 @@ for t, e in zip(trig, echo):
 def distance(sensor):
 	time.sleep(0.01) # give the sensor some time to relax
 	GPIO.output(trig[sensor], True)
-	time.sleep(0.00001)
+	time.sleep(PULSE_WIDTH)
 	GPIO.output(trig[sensor], False)
 	
 	startTime = time.time()
@@ -36,8 +37,8 @@ def distance(sensor):
 	
 	#distance equals elapsed time times sonic speed divided by two
 	#because the distance is traveled twice
-	distance = (timeElapsed * 343) / 2
-	if distance > 4:
+	distance = (timeElapsed * SPEED_OF_SOUND) / 2
+	if distance > MAX_DIST or stopTime < startTime:
 		return -1.0
 	else:
 		return distance
