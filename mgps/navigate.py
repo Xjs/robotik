@@ -65,7 +65,7 @@ class Navigator:
 	def setRadius(self, r):
 		"""Set curve radius used for internal calculations"""
 		# convert to angular distance
-		self.radius = distance_to_angular_distance(r)
+		self.radius = r
 		
 	def navigate(self, target):
 		"""
@@ -100,7 +100,7 @@ class Navigator:
 		else:
 			direction = CW
 			midpoint = Point(*midpoint_b)
-		c = Circle(midpoint, r)
+		c = Circle(midpoint, sqrt(d_lat**2+d_lon**2))
 		s = Segment(midpoint, target)
 		thales_circle = Circle(s.midpoint, s.length/2.0)
 		tangent_points = thales_circle.intersection(c)
@@ -114,7 +114,7 @@ class Navigator:
 				start = p
 				angle = a
 		
-		return ((direction, angle, angular_distance_to_distance(r)), (start, target.args))
+		return ((direction, angle, r), (start, target.args))
 	
 	def on_track(self, line):
 		"""Are we still on track? If not, better re-navigate"""
@@ -122,4 +122,3 @@ class Navigator:
 			return False
 		else:
 			return (distance(Line(*line), self.tracker.getPosition()) < TRESHOLD)
-		
