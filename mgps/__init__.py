@@ -5,7 +5,7 @@ from math import acos, atan, sqrt, pi
 import threading
 gpsd = None
 
-MAX_POSITIONS = 10
+MAX_POSITIONS = 20
 
 class GPSPoller(threading.Thread):
 	def __init__(self):
