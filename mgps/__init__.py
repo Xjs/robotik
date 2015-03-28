@@ -49,14 +49,14 @@ class GPSTracker:
 			start_x, start_y = (0.0, 0.0)
 			end_x, end_y = (0.0, 0.0)
 			c_start, c_end = 0, 0
-			for x, y in self.lastPositions:
+			for lat, lon in self.lastPositions:
 				if c_start < l/2.0:
-					start_x += x
-					start_y += y
+					start_x += lon
+					start_y += lat
 					c_start += 1
 				else:
-					end_x += x
-					end_y += y
+					end_x += lon
+					end_y += lat
 					c_end += 1
 			
 			start_x /= c_start
