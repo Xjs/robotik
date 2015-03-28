@@ -6,6 +6,8 @@ import numpy
 import threading
 gpsd = None
 
+MAX_POSITIONS = 10
+
 class GPSPoller(threading.Thread):
 	def __init__(self):
 		threading.Thread.__init__(self)
@@ -36,7 +38,7 @@ class GPSTracker:
 		self.altitude = gpsd.fix.altitude
 		position = (self.latitude, self.longitude)
 		self.lastPositions.append(position)
-		if len(self.lastPositions) > 5:
+		if len(self.lastPositions) > MAX_POSITIONS:
 			self.lastPositions = self.lastPositions[1:]
 		return position
 	
