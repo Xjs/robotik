@@ -5,8 +5,11 @@ from math import sin, cos, sqrt, atan2, pi
 
 RADIUS = 0.5 # meters, TODO: measured value
 # TODO: make this radius-independent
-CCW = -1 #TODO: glevF changed signs for CCW and CW to match steer function - does this affect navigation calculations?
-CW = 1
+
+# I changed these values back, otherwise I'd have to filter atan2 data in a complicated way. Better change steer.
+CCW = 1
+CW = -1
+
  # TODO: measure what distance between line and GPS position can be deemed
  # a deviation from our path
 THRESHOLD = 0.00001

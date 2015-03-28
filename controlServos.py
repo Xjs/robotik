@@ -13,19 +13,19 @@ BACK = (1000-1500)
 
 
 def steerS(deg):
-	#Sets steering degree from -1 == hard left to 1 == hard right
+	#Sets steering degree from -1 == hard right to 1 == hard left
 	#The value val for the PWM signal is floored to a multiple of 10
 	if(deg < -1 or deg > 1):
 		return
 	
 	elif (deg < 0):
-		val = int(BASE + (-deg)*LEFT)
+		val = int(BASE + (-deg)*RIGHT)
 		val -= (val%10)
 		servo1.set_servo(17, val)
 		time.sleep(0.5)
 		
 	elif (deg > 0):
-		val = int(BASE + deg*RIGHT)
+		val = int(BASE + deg*LEFT)
 		val -= (val%10)
 		servo1.set_servo(17, val)
 		time.sleep(0.5)
