@@ -43,17 +43,17 @@ class GPSTracker:
 		return position
 	
 	def getOrientation(self):
-		l = len(lastPositions)
+		l = len(self.lastPositions)
 		if l < 2:
 			return -1
 		else:
-			xs = (x for (x,y) in lastPositions)
-			ys = (y for (x,y) in lastPositions)
+			xs = (x for (x,y) in self.lastPositions)
+			ys = (y for (x,y) in self.lastPositions)
 			slope, _ = numpy.polyfit(xs, ys, 1)
 			angle = pi/2.0 - atan(slope)
 			start, end = (0.0, 0.0)
 			c_start, c_end = 0, 0
-			for x, _ in lastPositions:
+			for x, _ in self.lastPositions:
 				if c_start < l/2.0:
 					start += x
 					c_start += 1
