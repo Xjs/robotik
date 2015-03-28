@@ -3,8 +3,7 @@
 from sympy import *
 from math import sin, cos, sqrt, atan2, pi
 
-RADIUS = 0.5 # meters, TODO: measured value
-# TODO: make this radius-independent
+RADIUS = 0.5 # meters (this is a dummy value)
 
 # I changed these values back, otherwise I'd have to filter atan2 data in a complicated way. Better change steer.
 CCW = 1
@@ -14,10 +13,33 @@ CW = -1
  # a deviation from our path
 THRESHOLD = 0.00001
 
+EARTH_RADIUS = 6371000 # metres
+
 def distance(a, b):
 	x1, y1 = a
 	x2, y2 = b
 	return sqrt((x1-x2)**2 + (y1-y2)**2)
+	
+def great_circle_distance(p1, p2):
+	# sources: http://www.movable-type.co.uk/scripts/latlong.html
+	phi1, lambda1 = lat1, lon1 = p1
+	phi2, lambda2 = lat2, lon2 = p2
+	delta_phi = abs(phi2-phi1)
+	delta_lambda = abs(lambda2-lambda1)
+	
+	# Equirectangular approximation
+	return EARTH_RADIUS*sqrt((delta_lambda * cos((phi1+phi2)/2.0))**2 + delta_phi**2)
+	
+	# alternatively: Haversine formula
+	a = sin(delta_phi/2.0)**2 + cos(phi1) * cos(phi2) * sin(delta_lambda/2.0)**2
+	c = 2 * atan2(sqrt(a), sqrt(1-a))
+	return = EARTH_RADIUS*c
+
+def distance_to_angular_distance(d):
+	return d/EARTH_RADIUS
+
+def angular_distance_to_distance(d):
+	return d * EARTH_RADIUS
 
 def oriented_angle(v1, v2):
 	dot = v1[0]*v2[0] + v1[1]*v2[1]
@@ -32,8 +54,8 @@ class Navigator:
 	
 	def setRadius(self, r):
 		"""Set curve radius used for internal calculations"""
-		# TODO: needs to be converted to lat/lon units
-		self.radius = r
+		# convert to angular distance
+		self.radius = distance_to_angular_distance(r)
 		
 	def navigate(self, target):
 		"""
@@ -80,7 +102,7 @@ class Navigator:
 				start = p
 				angle = a
 		
-		return ((direction, angle, r), (start, target.args))
+		return ((direction, angle, angular_distance_to_distance(r)), (start, target.args))
 	
 	def on_track(self, line):
 		"""Are we still on track? If not, better re-navigate"""
