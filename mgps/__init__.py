@@ -1,8 +1,7 @@
 #!/usr/bin/python
 
 from gps import *
-from math import acos, sqrt, pi
-import numpy
+from math import acos, atan, sqrt, pi
 import threading
 gpsd = None
 
@@ -47,23 +46,27 @@ class GPSTracker:
 		if l < 2:
 			return -1
 		else:
-			xs = (x for (x,y) in self.lastPositions)
-			ys = (y for (x,y) in self.lastPositions)
-			slope, _ = numpy.polyfit(xs, ys, 1)
-			angle = pi/2.0 - atan(slope)
-			start, end = (0.0, 0.0)
+			start_x, start_y = (0.0, 0.0)
+			end_x, end_y = (0.0, 0.0)
 			c_start, c_end = 0, 0
-			for x, _ in self.lastPositions:
+			for x, y in self.lastPositions:
 				if c_start < l/2.0:
-					start += x
+					start_x += x
+					start_y += y
 					c_start += 1
 				else:
-					end += x
+					end_x += x
+					end_y += y
 					c_end += 1
-			start /= c_start
-			end /= c_end
-			if start > end:
+			
+			start_x /= c_start
+			start_y /= c_start
+			end_x /= c_end
+			end_y /= c_end
+			
+			angle = pi/2.0 - atan((end_y-start_y)/(end_x-start_x))
+			
+			if start_x < end_x:
 				return angle
 			else:
-				return 2*pi + angle				
-		
+				return pi + angle				
