@@ -2,6 +2,7 @@
 
 from gps import *
 from math import acos, sqrt, pi
+import numpy
 import threading
 gpsd = None
 
@@ -40,42 +41,27 @@ class GPSTracker:
 		return position
 	
 	def getOrientation(self):
-		try:
-			a = self.lastPositions[-2]
-			b = self.lastPositions[-1]
-			# TODO: use more than two positions to get a triangle
-		except IndexError:
+		l = len(lastPositions)
+		if l < 2:
 			return -1
-		
-		x2, x1 = a
-		y2, y1 = b
-		
-		a = y2 - x2
-		b = y1 - x1
-		c = sqrt(a**2+b**2)
-		
-		if y1 == x1:
-			if y2 < x2:
-				return pi
-			elif y2 > x2:
-				return 0
-		
-		if y2 == x2:
-			if y1 < x1:
-				return 1.5 * pi
-			elif y1 > x1:
-				return 0.5 * pi
-			else:
-				return -1
-		
-		if y1 > x1:
-			if y2 > x2:
-				return acos(a/c)
-			else:
-				return 0.5 * pi + acos(a/c)
 		else:
-			if y2 > x2:
-				return 1.5 * pi + acos(a/c)
+			xs = (x for (x,y) in lastPositions)
+			ys = (y for (x,y) in lastPositions)
+			slope, _ = numpy.polyfit(xs, ys, 1)
+			angle = pi/2.0 - atan(slope)
+			start, end = (0.0, 0.0)
+			c_start, c_end = 0, 0
+			for x, _ in lastPositions:
+				if c_start < l/2.0:
+					start += x
+					c_start += 1
+				else:
+					end += x
+					c_end += 1
+			start /= c_start
+			end /= c_end
+			if start > end:
+				return angle
 			else:
-				return pi + acos(a/c)
-				
+				return 2*pi + angle				
+		
