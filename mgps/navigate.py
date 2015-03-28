@@ -19,11 +19,21 @@ def distance(a, b):
 	x1, y1 = a
 	x2, y2 = b
 	return sqrt((x1-x2)**2 + (y1-y2)**2)
-	
+
+def to_rad(arg):
+	return 2*pi/360.0 * arg
+
+def to_deg(rad):
+    return rad/(2*pi)*360
+
+def point_to_rad(*args):
+	for arg in args:
+		yield to_rad(arg)
+
 def great_circle_distance(p1, p2):
 	# sources: http://www.movable-type.co.uk/scripts/latlong.html
-	phi1, lambda1 = lat1, lon1 = p1
-	phi2, lambda2 = lat2, lon2 = p2
+	phi1, lambda1 = point_to_rad(*p1)
+	phi2, lambda2 = point_to_rad(*p2)
 	delta_phi = abs(phi2-phi1)
 	delta_lambda = abs(lambda2-lambda1)
 	
@@ -78,8 +88,10 @@ class Navigator:
 		me = Point(my_latitude, my_longitude)
 		orientation = self.tracker.getOrientation()
 		# TODO: Does the following always work, did I understand the trig correctly?
-		midpoint_a = (my_latitude - r * sin(orientation), my_longitude + r * cos(orientation))
-		midpoint_b = (my_latitude + r * sin(orientation), my_longitude - r * cos(orientation))
+		d_lat = to_deg(r*sin(orientation)/EARTH_RADIUS)
+		d_lon = to_deg(r*cos(orientation)/EARTH_RADIUS)/(cos(to_rad(my_latitude)))
+		midpoint_a = (my_latitude - d_lat, my_longitude + d_lon)
+		midpoint_b = (my_latitude + d_lat, my_longitude - d_lon)
 		distance_a = distance(midpoint_a, target)
 		distance_b = distance(midpoint_b, target)
 		if distance_a < distance_b:
