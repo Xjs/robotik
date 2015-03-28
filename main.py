@@ -15,8 +15,7 @@ SPEED = 1.3
 DEFAULT = -0.07
 
 def angular_speed(radius):
-	# TODO: this isn't radius-dependent yet
-	# TODO: measure
+	# TODO: this isn't radius-dependent yet, measure
 	# something like
 	return (1/radius) * (2*pi) #per second
 
@@ -64,7 +63,7 @@ def is_at(current, target):
 	if current is None or target is None:
 		return False
 	else:
-		return approxDistance(current, target) < THRESHOLD #TODO: THRESHOLD deklarieren
+		return approxDistance(current, target) < THRESHOLD
 	
 def correct_course(direction, angle, radius, watcher = None):
 	s = angle/angular_speed(radius)
@@ -112,8 +111,7 @@ def mainRoutine(target):
 			start = time.time()
 			print "driving at", speed
 			drive(speed)			#drive for 5m
-			while abs(time.time() - start) < 1:	#while driving (ca. 3 s) save positions to tracker TODO: abs()???
-				# TODO: check for obstacles ... all the time! :)
+			while (time.time() - start) < 3:	#while driving (ca. 3 s) save positions to tracker
 				watcher.obstancle()
 				tracker.getPosition()
 			stop()
