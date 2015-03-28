@@ -33,7 +33,7 @@ def great_circle_distance(p1, p2):
 	# alternatively: Haversine formula
 	a = sin(delta_phi/2.0)**2 + cos(phi1) * cos(phi2) * sin(delta_lambda/2.0)**2
 	c = 2 * atan2(sqrt(a), sqrt(1-a))
-	return = EARTH_RADIUS*c
+	return EARTH_RADIUS*c
 
 def distance_to_angular_distance(d):
 	return d/EARTH_RADIUS
