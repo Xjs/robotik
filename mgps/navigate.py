@@ -76,7 +76,7 @@ class Navigator:
 			first tuple: describes circle arc
 				direction (CW or CCW)
 				oriented angle (direction * angle)
-				radius
+				radius in metres
 			second tuple: describes line to target
 				start point of line (tangent to circle)
 				end point of line (target)
