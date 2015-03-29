@@ -23,8 +23,16 @@ def drivefor(m):
 #curve radius is approximated by f(x) = 0.715 * 1/deg
 #deg is a float between -1.0 and 1.0 which is used by the atmega's steer method
 
-#rad is the curve radius (min. 0.715 for full right, min. -0.715 for full left) 
- 
+#rad is the curve radius (min. -0.715 for full right, min. 0.715 for full left) 
+
+def steer_only(radius):
+	if (abs(radius) < 0.715):
+		return
+	else:
+		deg = 0.715/radius
+		steerS(deg)
+		return
+
 def steer(rad):
 	if (abs(rad) < 0.715):
 		return

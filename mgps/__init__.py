@@ -1,9 +1,11 @@
 #!/usr/bin/python
 
 from gps import *
-from math import acos, sqrt, pi
+from math import acos, atan, sqrt, pi
 import threading
 gpsd = None
+
+MAX_POSITIONS = 20
 
 class GPSPoller(threading.Thread):
 	def __init__(self):
@@ -35,47 +37,36 @@ class GPSTracker:
 		self.altitude = gpsd.fix.altitude
 		position = (self.latitude, self.longitude)
 		self.lastPositions.append(position)
-		if len(self.lastPositions) > 5:
+		if len(self.lastPositions) > MAX_POSITIONS:
 			self.lastPositions = self.lastPositions[1:]
 		return position
 	
 	def getOrientation(self):
-		try:
-			a = self.lastPositions[-2]
-			b = self.lastPositions[-1]
-			# TODO: use more than two positions to get a triangle
-		except IndexError:
+		l = len(self.lastPositions)
+		if l < 2:
 			return -1
-		
-		x2, x1 = a
-		y2, y1 = b
-		
-		a = y2 - x2
-		b = y1 - x1
-		c = sqrt(a**2+b**2)
-		
-		if y1 == x1:
-			if y2 < x2:
-				return pi
-			elif y2 > x2:
-				return 0
-		
-		if y2 == x2:
-			if y1 < x1:
-				return 1.5 * pi
-			elif y1 > x1:
-				return 0.5 * pi
-			else:
-				return -1
-		
-		if y1 > x1:
-			if y2 > x2:
-				return acos(a/c)
-			else:
-				return 0.5 * pi + acos(a/c)
 		else:
-			if y2 > x2:
-				return 1.5 * pi + acos(a/c)
+			start_x, start_y = (0.0, 0.0)
+			end_x, end_y = (0.0, 0.0)
+			c_start, c_end = 0, 0
+			for lat, lon in self.lastPositions:
+				if c_start < l/2.0:
+					start_x += lon
+					start_y += lat
+					c_start += 1
+				else:
+					end_x += lon
+					end_y += lat
+					c_end += 1
+			
+			start_x /= c_start
+			start_y /= c_start
+			end_x /= c_end
+			end_y /= c_end
+			
+			angle = pi/2.0 - atan((end_y-start_y)/(end_x-start_x))
+			
+			if start_x < end_x:
+				return angle
 			else:
-				return pi + acos(a/c)
-				
+				return pi + angle				

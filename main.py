@@ -14,11 +14,8 @@ RADIUS = 0.715
 SPEED = 1.3
 DEFAULT = -0.07
 
-def angular_speed(radius):
-	# TODO: this isn't radius-dependent yet
-	# TODO: measure
-	# something like
-	return (1/radius) * (2*pi) #per second
+def angular_speed(radius, speed):
+	return (2*pi*radius)/speed
 
 #----------------
 #A simple function that takes two GPS coordinates as input and outputs the distance between them in meter. More approaches can be found here
@@ -64,19 +61,21 @@ def is_at(current, target):
 	if current is None or target is None:
 		return False
 	else:
-		return approxDistance(current, target) < THRESHOLD #TODO: THRESHOLD deklarieren
+		return approxDistance(current, target) < THRESHOLD
 	
-def correct_course(direction, angle, radius, watcher = None):
-	s = angle/angular_speed(radius)
+def correct_course(direction, angle, radius, speed=SPEED, watcher=None):
+	time_for_circle = 1/angular_speed(radius, speed)
+	amount_of_circle = angle/(2*pi)
+	time_needed = amount_of_circle * time_for_circle
 	
 	start = time.time()
-	steer(direction*radius)
-	while ((time.time() - start) < s):
+	steerat(direction*radius, speed)
+	while ((time.time() - start) < time_needed):
 		try:
 			watcher.obstancle()
 		except AttributeError:
 			pass
-	steer(DEFAULT)
+	steer(DEFAULT, speed)
 
 def mainRoutine(target):
 	if target is None or len(target) != 2:
@@ -112,8 +111,7 @@ def mainRoutine(target):
 			start = time.time()
 			print "driving at", speed
 			drive(speed)			#drive for 5m
-			while abs(time.time() - start) < 1:	#while driving (ca. 3 s) save positions to tracker TODO: abs()???
-				# TODO: check for obstacles ... all the time! :)
+			while (time.time() - start) < 3:	#while driving (ca. 3 s) save positions to tracker
 				watcher.obstancle()
 				tracker.getPosition()
 			stop()
@@ -136,7 +134,7 @@ def mainRoutine(target):
 			print "not on track"
 			stop() # wuerde ich weglassen # ist aber noetig, sonst funktioniert correct_course ja nicht.
 			circle, line = navigator.navigate(target)
-			correct_course(*circle, watcher=watcher)
+			correct_course(*circle, speed=speed, watcher=watcher)
 			drive(speed)
 			driving = True
 		
