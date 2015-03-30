@@ -5,7 +5,7 @@ from math import *
 
 #to-do: Ueberlegen wie man aus Sackgassen und aehnlichen Fallen wieder rauskommt (Rueckwaerts fahren und so)
 #threshold in [m] gibt die Maximaldistanz zu beachtender Objekte aus.
-threshold = 2
+threshold = 1.5
 bullshitdist = 3
 lowpass = 0.2
 measrange = 6
