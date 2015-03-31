@@ -1,6 +1,8 @@
 #!/usr/bin/python
 
-from sympy import sqrt, sin, cos, atan, atan2, pi
+from __future__ import division
+from math import sqrt, sin, cos, atan, atan2, pi
+from sympy import sign
 
 EARTH_RADIUS = 6371000 # metres
 
@@ -8,12 +10,18 @@ def angle_to_north(start, end):
 	start_x, start_y = start
 	end_x, end_y = end
 	
-	angle = pi/2 - atan((end_y-start_y)/(end_x-start_x))
+	try:
+		angle = pi/2 - atan((end_y-start_y)/(end_x-start_x))
+	except ZeroDivisionError:
+		angle = pi/2 - (pi/2 * sign(end_y-start_y))
 	
-	if start_x < end_x:
+	if start_x <= end_x:
 		return angle
 	else:
 		return pi + angle
+
+def normalize(angle):
+	return angle%(2*pi)
 
 def distance(a, b):
 	x1, y1 = a
