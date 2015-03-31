@@ -2,9 +2,11 @@
 
 from __future__ import division
 from math import sqrt, sin, cos, atan, atan2, pi
-from sympy import sign
 
 EARTH_RADIUS = 6371000 # metres
+
+def sign(x):
+	return cmp(x, 0)
 
 def angle_to_north(start, end):
 	start_x, start_y = start
