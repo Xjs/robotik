@@ -2,6 +2,7 @@
 
 from gps import *
 from math import acos, atan, sqrt, pi
+from helpers import angle_to_north
 import threading
 gpsd = None
 
@@ -64,9 +65,5 @@ class GPSTracker:
 			end_x /= c_end
 			end_y /= c_end
 			
-			angle = pi/2.0 - atan((end_y-start_y)/(end_x-start_x))
-			
-			if start_x < end_x:
-				return angle
-			else:
-				return pi + angle				
+			return angle_to_north((start_x, start_y), (end_x, end_y))
+	
