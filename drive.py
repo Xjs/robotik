@@ -3,6 +3,8 @@
 import time
 from controlServos import *
 
+DEFAULT = -0.07
+
 def stop():
 	driveS(0)
 
@@ -26,6 +28,8 @@ def drivefor(m):
 #rad is the curve radius (min. -0.715 for full right, min. 0.715 for full left) 
 
 def steer_only(radius):
+	if radius == 0.0:
+		steerS(DEFAULT)
 	if (abs(radius) < 0.715):
 		return
 	else:
@@ -33,24 +37,13 @@ def steer_only(radius):
 		steerS(deg)
 		return
 
-def steer(rad):
-	if (abs(rad) < 0.715):
-		return
-	else:
-		deg = 0.715/rad
-		steerS(deg)
-		driveS(0.2)
-		return
+def steer(radius):
+	steer_only(radius)
+	drive(1.3)
 
-def steerat(rad, speed):
-	if (abs(rad) < 0.715):
-		return
-	else:
-		speedmessage = (speed/1.6)*0.2
-		deg = 0.715/rad
-		steerS(deg)
-		driveS(speedmessage)
-		return
+def steerat(radius, speed):
+	steer_only(radius)
+	drive(speed)
 	
 def stunt():
 	steerat(0.5, -0.6)

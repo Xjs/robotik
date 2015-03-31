@@ -12,7 +12,6 @@ from mgps.navigate import Navigator, THRESHOLD
 
 RADIUS = 0.715
 SPEED = 1.3
-DEFAULT = -0.07
 
 def angular_speed(radius, speed):
 	return (2*pi*radius)/speed
