@@ -5,7 +5,7 @@ from math import *
 
 #to-do: Ueberlegen wie man aus Sackgassen und aehnlichen Fallen wieder rauskommt (Rueckwaerts fahren und so)
 #threshold in [m] gibt die Maximaldistanz zu beachtender Objekte aus.
-threshold = 2
+threshold = 1.5
 bullshitdist = 3
 lowpass = 0.2
 measrange = 6
@@ -38,27 +38,33 @@ class Watcher():
 		alarmR = bullshitdist
 		
 		if (len(averagesL) > averageminimum):
-			if(averagesL[len(averagesL)-1] < threshold):
+			if(averagesL[-1] < threshold): #list[-1] is the Python way of getting the last element out of a list
+	
 			
-				for eins, zwei in zip(averagesL, averagesL[1:]):
-					if (eins < zwei):
+# This treats every increase in average as an outlier! But what if obstacle was only measured for the first time during measurements averaged in zwei?
+#				for eins, zwei in zip(averagesL, averagesL[1:]):
+#					if (eins < zwei):
+				for el1, el2, el3 in zip(averagesL, averagesL[1:], averagesL[2:]):
+					if(el1 < el2 and el2 > el3): #this checks for outliers more reliably
 						alarmL = bullshitdist
 						break
 					else:
-						alarmL = averagesL[len(averagesL)-1]
+						alarmL = averagesL[-1]  #not sure about this...
 			else:
 				print("Halber Bullshit")
 		else:
 			print("Bullshit hoch 10")
 			
 		if (len(averagesR) > averageminimum):
-			if(averagesR[len(averagesR)-1] < threshold):
-				for eins, zwei in zip(averagesR, averagesR[1:]):
-					if (eins < zwei):
+			if(averagesR[-1] < threshold):
+#				for eins, zwei in zip(averagesR, averagesR[1:]):
+#					if (eins < zwei):
+				for el1, el2, el3 in zip(averagesR, averagesR[1:], averagesR[2:]):
+					if(el1 < el2 and el2 > el3): #this checks for outliers more reliably
 						alarmR = bullshitdist
 						break
 					else:
-						alarmR = averagesR[len(averagesR)-1]
+						alarmR = averagesR[-1]
 			else:
 				print("Halber Bullshit")
 		else:
@@ -88,10 +94,10 @@ class Watcher():
 		
 		(L,R) = self.alarm()
 		
-		if (self.watchlistL[len(self.watchlistL)-1] > deaththreshold and self.watchlistR[len(self.watchlistR)-1] > deaththreshold):
+		if (self.watchlistL[-1] > deaththreshold and self.watchlistR[-1] > deaththreshold):
 		
 			while min(L,R) < bullshitdist:
-				if (self.watchlistL[len(self.watchlistL)-1] > deaththreshold and self.watchlistR[len(self.watchlistR)-1] > deaththreshold):
+				if (self.watchlistL[-1] > deaththreshold and self.watchlistR[-1] > deaththreshold):
 					if (L < R):
 						steer(-L*movefactor)
 						##Test
