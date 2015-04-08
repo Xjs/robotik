@@ -87,20 +87,20 @@ class Watcher():
 			while min(L,R) < bullshitdist:
 				if (self.watchlistL[-1] > deaththreshold and self.watchlistR[-1] > deaththreshold):
 					if (L < R):
-						if(L*movefactor > 0.715)
+						if(L*movefactor > 0.715):
 							steer(-L*movefactor)
 							##Test
 							print("Ich lenke nach Links" , L,-L*movefactor)
-						else
+						else:
 							steer(-0.715)
 							##Test
 							print("Ich lenke nach Links, maximal" , L, 0.715)
 					if (R < L):
-						if(R*movefactor > 0.715)
+						if(R*movefactor > 0.715):
 							steer(R*movefactor)
 							##Test
 							print("Ich lenke nach rechts" , R, R*movefactor)
-						else
+						else:
 							steer(0.715)
 							##Test
 							print("Ich lenke nach Rechts, maximal" , R, 0.715)
