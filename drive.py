@@ -12,13 +12,14 @@ def stop():
 def drive(speed):
 	speedmessage = (speed/1.6)*0.2
 	driveS(speedmessage)
-	
-def drivefor(m):
-	speed = 1.3
-	s = m/1.3
-	drive(1.3)
-	time.sleep(s)
-	stop()
+
+#is never actually used, I think	
+#def drivefor(m):
+#	speed = 1.3
+#	s = m/1.3
+#	drive(1.3)
+#	time.sleep(s)
+#	stop()
 
 	
 #method that steers by input of curve radius in m and drives at lowest speed
@@ -37,9 +38,11 @@ def steer_only(radius):
 		steerS(deg)
 		return
 
-def steer(radius):
-	steer_only(radius)
-	drive(1.3) #Should be erased: Since i used steer a lot and it should be independent from speed anyway. Also the minimum speed changes apparently so a fixed speed in steering isnt helpful.
+#def steer(radius):
+#	steer_only(radius)
+#	drive(1.3) #Should be erased: Since i used steer a lot and it should be independent from speed anyway. Also the minimum speed changes apparently so a fixed speed in steering isnt helpful.
+#agreed - this function is redundant if it is not used anywhere else - hence why I only uncommented it for now
+#I'll check the code for usage of steer()
 
 def steerat(radius, speed):
 	steer_only(radius)
