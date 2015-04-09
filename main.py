@@ -68,7 +68,7 @@ def correct_course(direction, angle, radius, speed=SPEED, watcher=None):
 	time_needed = amount_of_circle * time_for_circle
 	
 	start = time.time()
-	steerat(direction*radius, speed)
+	steer_at(direction*radius, speed)
 	while ((time.time() - start) < time_needed):
 		try:
 			watcher.obstancle()
