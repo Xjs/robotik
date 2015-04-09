@@ -74,7 +74,7 @@ def correct_course(direction, angle, radius, speed=SPEED, watcher=None):
 			watcher.obstancle()
 		except AttributeError:
 			pass
-	steer(DEFAULT, speed)
+	steer_at(DEFAULT, speed)
 
 def mainRoutine(target):
 	if target is None or len(target) != 2:
