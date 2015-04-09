@@ -44,7 +44,7 @@ def steer_only(radius):
 #agreed - this function is redundant if it is not used anywhere else - hence why I only uncommented it for now
 #I'll check the code for usage of steer()
 
-def steerat(radius, speed):
+def steer_at(radius, speed):
 	steer_only(radius)
 	drive(speed)
 	
