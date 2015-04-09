@@ -39,7 +39,7 @@ def steer_only(radius):
 
 def steer(radius):
 	steer_only(radius)
-	drive(1.3)
+	drive(1.3) #Should be erased: Since i used steer a lot and it should be independent from speed anyway. Also the minimum speed changes apparently so a fixed speed in steering isnt helpful.
 
 def steerat(radius, speed):
 	steer_only(radius)
