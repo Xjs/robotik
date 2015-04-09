@@ -21,7 +21,7 @@ from math import *
 #threshold in [m] gibt die Maximaldistanz zu beachtender Objekte aus.
 #threshold = 1.5
 #bullshitdist in [m] gibt ungefähre Grenze sinnvoller Messung an.
-#bullshitdist = 3
+bullshitdist = 1.5
 #lowpass gibt den maximalen Abstand an, den ein sich Objekt innerhalb zweier Messungen herankommen kann.
 #lowpass = 0.2
 #averageminimum gives the minimum amound of elements in the average-list for getting a useful result.
@@ -37,7 +37,7 @@ movefactor = 2
 deaththreshold = 0.3
 #bias gives the minimum difference the two sensors have to measure if an obstancle is believed to be on the other side than before. This is to avoid sudden changes, 
 #uncertainties and eventual death due to hitting obstancles right in front of the car.
-bias = 0.05
+bias = 0.03
 
 class Watcher():
 
@@ -88,20 +88,20 @@ class Watcher():
 				if (self.watchlistL[-1] > deaththreshold and self.watchlistR[-1] > deaththreshold):
 					if (L < R):
 						if(L*movefactor > 0.715):
-							steer(-L*movefactor)
+							steer_only(-L*movefactor)
 							##Test
 							print("Ich lenke nach Links" , L,-L*movefactor)
 						else:
-							steer(-0.715)
+							stee_only(-0.715)
 							##Test
 							print("Ich lenke nach Links, maximal" , L, 0.715)
 					if (R < L):
 						if(R*movefactor > 0.715):
-							steer(R*movefactor)
+							steer_only(R*movefactor)
 							##Test
 							print("Ich lenke nach rechts" , R, R*movefactor)
 						else:
-							steer(0.715)
+							steer_only(0.715)
 							##Test
 							print("Ich lenke nach Rechts, maximal" , R, 0.715)
 				else:
@@ -111,6 +111,7 @@ class Watcher():
 					print("Fahr nicht gegen ne Wand du Arsch")
 				
 				(L,R) = self.alarm()
+				self.watch()
 		else:
 			if (L < R):
 				steerat(0.715,-1)
