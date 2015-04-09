@@ -114,12 +114,12 @@ class Watcher():
 				self.watch()
 		else:
 			if (L < R):
-				steerat(0.715,-1)
+				steer_at(0.715,-1)
 				
 				##Test
 				print("Rückwärts nach links" , L,-L*movefactor)
 			if (R < L):
-				steerat(-0.715,-1)
+				steer_at(-0.715,-1)
 				print("Rückwärts nach rechts" , R, R*movefactor)
 				
 				
