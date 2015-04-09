@@ -86,13 +86,13 @@ class Watcher():
 		
 			while min(L,R) < bullshitdist:
 				if (self.watchlistL[-1] > deaththreshold and self.watchlistR[-1] > deaththreshold):
-					if (L < R):
+					if (L < R): #wenn die Distanz auf der linken Seite kleiner ist, ist das Hindernis doch auch auf der linken Seite. Muss dann nicht nach rechts gesteuert werden?
 						if(L*movefactor > 0.715):
 							steer_only(-L*movefactor)
 							##Test
 							print("Ich lenke nach Links" , L,-L*movefactor)
 						else:
-							stee_only(-0.715)
+							steer_only(-0.715)
 							##Test
 							print("Ich lenke nach Links, maximal" , L, 0.715)
 					if (R < L):
