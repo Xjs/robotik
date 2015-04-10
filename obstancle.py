@@ -21,7 +21,7 @@ from math import *
 #threshold in [m] gibt die Maximaldistanz zu beachtender Objekte aus.
 #threshold = 1.5
 #bullshitdist in [m] gibt ungefaere Grenze sinnvoller Messung an.
-bullshitdist = 3
+bullshitdist = 1.5
 #lowpass gibt den maximalen Abstand an, den ein sich Objekt innerhalb zweier Messungen herankommen kann.
 #lowpass = 0.2
 #averageminimum gives the minimum amound of elements in the average-list for getting a useful result.
