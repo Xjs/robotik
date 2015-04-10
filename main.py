@@ -11,7 +11,8 @@ from mgps import GPSTracker
 from mgps.navigate import Navigator, THRESHOLD
 
 RADIUS = 0.715
-SPEED = 1.3 #Testing nessesairy for determening minimum speed. seems to change a lot. Last time it was 3
+SPEED = 0.2 #Testing nessesairy for determening minimum speed. seems to change a lot. Last time it was 3
+line = None
 
 def angular_speed(radius, speed):
 	return (2*pi*radius)/speed
@@ -63,6 +64,7 @@ def is_at(current, target):
 		return approxDistance(current, target) < THRESHOLD
 	
 def correct_course(direction, angle, radius, speed=SPEED, watcher=None):
+	print("radius ", radius)
 	time_for_circle = 1/angular_speed(radius, speed)
 	amount_of_circle = angle/(2*pi)
 	time_needed = amount_of_circle * time_for_circle
@@ -110,7 +112,7 @@ def mainRoutine(target):
 			start = time.time()
 			print "driving at", speed
 			drive(speed)			#drive for 5m
-			while (time.time() - start) < 3:	#while driving (ca. 3 s) save positions to tracker
+			while (time.time() - start) < 2:	#while driving (ca. 3 s) save positions to tracker
 				watcher.obstancle()
 				tracker.getPosition()
 			stop()
@@ -133,7 +135,8 @@ def mainRoutine(target):
 			print "not on track"
 			stop() # wuerde ich weglassen # ist aber noetig, sonst funktioniert correct_course ja nicht.
 			circle, line = navigator.navigate(target)
-			correct_course(*circle, speed=speed, watcher=watcher)
+			#correct_course(*circle, speed=speed, watcher=watcher)
+			correct_course(circle[0], circle[1], circle[2], speed, watcher)
 			drive(speed)
 			driving = True
 		

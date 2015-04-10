@@ -47,7 +47,8 @@ class Navigator:
 		# switch lat/lon
 		me = (my_longitude, my_latitude)
 		orientation = self.tracker.getOrientation()
-		
+		print("my_long ", my_longitude)
+		print("my_lat ", my_latitude)
 		# TODO: Does the following always work, did I understand the trig correctly?
 		d_lat = to_deg(r*sin(orientation)/EARTH_RADIUS)
 		d_lon = to_deg(r*cos(orientation)/EARTH_RADIUS)/(cos(to_rad(my_latitude)))
@@ -65,7 +66,7 @@ class Navigator:
 			direction = CCW
 			midpoint = midpoint_b
 			fun = min
-		
+		print("midpoint ", midpoint)		
 		gamma = angle_to_north(midpoint, target_point)
 		alpha = acos(sqrt(d_lat**2+d_lon**2)/distance(midpoint, target_point))
 		epsilons = [normalize(gamma+alpha), normalize(gamma-alpha)]
@@ -74,17 +75,26 @@ class Navigator:
 		
 		candidates = []
 		
+		print("me ", me)
+		print("target ", target)
+		print("midpoint ", midpoint)
+		print("oriented_angles ", oriented_angles)
+		print("direction ", direction)
+
+		
 		for a, eps in zip(oriented_angles, epsilons):
-			if sign(a) == direction:
-				d_lat = -to_deg(r*sin(eps)/EARTH_RADIUS)
-				d_lon = -to_deg(r*cos(eps)/EARTH_RADIUS)/(cos(to_rad(my_latitude)))
-				midpoint_x, midpoint_y = midpoint
-				start_x = midpoint_x + d_lon
-				start_y = midpoint_y + d_lat
-				candidates.append((a, (start_y, start_x))) # TODO: start?
+			if sign(a) != direction:
+				a += direction*2*pi
+			d_lat = -to_deg(r*sin(eps)/EARTH_RADIUS)
+			d_lon = -to_deg(r*cos(eps)/EARTH_RADIUS)/(cos(to_rad(my_latitude)))
+			midpoint_x, midpoint_y = midpoint
+			start_x = midpoint_x + d_lon
+			start_y = midpoint_y + d_lat
+			candidates.append((a, (start_y, start_x))) # TODO: start?
+		#print("start ", start)
 		
 		angle, start = fun(candidates)
-		
+		print("start ", start)
 		return ((direction, angle, r), (start, target))
 	
 	def on_track(self, line):
@@ -92,4 +102,4 @@ class Navigator:
 		if line is None:
 			return False
 		else:
-			return (distance(Line(*line), self.tracker.getPosition()) < TRESHOLD)
+			return (distance(line, self.tracker.getPosition()) < 0.00001)# TRESHOLD)

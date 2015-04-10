@@ -26,9 +26,19 @@ def normalize(angle):
 	return angle%(2*pi)
 
 def distance(a, b):
-	x1, y1 = a
-	x2, y2 = b
-	return sqrt((x1-x2)**2 + (y1-y2)**2)
+	#x1, y1 = a
+	#x2, y2 = b
+	x1 = a[0]
+	y1 = a[1]
+	x2 = b[0]
+	y2 = b[1]
+	print("x1 = ", x1, "y1 = ", y1, "x2 = ", x2, "y2 = ", y2)
+	try:
+		re = sqrt((x1-x2)**2 + (y1-y2)**2)
+	except TypeError as e:
+		re = -1
+	#return sqrt((x1-x2)**2 + (y1-y2)**2)
+	return re
 
 def to_rad(arg):
 	return 2*pi/360 * arg
