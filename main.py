@@ -11,7 +11,7 @@ from mgps import GPSTracker
 from mgps.navigate import Navigator, THRESHOLD
 
 RADIUS = 0.715
-SPEED = 1.3
+SPEED = 1.3 #Testing nessesairy for determening minimum speed. seems to change a lot. Last time it was 3
 
 def angular_speed(radius, speed):
 	return (2*pi*radius)/speed
@@ -68,13 +68,13 @@ def correct_course(direction, angle, radius, speed=SPEED, watcher=None):
 	time_needed = amount_of_circle * time_for_circle
 	
 	start = time.time()
-	steerat(direction*radius, speed)
+	steer_at(direction*radius, speed)
 	while ((time.time() - start) < time_needed):
 		try:
 			watcher.obstancle()
 		except AttributeError:
 			pass
-	steer(DEFAULT, speed)
+	steer_at(DEFAULT, speed)
 
 def mainRoutine(target):
 	if target is None or len(target) != 2:

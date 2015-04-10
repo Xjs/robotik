@@ -5,11 +5,11 @@ servo1 = PWM.Servo()
 servo2 = PWM.Servo()
 
 BASE = 1500
-RIGHT = (1800-1500) 
-LEFT = (1170-1500)
+RIGHT = (1800-BASE) 
+LEFT = (1170-BASE)
 
-FORWARD = (1952-1500)
-BACK = (1000-1500)
+FORWARD = (1952-BASE)
+BACK = (1000-BASE)
 
 
 def steerS(deg):
