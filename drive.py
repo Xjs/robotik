@@ -28,7 +28,7 @@ def drive(speed):
 
 #rad is the curve radius (min. -0.715 for full right, min. 0.715 for full left) 
 
-def steer_only(radius):
+def steer(radius):
 	if radius == 0.0:
 		steerS(DEFAULT)
 	if (abs(radius) < 0.715):
