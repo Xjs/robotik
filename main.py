@@ -11,7 +11,8 @@ from mgps import GPSTracker
 from mgps.navigate import Navigator, THRESHOLD
 
 RADIUS = 0.715
-SPEED = 0.2 #Testing nessesairy for determening minimum speed. seems to change a lot. Last time it was 3
+#SPEED = 0.2 #Testing nessesairy for determening minimum speed. seems to change a lot. Last time it was 3
+SPEED = 1.3 # my (Jannis') experience: Everything works fine if you make absolutely sure that you send driveS(0) and nothing else at the time the drive controller is turned on. Sometimes a residual signal is still being sent from last time the program ran, in which case the drive controller thinks this is the zero position. If you make sure that you aren't sending anything greater or less than 0, all speeds are as measured.
 line = None
 
 def angular_speed(radius, speed):

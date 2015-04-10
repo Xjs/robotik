@@ -3,6 +3,7 @@
 from __future__ import division
 from math import sin, cos, sqrt, acos, atan2, pi
 from helpers import *
+from sympy import Line
 
 RADIUS = 0.5 # meters (this is a dummy value)
 
@@ -102,4 +103,5 @@ class Navigator:
 		if line is None:
 			return False
 		else:
-			return (distance(line, self.tracker.getPosition()) < 0.00001)# TRESHOLD)
+			line = Line(*line)
+			return line.distance(self.tracker.getPosition()) < THRESHOLD
