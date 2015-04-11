@@ -8,11 +8,13 @@ from math import sin, cos, acos, pi
 from obstancle import *
 from drive import *
 from mgps import GPSTracker
-from mgps.navigate import Navigator, THRESHOLD
+from mgps.navigate import Navigator
+from mgps.helpers import great_circle_distance
 
 RADIUS = 0.715
 #SPEED = 0.2 #Testing nessesairy for determening minimum speed. seems to change a lot. Last time it was 3
-SPEED = 1.3 # my (Jannis') experience: Everything works fine if you make absolutely sure that you send driveS(0) and nothing else at the time the drive controller is turned on. Sometimes a residual signal is still being sent from last time the program ran, in which case the drive controller thinks this is the zero position. If you make sure that you aren't sending anything greater or less than 0, all speeds are as measured.
+SPEED = 1.6 # my (Jannis') experience: Everything works fine if you make absolutely sure that you send driveS(0) and nothing else at the time the drive controller is turned on. Sometimes a residual signal is still being sent from last time the program ran, in which case the drive controller thinks this is the zero position. If you make sure that you aren't sending anything greater or less than 0, all speeds are as measured.
+STDEV = 10 # meters, deviation of GPS data
 line = None
 
 def angular_speed(radius, speed):
@@ -62,9 +64,10 @@ def is_at(current, target):
 	if current is None or target is None:
 		return False
 	else:
-		dis = approxDistance(current, target)
+		dis = great_circle_distance(current, target)
+		#dis = approxDistance(current, target)
 		print("approximated Distance = ", dis)
-		return dis < THRESHOLD
+		return dis < STDEV
 	
 def correct_course(direction, angle, radius, speed=SPEED, watcher=None):
 	print "this is correct_course!"
@@ -85,7 +88,7 @@ def correct_course(direction, angle, radius, speed=SPEED, watcher=None):
 			watcher.obstancle()
 		except AttributeError:
 			pass
-	steer_at(DEFAULT, speed)
+	steer_at(0, speed)
 
 def mainRoutine(target):
 	if target is None or len(target) != 2:
@@ -121,7 +124,7 @@ def mainRoutine(target):
 			start = time.time()
 			print "driving at", speed
 			drive(speed)			#drive for 5m
-			while (time.time() - start) < 2:	#while driving (ca. 3 s) save positions to tracker
+			while (time.time() - start) < 3:	#while driving (ca. 3 s) save positions to tracker
 				watcher.obstancle()
 				tracker.getPosition()
 			stop()
