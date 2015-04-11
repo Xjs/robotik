@@ -3,6 +3,8 @@
 from __future__ import division
 from math import sqrt, sin, cos, atan, atan2, pi
 
+DEBUG = True
+
 EARTH_RADIUS = 6371000 # metres
 
 def sign(x):
@@ -66,3 +68,6 @@ def oriented_angle(v1, v2):
 	det = v1[0]*v2[1] - v1[1]*v2[0]
 	return atan2(det, dot)
 
+def debug_print(*args):
+	if DEBUG:
+		print args
