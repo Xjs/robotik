@@ -62,7 +62,9 @@ def is_at(current, target):
 	if current is None or target is None:
 		return False
 	else:
-		return approxDistance(current, target) < THRESHOLD
+		dis = approxDistance(current, target)
+		print("approximated Distance = ", dis)
+		return dis < THRESHOLD
 	
 def correct_course(direction, angle, radius, speed=SPEED, watcher=None):
 	print("radius ", radius)
