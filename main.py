@@ -67,10 +67,16 @@ def is_at(current, target):
 		return dis < THRESHOLD
 	
 def correct_course(direction, angle, radius, speed=SPEED, watcher=None):
-	print("radius ", radius)
+	print "this is correct_course!"
+	print "direction = ", direction
+	print "angle = ", angle
+	print "radius = ", radius
 	time_for_circle = 1/angular_speed(radius, speed)
 	amount_of_circle = angle/(2*pi)
-	time_needed = amount_of_circle * time_for_circle
+	time_needed = abs(amount_of_circle * time_for_circle) # abs is important so the robot doesn't circle infinitely because it thinks it needs a negative amount of time
+	print "time_for_circle = ", time_for_circle
+	print "amount_of_circle = ", amount_of_circle
+	print "time_needed = ", time_needed
 	
 	start = time.time()
 	steer_at(direction*radius, speed)
@@ -138,8 +144,10 @@ def mainRoutine(target):
 			print "not on track"
 			stop() # wuerde ich weglassen # ist aber noetig, sonst funktioniert correct_course ja nicht.
 			circle, line = navigator.navigate(target)
-			#correct_course(*circle, speed=speed, watcher=watcher)
-			correct_course(circle[0], circle[1], circle[2], speed, watcher)
+			print "circle = ", circle
+			print "line = ", line
+			correct_course(*circle, speed=speed, watcher=watcher)
+			#correct_course(circle[0], circle[1], circle[2], speed, watcher)
 			drive(speed)
 			driving = True
 		
