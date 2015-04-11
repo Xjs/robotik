@@ -89,22 +89,22 @@ class Watcher():
                                 if (self.watchlistL[-1] > deaththreshold and self.watchlistR[-1] > deaththreshold):
                                         if (L < R):
                                                 if(L*movefactor > 0.715):
-                                                        steer(-L*movefactor)
-                                                        ##Test
-                                                        print("Ich lenke nach Links" , L,-L*movefactor)
+                                                       steer(-L*movefactor) #negative curve radius steers to the right
+												##Test
+												print("Ich lenke nach rechts" , L,-L*movefactor)
                                                 else:
                                                         steer(-0.715)
                                                         ##Test
-                                                        print("Ich lenke nach Links, maximal" , L, 0.715)
+                                                        print("Ich lenke nach rechts, maximal" , L, 0.715)
                                         if (R < L):
                                                 if(R*movefactor > 0.715):
                                                         steer(R*movefactor)
                                                         ##Test
-                                                        print("Ich lenke nach rechts" , R, R*movefactor)
+                                                        print("Ich lenke nach links" , R, R*movefactor)
                                                 else:
                                                         steer(0.715)
                                                         ##Test
-                                                        print("Ich lenke nach Rechts, maximal" , R, 0.715)
+                                                        print("Ich lenke nach links, maximal" , R, 0.715)
                                 else:
                                         drive(-2)
                                         time.sleep(0.5)
