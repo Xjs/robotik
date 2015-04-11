@@ -89,7 +89,6 @@ class Navigator:
 		debug_print("midpoint ", midpoint)
 		debug_print("oriented_angles ", oriented_angles)
 		debug_print("direction ", direction)
-
 		
 		for a, eps in zip(oriented_angles, epsilons):
 			if sign(a) != direction:
