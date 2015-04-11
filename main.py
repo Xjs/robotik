@@ -96,7 +96,7 @@ def mainRoutine(target):
 		print "no reasonable target given"
 		return
 		
-	tracker = GPSTracker()
+	tracker = GPSTracker(n_averages = 3, x_offset = 0, y_offset = 0, angle_offset = 0.0) # TODO: enter calibrated values
 	navigator = Navigator(tracker)
 	navigator.setRadius(RADIUS)
 	

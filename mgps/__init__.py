@@ -1,5 +1,6 @@
 #!/usr/bin/python
 
+from mgps.compass import *
 from gps import *
 from math import acos, atan, sqrt, pi
 from helpers import angle_to_north
@@ -24,7 +25,7 @@ class GPSPoller(threading.Thread):
 			gpsd.next()
 			
 class GPSTracker:
-	def __init__(self, n_averages=N_AVERAGES):	
+	def __init__(self, n_averages=N_AVERAGES, x_offset=0, y_offset=0, angle_offset=0.0):	
 		self.poller = GPSPoller()
 		self.latitude = -1
 		self.longitude = -1
@@ -32,6 +33,8 @@ class GPSTracker:
 		self.lastPositions = []
 		self.poller.start()
 		self.n_averages = n_averages
+		self.compass = Compass()
+		self.compass.set_offset(x_offset, y_offset, angle_offset)
 	
 	def getRawPosition(self):
 		if gpsd.fix.mode == MODE_NO_FIX:
@@ -63,6 +66,9 @@ class GPSTracker:
 		return position
 	
 	def getOrientation(self):
+		# TODO: calibrate compass
+		return self.compass.getOrientation()
+		
 		l = len(self.lastPositions)
 		if l < 2:
 			return -1

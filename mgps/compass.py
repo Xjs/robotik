@@ -82,6 +82,8 @@ class Compass:
 			
 			print "x offset: ", x_offset
 			print "y offset: ", y_offset
+			
+			return x_offset, y_offset
 	
 	def getOrientation(self):
 		self.initialize_compass()
@@ -94,3 +96,10 @@ class Compass:
 		bearing = 2*pi - bearing # we want the clockwise angle between north and the compass
 		
 		return bearing
+
+if __name__ == "__main__":
+	c = Compass()
+	x_offset, y_offset = c.calibrate() # muss nur einmal gemacht werden; währenddessen den Kompass einmal komplett rumdrehen
+	# am Ende stehen zwei Werte da, x_offset und y_offset
+	c.set_offset(x_offset, y_offset, 0.0) # das hier muss man immer ausfuehren, wenn man den Kompass initialisiert (also das Programm neu startet oder so)
+	c.getOrientation()*360/(2*pi) # hiermit kriegt man dann die Ausrichtung
