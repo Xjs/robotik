@@ -86,7 +86,7 @@ def correct_course(direction, angle, radius, speed=SPEED, watcher=None):
 	steer_at(direction*radius, speed)
 	while ((time.time() - start) < time_needed+CAL):
 		try:
-			watcher.obstancle()
+#			watcher.obstancle()
 		except AttributeError:
 			pass
 	steer_at(0, speed)
@@ -107,7 +107,7 @@ def mainRoutine(target):
 	steer(0)
 	
 	#Hindernis checken
-	#watcher.obstancle()
+	watcher.obstancle() #now threaded
 	# GPS-Position bekommen
 	curPos = None
 	while curPos is None:
@@ -128,7 +128,7 @@ def mainRoutine(target):
 			print "driving at", speed
 			drive(speed)			#drive for 5m
 			while (time.time() - start) < 3:	#while driving (ca. 3 s) save positions to tracker
-				watcher.obstancle()
+#				watcher.obstancle()
 				tracker.getPosition()
 			stop()
 			# renavigate
@@ -162,7 +162,7 @@ def mainRoutine(target):
 		# 	immer mal wieder Position updaten
 			print "driving"
 			curPos = tracker.getPosition()
-			watcher.obstancle()
+#			watcher.obstancle()
 	
 # Ausweich-Subroutine: Lenk solange vom Hindernis weg, bis es nicht mehr da ist
 # Wenn es nicht weggeht oder auf beiden Seiten eines gemessen wird… vielleicht rückwärts fahren?
