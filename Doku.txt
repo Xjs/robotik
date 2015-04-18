@@ -57,11 +57,36 @@ Materialien:
 - Jumper-Kabel
 - Platinen
 
+Funktionsweise:
+Die Funktionalität des Roboters lässt sich in vier größere Abschnitte gliedern: Die Hardware-Ansteuerung, welche Schnittstellen für die Verwendung der einzelnen Komponenten bietet, die Navigationsroutine, welche berechnet, wie der Roboter fahren muss um an die Zielkoordinaten zu gelangen, die Hinderniserkennung, welche die Daten der Ultraschallsensoren verarbeitet, Hindernisse erkennt und ihnen ausweicht und die Hauptroutine, welche alle Software-Komponenten miteinander verbindet.
+
+Hardware-Ansteuerung:
+Lenkservo und Fahrtmotor werden über den Raspberry Pi mithilfe von PWM-Signalen (Pulse-Width-Modulation) angesteuert. Hierbei gibt die Länge des gesendeten Signals an, wie die Motoren reagieren (siehe Exemplarische PWM-Signale und Reaktionen der Motoren).
+Das GPS-Modul ist über UART (Universal Asynchronous Receiver Transmitter; serielle Schnittstelle) mit dem Pi verbunden. Der eingebaute Kompass wird über I2C (Inter-Integrated Circuit; serieller Datenbus) angesteuert. Hierfür werden jeweils die designierten UART und I2C Pins des Raspberry Pis sowie die gpsd Library verwendet.
+Die Ultraschallsensoren werden über eine kleine Schaltung, die garantieren soll, dass der Pi keine Signale über 3.3V erhält, mit dem Minicomputer verbunden (siehe Schaltplan: Verbindung der Ultraschallsensoren mit dem Raspberry Pi). Um die Distanz zu messen, wird ein Ultraschallsignal gesendet (trig). Dann wird die Zeit gemessen, die vergangen ist bis das Signal zurückgeworfen wurde (echo). Die vergangene Zeit wird mit der Schallgeschwindigkeit (343 m/s) multipliziert und durch zwei geteilt, da die Strecke zwei mal zurückgelegt wurde. Somit erhält man die Distanz zum nächsten Objekt.
+
+Navigation:
+++++ Bitte ausführen ++++
+
+Hinderniserkennung:
+++++ Bitte ausführen ++++
+
+
+Hauptroutine:
+Zunächst wird überprüft, ob die über die Kommandozeile beim Starten des Programms eingegebenen Werte gültige Eingaben sind. Sind die Eingaben nicht von der Form "Zahl_1 Zahl_2", so beendet das Programm.
+Als nächstes muss auf ein GPS-Signal gewartet werden. Sobald dieses vorliegt wird in eine Endlosschleife eingetreten und zunächst überprüft, ob das Auto gerade stillsteht. 
+Ist dies der Fall, so steht es noch am Anfang seiner Reise. Daher muss zunächst die Orientierung bestimmt werden, damit der Navigator den Kurs berechnen kann.
+Dann wird überprüft ob das Auto bereits an seinem Ziel angekommen ist. Falls dem so ist, hält es an und das Programm bricht aus der Schleife aus.
+Ist es nicht an seinem Ziel, wird überprüft ob sich das Auto auf dem richtigen Kurs befindet und gegebenenfalls auf den korrekten Kurs gebracht.
+Die letzte if-Anweisung prüft, ob das Auto gerade fährt - und wenn dem so ist, speichert es seine Position in die Liste der letzten Positionen des GPSTrackers und prüft auf Hindernisse.
 
 Bilder des Roboters, Visualisierung o. Ä.
 - 3/4 Ansicht
 - Bild direkt von oben
-- Flussdiagramm
+- PWM-Bild „Exemplarische PWM-Signale und Reaktionen der Motoren“
+- Schaltplan: Verbindung der Ultraschallsensoren mit dem Raspberry Pi
+- Zustandsdiagramm main.py
+
 
 
 
@@ -240,7 +265,7 @@ Die main-Funktion bedient sich dreier Hilfsfunktionen:
 3. correct_course(direction, angle, radius, speed=SPEED, watcher=None) 
 - korrigiert den Kurs durch befahren einer Kreisbahn in der durch direction vorgegebenen Richtung. Die Länge der Kreisbahn ist durch angle und radius vorgegeben. Die Geschwindigkeit ist variabel, es wird jedoch empfohlen so langsam wie möglich zu fahren. Watcher ist ein Objekt der Klasse Watcher, welche für die Hinderniserkennung zuständig ist. Während der Kurskorrektur wird auf Hindernisse geprüft.
 
-Zunächst wird überprüft, ob das über die Kommandozeile beim Starten des Programms eingegebenen Werte gültige Eingaben sind:
+Zunächst wird überprüft, ob die über die Kommandozeile beim Starten des Programms eingegebenen Werte gültige Eingaben sind:
 
 if __name__ == '__main__':
 	try:
@@ -271,7 +296,7 @@ Die Klasse Navigator berechnet den Kurs, der angesteuert werden muss um das Auto
 Watcher implementiert die Überwachung der Strecke vor dem Auto sowie den Ausweichalgorithmus für etwaige Hindernisse.
 
 Als nächstes muss auf ein GPS-Signal gewartet werden. Sobald dieses vorliegt wird in eine Endlosschleife eingetreten und zunächst überprüft, ob das Auto gerade stillsteht. 
-Ist dies der Fall, so steht es noch am Anfang seiner Reise. Daher muss zunächst die Orientierung bestimmt werden, damit der Navigator den Kurs berechnen kann. Dazu muss die Liste der letzten Positionen des GPSTrackers gefüllt werden, also fährt das Auto zunächst ca. fünf Meter, füllt dabei über tracker.getPosition() die Liste und hält dann wieder an.
+Ist dies der Fall, so steht es noch am Anfang seiner Reise. Daher muss zunächst die Orientierung bestimmt werden, damit der Navigator den Kurs berechnen kann. Dazu muss die Liste der letzten Positionen des GPSTrackers gefüllt werden, also fährt das Auto zunächst ca. fünf Meter, füllt dabei über tracker.getPosition() die Liste und hält dann wieder an. Später wurde das GPS-Modul auf einer Stange befestigt, und damit wurde diese Weise der Orientierungsbestimmung überflüssig. In der letzten Version der Software wird die Orientierung über den Kompass abgefragt. 
 Fährt das Auto gerade, so wird lediglich die Variable driving auf True gesetzt.
 
 	while True:
@@ -280,7 +305,7 @@ Fährt das Auto gerade, so wird lediglich die Variable driving auf True gesetzt.
 			start = time.time()
 			print "driving at", speed
 			drive(speed)			#drive for 5m
-			while (time.time() - start) < 3:	#while driving (ca. 3 s) save 								 positions to tracker
+			while (time.time() - start) < 2:	#while driving (ca. 2 s) save 								 positions to tracker
 				watcher.obstancle()
 				tracker.getPosition()
 			stop()
