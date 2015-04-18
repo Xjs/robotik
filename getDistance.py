@@ -1,7 +1,7 @@
 import RPi.GPIO as GPIO
 import time
 
-MAX_DIST = 4.
+MAX_DIST = 1.5
 SPEED_OF_SOUND = 343.
 PULSE_WIDTH = 0.00001
 
@@ -42,3 +42,12 @@ def distance(sensor):
 		return -1.0
 	else:
 		return distance
+
+if __name__ == "__main__":
+	start = time.time()
+	for i in xrange(2):
+		distance(0)
+		distance(1)
+	end = time.time()
+	print end-start
+

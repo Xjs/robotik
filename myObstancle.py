@@ -44,15 +44,16 @@ class Watcher(threading.Thread):
 
 	def __init__(self):
 		threading.Thread.__init__(self)
+		self.running = True
 		self.watchlistL = []
 		self.watchlistR = []
 	
 	def alarm(self):
 		
-		alarmL=watchlistL[:1]
-		alarmR=watchlistR[:1]
+		alarmL=self.watchlistL[-1]
+		alarmR=self.watchlistR[-1]
 		
-		if((watchlistL[:1]-watchlistR[:1])*(watchlistL[:2]-watchlistR[:2]) < 0):
+		if((self.self.watchlistL[-1]-self.watchlistR[-1])*(self.watchlistL[-2]-self.watchlistR[-2]) < 0):
 			if(alarmL < alarmR):
 				alarmR = alarmR - bias
 			if(alarmL > alarmR):
@@ -74,8 +75,8 @@ class Watcher(threading.Thread):
 			if (len(self.watchlistR) > measrange):
 				self.watchlistR = self.watchlistR[1:]
 					
-	def obstancle(self):
-		while True:
+	def run(self):
+		while self.running:
 			self.watch()
 		
 			while(len(self.watchlistL) < measrange and len(self.watchlistR) < measrange):
@@ -90,7 +91,7 @@ class Watcher(threading.Thread):
 						if (L < R): #wenn die Distanz auf der linken Seite kleiner ist, ist das Hindernis doch auch auf der linken Seite. Muss dann nicht nach rechts gesteuert werden?
 							if(L*movefactor > 0.715):
 								steer(-L*movefactor) #negative curve radius steers to the right
-							##Test
+								##Test
 								print("Ich lenke nach rechts" , L,-L*movefactor)
 							else:
 								steer(-0.715)
@@ -126,4 +127,4 @@ class Watcher(threading.Thread):
 if __name__ == "__main__":
 	o = Watcher()
 	o.obstancle()
-				
+
