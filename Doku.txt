@@ -56,6 +56,7 @@ Materialien:
 - Schrauben
 - Jumper-Kabel
 - Platinen
+- Heiße Wurst
 
 Funktionsweise:
 Die Funktionalität des Roboters lässt sich in vier größere Abschnitte gliedern: Die Hardware-Ansteuerung, welche Schnittstellen für die Verwendung der einzelnen Komponenten bietet, die Navigationsroutine, welche berechnet, wie der Roboter fahren muss um an die Zielkoordinaten zu gelangen, die Hinderniserkennung, welche die Daten der Ultraschallsensoren verarbeitet, Hindernisse erkennt und ihnen ausweicht und die Hauptroutine, welche alle Software-Komponenten miteinander verbindet.
@@ -69,7 +70,19 @@ Navigation:
 ++++ Bitte ausführen ++++
 
 Hinderniserkennung:
-++++ Bitte ausführen ++++
+Die Hinderniserkennung basiert auf Ultraschallsensoren und lässt sich mit der elektronischen Einparkhilfe vieler Moderner Kfz vergleichen. Die Ultraschallsensoren senden jeweils einen kurzen Schallpuls und fangen ihn nach Reflexion an Hindernissen wieder auf. Aus der verstrichenen Zeit kann dann der Abstand berechnet werden.
+
+Ein einzelner Sensor gibt dem Programm lediglich eine Entfernung zurück. Damit lässt sich mit nur einem Sensor nicht feststellen, wo sich ein auftretendes Hindernis befindet. Zu diesem Zweck sind auf unserem Fahrzeug zwei Ultraschallsensoren nebeneinander angebracht, die leicht nach außen gerichtet sind und damit einen Bereich erfassen, der breiter ist als das Auto selbst. Taucht ein Hindernis vor dem Auto auf können die Datenpunkte beider Sensoren verglichen werden und das gleiche Hindernis wird auf dem einen Sensor weiter entfernt sein als auf dem anderen, womit sich für das Auto die Entscheidung für eine Ausweichrichtung ergibt.
+
+---------Hier am besten mein Bild aus der Präsentation-----------
+
+Das Auto weicht also immer in Richtung der größeren gemessenen Entfernung aus und um Lenkmanöver möglichst glatt ablaufen zu lassen ist der Lenkeinschlag abhängig von der gemessenen Entferung. Der Kurvenradius der Ausweichlenkung skaliert linear mit der Entfernung zum Hindernis. Dadurch wird einem weiter entferntes Objekt mit einem sehr kleinen Lenkeinschlag ausgewichen. Ein kleines Hindernis wird dadurch ohne große Störungen passiert und auch größeren Hindernissen weicht der Roboter effizienter und "natürlicher" aus, entsprechend der Alltagserfahrung im Straßenverkehr.
+
+Probleme, die die theoretische Perfektion der Routine unterlaufen waren und sind die Folgenden:
+
+- Stöhrungen durch Reflexionen am Boden, bei rauen Oberflächen bzw. unwegsamem Gelände: Indem man die Sensoren leicht nach oben richtet, hoch anbringt und die maximal betrachtete Distanz auf ein praktikables Minimum reduziert lässt sich dieses Problem für die Fahrt auf Straßen eliminieren.
+- Fehlerbreite der Sensoren: Vor allem bei frontal beobachteten Hindernissen lassen die Schwankungen der Entfernungsmessung keine sinnvolle Entscheidung der Ausweichrichtung zu. Da diese Entscheidung an sich wichtiger ist, als das die effizienteste Richtung erkannt wurde. Deshalb akzeptiert der Roboter bei einer getroffenen Entscheidung ein wechseln der Richtung nur, wenn der Unterschied der Entfernungs-Messungen einen gewissen Schwellwert überschreitet, die demm gemessenen Fehler der Sensoren entspricht.
+
 
 
 Hauptroutine:
