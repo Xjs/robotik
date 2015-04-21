@@ -15,7 +15,7 @@ Betreuer und Supervisor
 Prof. Dr. Katja Mombaur,  Gero Plettenberg 
 
 Aufgabenstellung des Projektes
-Das Ziel des Projektes ist es, ein Modellauto mittels eines Raspberry Pis und GPS-Moduls zu autonomer Geländefahrt zu befähigen. Nach Erhalt von entsprechenden Zielkoordinaten soll der Roboter mithilfe von Modul und externen Sensoren seinen Weg auch durch schwieriges Gelände finden und Hindernissen ausweichen können. 
+Das Ziel des Projektes ist es, ein Modellauto mittels eines Raspberry Pi und GPS-Moduls zu autonomer Fahrt zu befähigen. Nach Erhalt von entsprechenden Zielkoordinaten soll der Roboter mithilfe von Modul und externen Sensoren seinen Weg finden und Hindernissen ausweichen können.
 
 Ergebnis
 Hardware:
@@ -409,8 +409,8 @@ Windows: Es kann externe Software wie Putty verwendet werden.
 
 7. Login-Daten für den Raspberry Pi eingeben: 
 Benutzername: "pi". 
-Passwort: "raspberry". 
-ACHTUNG: Raspberry verwendet englisches Tastaturlayout!
+Passwort: "raspberry". #interessanterweise konnte ich 
+ACHTUNG: Raspberry verwendet englisches Tastaturlayout! #interessanterweise konnte ich das passwort fehlerfrei eingeben ohne dreauf zu achten. ist das vielleicht nur für die linuxvaiante so?
 
 8. Verbindung mit dem Internet: LAN-Kabel in zugehörige Buchse am Raspberry Pi stecken. In der Konsole den Befehl 
 „sudo dhclient eth0“ 
