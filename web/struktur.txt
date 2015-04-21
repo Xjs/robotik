@@ -1,0 +1,11 @@
+Start: Abstract, Bilder, Link zum Repository
+Ablauf des Projekts
+Komponenten:
+	Hardware
+	RasPi-Basis (WLAN-AP, gpsd, …)
+	Fahrt
+	Navigation
+	Hinderniserkennung
+Betriebsanleitung
+Quellen
+Nützliche Links zum Weiterarbeiten
