@@ -1,4 +1,5 @@
 Start: Abstract, Bilder, Link zum Repository
+Team
 Ablauf des Projekts
 Komponenten:
 	Hardware
