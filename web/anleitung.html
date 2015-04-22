@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <title>GPS auf Rädern</title>
+        <style type="text/css">
+			@import url('style.css');
+        </style>
+        <!--[if lte IE 7]>
+        <style type="text/css">
+        	
+        </style>
+        <![endif]-->
+    </head>
+    <body>
+	    <div class="container" id="header">
+			<div id="head">GPS auf Rädern</div>
+			<ul id="navigation">
+				<li><a href="index.html">Start</a></li>
+				<li><a href="team.html">Team</a></li>
+				<li><a href="ablauf.html">Ablauf</a></li>
+				<li><a href="anleitung.html">Betrieb</a></li>
+				<li><a href="probleme.html">Probleme</a></li>
+				<li><a href="ausblick.html">Ausblick</a></li>
+				<li><a href="quellen.html">Quellen</a></li>
+				<li><a href="links.html">Links</a></li>
+			</ul>
+		</div>
+		<div style="clear: all; height: 2.5em; margin-top: -4px; width: 100%;"></div>
+		<hr style="position: relative; top: -2px;" />
+		<div class="container" id="body">
+			<h1>Anleitung zur Inbetriebnahme</h1>
+			<ol>
+				<li>Batteriepacks aufladen (1,5 A; 20mV/C - Ampere-Wert ist variabel).</li>
+				<li>4000er Batteriepack mit Motorregler verbinden.</li>
+				<li>8 x 1,2V-Batteriepack mit Stromversorgung auf Plexiglasplatte verbinden.</li>
+				<li>
+					Zugriff auf Raspberry Pi vorbereiten:
+					<ul>
+						<li>Bildschirm über HDMI-Kabel mit Raspberry Pi verbinden, Maus und/oder Tastatur über USB anschließen.</li>
+						<li>ALTERNATIV: WLAN-Adapter in USB-Buchse belassen.</li>
+					</ul>
+				</li>
+				<li>Stromkabel an Raspberry Pi anschließen (entweder Micro-USB-Kabel der Stromversorgung oder externer Micro-USB-Adapter mit 5V, 1200mA). Warten bis Raspberry Pi gebootet hat (ACT-LED hat aufgehört zu blinken).</li>
+				<li>
+Falls 4.b. durchgeführt wurde:<br />
+Mit einem Rechner Laptop in das nun verfügbare WLAN-Netz "GPS-B" einloggen. <br />
+Passwort: "Rasputin". <br />
+Linux: Terminal öffnen. Folgenden Befehl eintippen: "ssh pi@192.168.7.1". <br />
+Windows: Es kann externe Software wie Putty verwendet werden.
+				</li>
+				<li>
+Login-Daten für den Raspberry Pi eingeben:<br />
+Benutzername: "pi". <br />
+Passwort: "raspberry". <br />
+ACHTUNG: Raspberry verwendet englisches Tastaturlayout!
+				</li>
+				<li>
+Verbindung mit dem Internet: LAN-Kabel in zugehörige Buchse am Raspberry Pi stecken. In der Konsole den Befehl 
+<pre>
+sudo dhclient eth0
+</pre>
+eintippen, um die LAN-Verbindung freizuschalten.
+				</li>
+				<li>Nun kann man das Labor mit dem Roboter verlassen.</li>
+				<li>Initialisierung des GPS-Sensors über: <pre>sudo ./init_gpsd.sh</pre></li>
+				<li>
+Initialisierung des Fahrtreglers über: 
+<pre>
+sudo python -i
+>>> from drive import *
+>>> drive(0)
+</pre>
+Danach können unterschiedliche Geschwindigkeiten und Steuergrade über die Funktionen drive() und steer() ausprobiert werden. (Zur Sicherheit sollte der Roboter bei diesem Schritt in der Luft gehalten werden.)
+				</li>
+				<li>
+Mit
+<pre>sudo python –i ultrasonicInit.py</pre>
+können die Ultraschallsensoren 500 Mal abgefragt werden. Es hat sich gezeigt, dass sie manchmal „warmlaufen“ müssen, daher dieses Skript. Mit dem Aufruf der Funktion init() im Python-Interpreter werden beide Sensoren jeweils ein Mal abgerufen und so kann getestet werden, ob sie erwartungsgemäß funktionieren.
+				</li>
+				<li>
+Nun kann der Roboter gestartet werden. Um die Hauptroutine zu starten und den Roboter zu vorgegebenen Koordinaten fahren zu lassen und dabei Hindernissen auszuweichen wird im Terminal Folgendes eingegeben: 
+<pre>
+sudo python main.py LATITUDE LONGITUDE 
+(z.B. sudo python main.py 49.418056 8.669710)
+</pre>
+				</li>
+			</ol>
+			<h2>Pinbelegung</h2>
+			<table>
+				<tr>
+					<th>Hardware</th>
+					<th>GPIO-Pin: physisch (BCM)</th>
+				</tr>
+				<tr>
+					<td>PWM für Lenkservo</td>
+					<td>11 (17)</td>
+				</tr>
+				<tr>
+					<td>PWM für Fahrtmotor</td>
+					<td>15 (22)</td>
+				</tr>
+				<tr>
+					<td>GPS: RX</td>
+					<td>8 (14)</td>
+				</tr>
+				<tr>
+					<td>GPS: TX</td>
+					<td>10 (15)</td>
+				</tr>
+				<tr>
+					<td>GPS: VCC</td>
+					<td>2</td>
+				</tr>
+				<tr>
+					<td>GPS: GND</td>
+					<td>6</td>
+				</tr>
+				<tr>
+					<td>USS links: trig</td>
+					<td>12 (18)</td>
+				</tr>
+				<tr>
+					<td>USS links: echo</td>
+					<td>18 (24)</td>
+				</tr>
+				<tr>
+					<td>USS rechts: trig</td>
+					<td>13 (27)</td>
+				</tr>
+				<tr>
+					<td>USS rechts: echo</td>
+					<td>16 (23)</td>
+				</tr>
+			</table>
+		</div>
+    </body>
+</html>

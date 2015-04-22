@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <title>GPS auf Rädern</title>
+        <style type="text/css">
+			@import url('style.css');
+        </style>
+        <!--[if lte IE 7]>
+        <style type="text/css">
+        	
+        </style>
+        <![endif]-->
+    </head>
+    <body>
+	    <div class="container" id="header">
+			<div id="head">GPS auf Rädern</div>
+			<ul id="navigation">
+				<li><a href="index.html">Start</a></li>
+				<li><a href="team.html">Team</a></li>
+				<li><a href="ablauf.html">Ablauf</a></li>
+				<li><a href="anleitung.html">Betrieb</a></li>
+				<li><a href="probleme.html">Probleme</a></li>
+				<li><a href="ausblick.html">Ausblick</a></li>
+				<li><a href="quellen.html">Quellen</a></li>
+				<li><a href="links.html">Links</a></li>
+			</ul>
+		</div>
+		<div style="clear: all; height: 2.5em; margin-top: -4px; width: 100%;"></div>
+		<hr style="position: relative; top: -2px;" />
+		<div class="container" id="body">
+			<h1>Aufgetretene Probleme</h1>
+			<h2>ATmega reagierte nicht auf Befehle des Raspberry Pis</h2>
+			<p>
+Beim Praxistest des Kommunikationsprotokolls musste festgestellt werden, dass es Komplikationen gab. Obwohl über UART durchaus die richtigen Nachrichten vom Pi gesendet wurden konnte der ATmega diese nicht richtig verarbeiten. Teilweise kamen nur Teile der Nachrichten an, teilweise die komplette Nachricht, allerdings reagierten die Auto-Servos nicht auf diese.
+			</p>
+			<p>
+Im Verlauf der Tests, trat ein Fehler bei dem ATmega auf, der den Chip ca. alle 20ms zum Abstürzen brachte. Nach dem Austauschen des ATmega-Chips trat dieses Problem erneut auf, sobald von einem der Rechner im Labor (links neben der Pi-Station) auf den Mikrocontroller geflasht wurde statt von einem Laptop des Teams.
+			</p>
+			<p>
+Aufgrund dieser Probleme, die in absehbarer Zeit nicht zu lösen waren, wurde die Entscheidung getroffen, den Roboter ohne ATmega zu betreiben.
+			</p>
+			<h2>Genauigkeit der GPS- und Kompassdaten</h2>
+			<p>
+Ein weiterer Stolperstein bestand in der richtigen Verwendung des GPS-Moduls bzw. des eingebauten Kompasses. Dieser lieferte unzuverlässige Daten und konnte daher nicht für die Bestimmung der Orientierung verwendet werden.
+			</p>
+			<p>
+Gelöst wurde dieses Problem durch das Montieren des GPS-Moduls auf einer Metallstange, welche ihn von dem Rest der Elektronik erhöhte, sodass der elektronische Kompass nicht durch die anderen Komponenten des Roboters gestört wurde.
+			</p>
+			<p>
+Ein weiteres Problem des GPS-Moduls ist, dass man es nicht zuverlässig über die externe Stromversorgung versorgen kann wie die Ultraschallsensoren. Daher wird es durch den Pi mit Strom versorgt.
+			</p>
+			<h2>Ultraschallsensoren sehen Geister</h2>
+			<p>
+Auch die Ultraschallsensoren zeigten beim Test des Roboters außerhalb des Labors konstant Hindernisse an, welche nicht vorhanden waren. Dies lag daran, dass die Sensoren einen Messwinkel von 15° haben – sowohl horizontal als auch vertikal. Somit wurde der Boden draußen als Hindernis erkannt, da er die Schallwellen zurückwarf. Dieses Problem war im Labor nicht aufgefallen, da das Linoleum die Ultraschallwellen nicht zurückwirft sondern reflektiert und so kein Hindernis wahrgenommen wird.
+			</p>
+			<p>
+Um dieses Problem zu lösen wurden die Sensoren durch ein Podest auf dem Roboter erhöht und leicht nach hinten geneigt. Auch die Rückrad-Federung des Autos wurde etwas weicher gestellt, sodass es hinten etwas weiter einsinkt als vorne.
+			</p>
+			<h2>Zusammenspiel Navigationsroutine und Hinderniserkennung</h2>
+			<p>
+Beim Testen der Navigationsroutine im Zusammenspiel mit der Hinderniserkennungsroutine fuhr der Roboter oft unnötige Kurven und kam so häufig vom Kurs ab. Außerdem wurden Hindernisse manchmal nicht erkannt, weshalb es zu Zusammenstößen kam. Es wurde festgestellt, dass der Roboter nicht schnell genug auf Hindernisse reagieren konnte, da bei der Verarbeitung der Ultraschallsignale eine kleine Verzögerung entsteht.
+			</p>
+			<p>
+Daher wurde die Geschwindigkeit des Autos heruntergesetzt und so funktioniert das Zusammenspiel aller Funktionalitäten einwandfrei.
+Möchte man mit höheren Geschwindigkeiten fahren, wäre es empfehlenswert bessere Sensoren zu verwenden und/oder den Hinderniserkennungscode (obstancle.py) zu optimieren. 
+			</p>
+		</div>
+    </body>
+</html>
