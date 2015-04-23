@@ -12,55 +12,18 @@ from mgps.navigate import Navigator
 from mgps.helpers import great_circle_distance
 
 RADIUS = 0.715
-#SPEED = 0.2 #Testing nessesairy for determening minimum speed. seems to change a lot. Last time it was 3
-SPEED = 1.5 # my (Jannis') experience: Everything works fine if you make absolutely sure that you send driveS(0) and nothing else at the time the drive controller is turned on. Sometimes a residual signal is still being sent from last time the program ran, in which case the drive controller thinks this is the zero position. If you make sure that you aren't sending anything greater or less than 0, all speeds are as measured.
-STDEV = 5 # meters, deviation of GPS data
+#TODO: this SPEED was the value for low battery - what did we use for a full battery?
+SPEED = 1.5 #for low battery: SPEED needs to be increased in order to drive 
+			#with the usual speed and guarantee correct course calculations
+#SPEED = ??? #for full battery
+STDEV = 5 #deviation of GPS data in meters
 line = None
 
 def angular_speed(radius, speed):
 	return speed/(2*pi*radius)
 
-#----------------
-#A simple function that takes two GPS coordinates as input and outputs the distance between them in meter. More approaches can be found here
-
-#private double gps2m(float lat_a, float lng_a, float lat_b, float lng_b) {
-#float pk = (float) (180/3.14169);
-
-#float a1 = lat_a / pk;
-#float a2 = lng_a / pk;
-#float b1 = lat_b / pk;
-#float b2 = lng_b / pk;
-
-#float t1 = FloatMath.cos(a1)*FloatMath.cos(a2)*FloatMath.cos(b1)*FloatMath.cos(b2);
-#float t2 = FloatMath.cos(a1)*FloatMath.sin(a2)*FloatMath.cos(b1)*FloatMath.sin(b2);
-#float t3 = FloatMath.sin(a1)*FloatMath.sin(b1);
-#double tt = Math.acos(t1 + t2 + t3);
-
-#return 6366000*tt;
-#}
-#--------------------
-
-def approxDistance(current, target):
-	a = current
-	b = target
-	
-	pk = 180/pi
-	
-	a_lat = a[0] / pk
-	a_long = a[1] / pk
-	
-	b_lat = b[0] / pk
-	b_long = b[1] / pk
-	
-	t1 = cos(a_lat)*cos(a_long)*cos(b_lat)*cos(b_long)
-	t2 = cos(a_lat)*sin(a_long)*cos(b_lat)*sin(b_long)
-	t3 = sin(a_lat)*sin(b_lat)
-	
-	tt = acos(t1 + t2 + t3)
-	
-	return 6366000*tt
-	
 def is_at(current, target):
+	#Returns the approximated distance between the current Position and the target.
 	if current is None or target is None:
 		return False
 	else:
@@ -69,14 +32,22 @@ def is_at(current, target):
 		return dis < STDEV
 	
 def correct_course(direction, angle, radius, speed=SPEED, watcher=None):
-	CAL = 1.2
+	#Calculates the path to be driven to correct the course and also executes
+	#the correction.
+	CAL = 1.2	#TODO: What exactly does CAL stand for? And how was the value obtained?
 	print "this is correct_course!"
 	print "direction = ", direction
 	print "angle = ", angle
 	print "radius = ", radius
-	time_for_circle = 1/angular_speed(0.64, 1.1) # TODO: these are measured values
+	#Calculate circular path to be driven.
+	time_for_circle = 1/angular_speed(0.64, 1.1) #Values given to angular_speed 
+												 #are finetuned by measuring.
 	amount_of_circle = angle/(2*pi)
-	time_needed = abs(amount_of_circle * time_for_circle) # abs is important so the robot doesn't circle infinitely because it thinks it needs a negative amount of time
+	time_needed = abs(amount_of_circle * time_for_circle) #abs is important so 
+														  #the robot doesn't circle 
+														  #infinitely because it 
+														  #thinks it needs a 
+														  #negative amount of time.
 	print "time_for_circle = ", time_for_circle
 	print "amount_of_circle = ", amount_of_circle
 	print "time_needed = ", time_needed
@@ -85,34 +56,38 @@ def correct_course(direction, angle, radius, speed=SPEED, watcher=None):
 	steer_at(direction*radius, 1.6)
 	while ((time.time() - start) < time_needed+CAL):
 		try:
-			#watcher.obstancle()
+			#watcher.obstancle()	-	Commented out because it sometimes causes 
+										#the robot to dodge obstacles not actually 
+										#present, leading to many unnecessary
+										#course corrections.
 			pass
 		except AttributeError:
 			pass
 	stop()
-	steer_at(0, speed)
+	steer_at(0, speed)		#Drive straight after course was corrected.
 
 def mainRoutine(target):
-	if target is None or len(target) != 2:
+	if target is None or len(target) != 2:	#Check if input is correct.
 		print "no reasonable target given"
 		return
 		
-	tracker = GPSTracker(n_averages = 3, x_offset = -112.0, y_offset = 51.0, angle_offset = 2*pi-83.088772881) # TODO: enter calibrated values
+	#Initialize needed objects.
+	#Offset values were obtained by calibration of the compass.
+	tracker = GPSTracker(n_averages = 3, x_offset = -112.0, y_offset = 51.0, angle_offset = 2*pi-83.088772881)
 	navigator = Navigator(tracker)
 	navigator.setRadius(RADIUS)
 	
 	watcher = Watcher()
 	
-	speed = SPEED # nicht ueberfluessig?! Vielleicht soll das Programm spaeter mal mit variabler Geschwindigkeit fahren koennen...
+	speed = SPEED
 
-	steer(0)
+	steer(0) #Make sure car steers ahead before beginning its journey.
 	
-	#Hindernis checken
-	watcher.obstancle() #now threaded
-	# GPS-Position bekommen
+	watcher.obstancle() #Check for obstacles.
+	
+	#Obtain GPS coordinates - if not accessible, wait for fix.
 	curPos = None
 	while curPos is None:
-		# no fix yet
 		print "no fix yet, sleeping a bit"
 		time.sleep(1)
 		curPos = tracker.getPosition()
@@ -122,35 +97,35 @@ def mainRoutine(target):
 	circle = None
 	
 	while True:
-		if is_at(curPos, tracker.getPosition()):	# car stands still
+		if is_at(curPos, tracker.getPosition()): 	#Car stands still
 			print "standing"
-			# Entweder: (Re-)Initialisierung – geradeausfahren, Orientierung holen (Kompass koennen wir glaub ich nicht vertrauen)
 			start = time.time()
 			print "driving at", speed
-			drive(speed)			#drive for 5m
-			while (time.time() - start) < 2:	#while driving (ca. 3 s) save positions to tracker
+			drive(speed)					 #Drive for a few meters.
+			while (time.time() - start) < 2: #While driving save positions to tracker.
 				watcher.obstancle()
 				tracker.getPosition()
 			stop()
-			# renavigate
+		
 			line = None
 		else:
 			driving = True
 		
-		# target reached
+		
 		if is_at(tracker.getPosition(), target):
 			print "target reached"
 			stop()
-			# stunt()
 			break
 		
-		# 	mit der Linie vergleichen, und wenn wir zu sehr abweichen, mal wieder von vorn
+		#Check if car is still on track - if not, renavigate.
 		if not navigator.on_track(line):
-			# wenn line noch nicht gesetzt ist (1. Mal), landen wir auch hier
-			# jetzt: kreiseln, bis man drauf zuschaut, anfangen, geradeaus zu fahren
+			#Going through the while-true-loop for the first time also reaches
+			#this code because line was not yet set.
 			print "not on track"
-			stop() # wuerde ich weglassen # ist aber noetig, sonst funktioniert correct_course ja nicht.
-			circle, line = navigator.navigate(target)
+			stop() 	#Necessary for correct course to work properly. 
+			circle, line = navigator.navigate(target)	#Calculate direction to
+														#be taken to reach
+														#target.
 			print "circle = ", circle
 			print "line = ", line
 			correct_course(*circle, speed=speed, watcher=watcher)
@@ -158,17 +133,19 @@ def mainRoutine(target):
 			driving = True
 		
 		if driving:
-		# Wir fahren noch, muessten eigentlich auf unserer Linie sein.
-		# 	immer mal wieder Position updaten
+		#Car is still driving - save position and check for obstacles. 
 			print "driving"
 			curPos = tracker.getPosition()
 			watcher.obstancle()
 	
-# Ausweich-Subroutine: Lenk solange vom Hindernis weg, bis es nicht mehr da ist
-# Wenn es nicht weggeht oder auf beiden Seiten eines gemessen wird… vielleicht rückwärts fahren?
 if __name__ == '__main__':
 	try:
-		target = tuple(float(i) for i in sys.argv[1:3])
-	except ValueError:
+		target = tuple(float(i) for i in sys.argv[1:3]) #Check if input is
+														#correct (i.e. if 
+														#numbers are given as
+														#command line arguments).
+	except ValueError:									#If not, set target to
+														#None and let the
+														#mainRoutine() handle it.
 		target = None
 	mainRoutine(target)

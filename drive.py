@@ -1,57 +1,47 @@
 #!/usr/bin/python
+# -*- coding: utf-8 -*-
 
 import time
 from controlServos import *
 
-DEFAULT = 0.07
+DEFAULT = 0.07	#It was observed that the steering servo's zero-position 
+				#(obtained by steerS(0.0)) has a small offset to the right.
+				#To set the wheels exactly straight ahead this default value
+				#was introduced.
 
-def stop():
+#The functions defined in this file serve the purpose of abstracting from the
+#close-to-hardware implementation of the same functionality in conrolServos.py.
+#For higher calculations these following functions are used, since they are
+#fitted for the usage of values in meters and seconds.
+
+def stop():		#halt the car
 	driveS(0)
 
-#drives at speed m/s
-def drive(speed):
+
+def drive(speed):	 #drive at speed in m/s
 	speedmessage = (speed/1.6)*0.2
 	driveS(speedmessage)
 
-#is never actually used, I think	
-#def drivefor(m):
-#	speed = 1.3
-#	s = m/1.3
-#	drive(1.3)
-#	time.sleep(s)
-#	stop()
-
 	
-#method that steers by input of curve radius in m and drives at lowest speed
-#curve radius is approximated by f(x) = 0.715 * 1/deg
-#deg is a float between -1.0 and 1.0 which is used by the atmega's steer method
-
-#rad is the curve radius (min. -0.715 for full right, min. 0.715 for full left) 
-
 def steer(radius):
-	if radius == 0.0:
+	#This method steers by input of a curve radius in m.
+	#The curve radius is approximated by f(x) = 0.715 * 1/deg - based on
+	#measurements.
+	#radius is the curve radius (min. -0.715 for full right, min. 0.715 for full left) 
+	
+	if radius == 0.0: 	#steer straight
 		steerS(DEFAULT)
-	if (abs(radius) < 0.715):
+		
+	if (abs(radius) < 0.715): 	#radius is invalid
 		return
 	else:
 		deg = 0.715/radius
 		steerS(deg)
 		return
 
-#def steer(radius):
-#	steer_only(radius)
-#	drive(1.3) #Should be erased: Since i used steer a lot and it should be independent from speed anyway. Also the minimum speed changes apparently so a fixed speed in steering isnt helpful.
-#agreed - this function is redundant if it is not used anywhere else - hence why I only uncommented it for now
-#I'll check the code for usage of steer()
-
-def steer_at(radius, speed):
+def steer_at(radius, speed): 	#combination of steer() and drive()
 	steer(radius)
 	drive(speed)
 	
-def stunt():
-	steerat(0.5, -0.6)
-	time.sleep(0.5)
-	steerat(0.0, 0.0)
-	
-if __name__ == "__main__":
+if __name__ == "__main__": 		#can be used to initialize the cruise control
 	drive(0.0)
