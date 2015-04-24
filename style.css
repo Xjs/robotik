@@ -2,6 +2,10 @@
 	width: 80%;
 	margin: auto;
 }
+.gray
+{
+	color: gray;
+}
 hr {
 	display: block;
 	clear: all;
