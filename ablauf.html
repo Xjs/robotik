@@ -169,24 +169,72 @@ Ist es nicht an seinem Ziel, wird überprüft ob sich das Auto auf dem richtigen
 Die letzte if-Anweisung prüft, ob das Auto gerade fährt - und wenn dem so ist, speichert es seine Position in die Liste der letzten Positionen des GPSTrackers und prüft auf Hindernisse.
 			</p>
 			<h2>Navigationsroutine</h2>
-			<p>Die Navigationsroutine umschließt drei Dateien:</p>
-			<h3>__init__.py</h3>
+			<h3>GPS- und Kompass-Tracking</h3>
 			<p>
-enthält Klassendefinitionen für GPSPoller und GPSTracker, die nötig sind, um das GPS-Modul anzusteuern.
-			</p>
-			<h3>helpers.py</h3>
-			<p>
-enthält Hilfsfunktionen für die Berechnungen des Kurses.
-			</p>
-			<h3>navigate.py</h3>
-			<p>
-enthält die Klassendefinition für Navigator, welche für die Berechnung des Kurses zuständig ist.
+Die erste wesentliche Komponente des Navigationscodes ist das GPS-Tracking. Die Klasse <em>GPSPoller</em> stellt die Verbindung zu einem auf dem Raspberry Pi laufenden <em>gpsd</em>-Prozess her und fragt im Hintergrund stets Daten ab. Die Klasse <em>Compass</em> wird verwendet, um die I2C-Daten des angeschlossenen Kompasses auszulesen und auszuwerten; sie stellt auch Kalibrierungsfunktionen bereit. Ein Objekt der <em>GPSTracker</em>-Klasse legt intern einen GPSPoller und einen Compass an und ermöglicht es so, zu jedem Zeitpunkt die Methoden <em>getPosition</em> und <em>getOrientation</em> bereitzustellen, die Ort und Richtung des GPS-Autos zurückgeben.
 			</p>
 			<p>
-Die navigate()-Funktion ist das Herzstück der Navigationsroutine.
-Nachdem für die aktuelle Position sowie die Zielkoordinate die jeweiligen Längen- und Breitengrade extrahiert wurden, wird die Orientierung des Autos bestimmt.
+Kontakt zu gpsd und Speicherung der Daten erfolgt in einem eigenen Thread:
 			</p>
-			<!--TODO mehr-->
+			<pre>
+class GPSPoller(threading.Thread):
+	def __init__(self):
+		threading.Thread.__init__(self)
+		global gpsd
+		gpsd = gps(mode = WATCH_ENABLE)
+		self.current_value = None
+		self.running = True
+	
+	def run(self):
+		global gpsd
+		while self.running:
+			gpsd.next()
+			</pre>
+			<p>
+<em>getPosition</em> bildet einen Mittelwert über die letzten drei Längen- und Breitengradwerte, die von gpsd direkt zurückgegeben werden, mit einem zeitlichen Abstand von 100&nbsp;ms. Dieser Mittelwert wird in der Form (latitude, longitude) zurückgegeben.
+			</p>
+			<h3>Details zum Kompass</h3>
+			<p>
+Die <em>Compass</em>-Klasse muss zunächst auf I2C-Ebene mit dem Kompassmodul kommunizieren. Dazu wurden die Hilfsfunktionen read_byte, read_word, read_word_2c und write_byte geschrieben.
+			</p>
+			<p>
+Die Daten, die das Kompassmodul liefert, geben gewissermaßen die Position (x, y, z) der Spitze einer Kompassnadel an. Um hieraus eine Himmelsrichtung ermitteln zu können, wird das Modul einmal um 360 Grad gedreht, während kontinuierlich Samples genommen werden. Diese werden genutzt, um den Mittelpunkt einzustellen. Dann kann mit dem Arkustangens der Winkel zu Norden ermittelt werden. Weiter muß noch eine Eichung auf Norden durchgeführt werden. Hieraus ergeben sich die Werte x_offset, y_offset und angle_offset, die sich nach der Kalibrierung ergeben und zur Eichung des Kompasses verwendet werden.
+			</p>
+			<p>
+<em>getOrientation</em> liest die Daten aus, errechnet trigonometrisch den Winkel und normalisiert ihn so, dass stets der Winkel im Uhrzeigersin zwischen Norden und der Kompassausrichtung angegeben wird.
+			</p>
+			<h3>Navigation</h3>
+			<p>
+Die Klasse <em>Navigator</em> nutzt ein GPSTracker-Objekt zur Positionsbestimmung und stellt die Funktionen <em>navigate</em> und <em>on_track</em> bereit.
+			</p>
+			<p>
+Die Navigation funktioniert prinzipiell folgendermaßen: Ausgehend von der Position und Orientierung des Roboters und eines Kurvenradius, der im Voraus eingestellt wird, werden zwei Kreise betrachtet, die der Roboter bei entsprechendem Lenkeinschlag nach links oder rechts fahren kann. Es wird dann der Kreis ausgewählt, dessen Mittelpunkt näher am angesteuerten Zielpunkt liegt, und Tangenten an diesen Kreis durch den Zielpunkt gelegt. Diejenige Tangente, die auf dem Kreisbogen näher am Roboter liegt, wird dann angestrebt.
+			</p>
+			<p>
+Zu beachten ist bei der ganzen Berechnung, daß wir direkt auf GPS-Daten, d. h. Längen- und Breitengradangaben arbeiten. Die geometrische Berechnung erfolgt im Wesentlichen kartesisch, d. h. die Genauigkeit ist nur bei vergleichsweise geringen Distanzen (einige zehn Kilometer sollten kein Problem sein) gewährleistet. Um trotzdem keinen Unsinn zu berechnen, werden die Mittelpunkte der Kreise exakt anhand des Breitengrades berechnet.
+			</p>
+			<p>
+<em>navigate</em> gibt nach dieser Berechnung folgenden Datensatz zurück:
+			</p>
+			<ul>
+				<li>Einen Kreisbogen, beschrieben durch:
+					<ul>
+						<li>Drehrichtung (1 für Gegenuhrzeigersinn, -1 für Uhrzeigersinn)</li>
+						<li>Winkel auf der Kreisbahn (0-2π)</li>
+						<li>Kurvenradius, d. h. Radius des Kreises, von dessen Bahn ein Stück abgefahren wird</li>
+					</ul>
+				</li>
+				<li>Eine gerade Linie, eben die Tangente durch den Zielpunkt, beschrieben durch:
+					<ul>
+						<li>Startpunkt</li>
+						<li>Endpunkt</li>
+					</ul>
+				</li>
+			</ul>
+			<p>
+Die Methode <em>on_track</em> erhält als Argument eine Tangente, wie als zweiter Rückgabewert von <em>navigate</em> erhalten, und prüft, ob der aktuelle Standpunkt nicht weiter als ein gewisser Schwellenwert (0.00001 hat sich als praktikabel erwiesen) von ebendieser Tangenten entfernt ist. Wenn die Entfernung kleiner als das ist, befindet sich das Auto noch auf dieser Linie, ist also <em>on track</em>, es wird True zurückgegeben. Wenn sie größer ist, wird False zurückgegeben – es gab wohl aus irgendeinem Grund (Hindernisse, Ungenauigkeit der GPS-Daten, Ungenauigkeit im Abfahren der Kreisbahn) eine Abweichung vom navigierten Pfad, woraufhin die Hauptroutine die Navigation erneut starten wird.
+			</p>
+			<!-- TODO: Graphik -->
 			<h2>Hinderniserkennungsroutine</h2>
 			<p>
 Die Hinderniserkennungsroutine wird durch die Klasse Watcher umgesetzt, welche folgenden Funktionen enthält:
