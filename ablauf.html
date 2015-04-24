@@ -235,6 +235,21 @@ Zu beachten ist bei der ganzen Berechnung, daß wir direkt auf GPS-Daten, d. h. 
 Die Methode <em>on_track</em> erhält als Argument eine Tangente, wie als zweiter Rückgabewert von <em>navigate</em> erhalten, und prüft, ob der aktuelle Standpunkt nicht weiter als ein gewisser Schwellenwert (0.00001 hat sich als praktikabel erwiesen) von ebendieser Tangenten entfernt ist. Wenn die Entfernung kleiner als das ist, befindet sich das Auto noch auf dieser Linie, ist also <em>on track</em>, es wird True zurückgegeben. Wenn sie größer ist, wird False zurückgegeben – es gab wohl aus irgendeinem Grund (Hindernisse, Ungenauigkeit der GPS-Daten, Ungenauigkeit im Abfahren der Kreisbahn) eine Abweichung vom navigierten Pfad, woraufhin die Hauptroutine die Navigation erneut starten wird.
 			</p>
 			<!-- TODO: Graphik -->
+			<h3>Kleine Helferlein</h3>
+			<p>
+Die Datei <em>helpers.py</em> enthält einige Hilfsfunktionen.
+			</p>
+			<ul>
+				<li><b>sign(x)</b>: Gibt das Vorzeichen der Zahl x zurück</li>
+				<li><b>angle_to_north(start, end)</b>: start und end sind jeweils Tupel (x, y) und definieren so eine Strecke. angle_to_north gibt den Winkel im Uhrzeigersinn zu Norden (sprich der y-Achse) zurück.</li>
+				<li><b>normalize(angle)</b>: Normalisiert einen Winkel in Radian auf [0..2π]</li>
+				<li><b>distance(a, b)</b>: Errechnet den kartesischen Abstand zwischen den Punkten a und b</li>
+				<li><b>to_rad</b>, <b>to_deg</b>, <b>point_to_rad</b>: Konvertieren zwischen Grad und Radian</li>
+				<li><b>great_circle_distance(p1, p2)</b>: Errechnet eine geometrisch korrekte Distanz in Metern zwischen zwei GPS-Koordinaten p1 und p2, basierend auf der <a href="http://www.movable-type.co.uk/scripts/latlong.html">gleichrechtwinkligen Näherung</a> (alternativ auch möglich und programmiert: mit der Haversine-Formel – aber der Genauigkeitsgewinn war nicht den Rechenaufwand wert).</li>
+				<li><b>distance_to_angular_distance</b>, <b>angular_distance_to_distance</b>: Konvertieren Abstände von GPS-Koordinaten zu Abständen in Metern</li>
+				<li><b>oriented_angle(v1, v2)</b>: berechnet den Winkel zwischen den Vektoren v1 und v2, wobei der Drehsinn von v1 nach v2 geht.</li>
+				<li><b>debug_print</b>: Gibt eine Ausgabe dann und nur dann, wenn die globale Variable DEBUG nicht auf False gesetzt ist.</li>
+			</ul>
 			<h2>Hinderniserkennungsroutine</h2>
 			<p>
 Die Hinderniserkennungsroutine wird durch die Klasse Watcher umgesetzt, welche folgenden Funktionen enthält:
