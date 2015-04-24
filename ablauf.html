@@ -84,7 +84,7 @@ Da jedoch auch die Verbindung zwischen Raspberry und ATmega über UART hergestel
 Der Mikrocontroller wurde aus dem Aufbau entfernt, die Fahrfunktionen mussten auf dem Raspberry Pi in Python neu implementiert werden, und die PWM-Signale, die der ATmega zuvor generiert hatte, mussten nun durch den Pi erzeugt werden. Für letzeres wurde die RPi.GPIO Library verwendet, welche Funktionen für die Generierung von PWM-Signalen bereitstellt.
 Außerdem mussten die beiden Ultraschallsensoren mit dem Raspberry verbunden werden. Dies geschah über eine kleine selbstverlötete Platine, welche sicherstellen soll, dass die fließenden Spannungen nicht zu hoch sind (die Ultraschallsensoren arbeiten mit 5V und senden auch Signale in dieser Höhe, die GPIO-Pins des Raspberrys dürfen jedoch nicht mehr als 3.3V erhalten).
 			</p>
-			<img src="ultraschallsensoren.png" alt="Schaltplan Ultraschallsensoren" />
+			<img src="pictures/ultraschallsensoren.png" style="width: 500px;" alt="Schaltplan Ultraschallsensoren" />
 			<p>
 Um alle Teile des Roboters mit Strom zu versorgen, werden zwei Batterie-Packs verwendet: das eine liefert Strom für den Motorregler und die Motoren, das zweite versorgt den Raspberry Pi, die Ultraschallsensoren sowie das GPS-Modul. Damit der Pi nicht zu viel Spannung erhält, wurde eine Spannungsregler-Schaltung gelötet.
 			</p>
@@ -99,7 +99,7 @@ Der Programmcode lässt sich in vier größere Sinnabschnitte gliedern:
 				<li>Hardwarenaher Code, welcher Daten von Sensoren verarbeitet und die Motoren steuert</li>
 			</ul>
 			<h2>Hauptroutine</h2>
-			<img src="flussdiagramm.png" alt="Flussdiagramm der main-Funktion" />
+			<img src="pictures/flussdiagramm.png" alt="Flussdiagramm der main-Funktion" />
 			<p>Die main-Funktion bedient sich zweier Hilfsfunktionen:</p>
 			<h3>is_at(current, target)</h3>
 			<p>
