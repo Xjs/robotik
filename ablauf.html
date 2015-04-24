@@ -71,7 +71,7 @@ Die ersten Aufgaben bestanden darin, sich mit der Elektronik vertraut zu machen 
 Servomotoren werden über PWM (Pulse-Width-Modulation) Signale gesteuert. Hierbei gibt die Länge des Signals vor, wie sich der Motor bewegt. Etwa alle 20 ms erwartet der Motor einen Input, dieser ist typischerweise zwischen 1 und 2 ms lang.
 Um die genauen Werte für den Motor und den Lenkservo des Autos zu bestimmen, wurden die von der Fernbedienung übermittelten Signale mit einem Oszilloskop gemessen.
 			</p>
-			<p><em>Messergebnisse</em></p><!--TODO-->
+			<img src="pictures/servos.png" alt="Messergebnisse der PWM-Signale" />
 			<p>
 Die oben dargestellten Messergebnisse wurden dann in Code gegossen, um abstrahierende Fahrfunktionen zu implementieren. 
 Diese wurden zunächst auf dem ATmega in der Programmiersprache C unter Verwendung des Basis-Codes des Robotiklabors umgesetzt und funktionierten einwandfrei.
@@ -84,7 +84,7 @@ Da jedoch auch die Verbindung zwischen Raspberry und ATmega über UART hergestel
 Der Mikrocontroller wurde aus dem Aufbau entfernt, die Fahrfunktionen mussten auf dem Raspberry Pi in Python neu implementiert werden, und die PWM-Signale, die der ATmega zuvor generiert hatte, mussten nun durch den Pi erzeugt werden. Für letzeres wurde die RPi.GPIO Library verwendet, welche Funktionen für die Generierung von PWM-Signalen bereitstellt.
 Außerdem mussten die beiden Ultraschallsensoren mit dem Raspberry verbunden werden. Dies geschah über eine kleine selbstverlötete Platine, welche sicherstellen soll, dass die fließenden Spannungen nicht zu hoch sind (die Ultraschallsensoren arbeiten mit 5V und senden auch Signale in dieser Höhe, die GPIO-Pins des Raspberrys dürfen jedoch nicht mehr als 3.3V erhalten).
 			</p>
-			<p><em>Schaltplan</em></p><!--TODO-->
+			<img src="ultraschallsensoren.png" alt="Schaltplan Ultraschallsensoren" />
 			<p>
 Um alle Teile des Roboters mit Strom zu versorgen, werden zwei Batterie-Packs verwendet: das eine liefert Strom für den Motorregler und die Motoren, das zweite versorgt den Raspberry Pi, die Ultraschallsensoren sowie das GPS-Modul. Damit der Pi nicht zu viel Spannung erhält, wurde eine Spannungsregler-Schaltung gelötet.
 			</p>
@@ -99,7 +99,7 @@ Der Programmcode lässt sich in vier größere Sinnabschnitte gliedern:
 				<li>Hardwarenaher Code, welcher Daten von Sensoren verarbeitet und die Motoren steuert</li>
 			</ul>
 			<h2>Hauptroutine</h2>
-			<p><em>Überblick</em></p><!--TODO-->
+			<img src="flussdiagramm.png" alt="Flussdiagramm der main-Funktion" />
 			<p>Die main-Funktion bedient sich zweier Hilfsfunktionen:</p>
 			<h3>is_at(current, target)</h3>
 			<p>
@@ -234,7 +234,7 @@ Zu beachten ist bei der ganzen Berechnung, daß wir direkt auf GPS-Daten, d. h. 
 			<p>
 Die Methode <em>on_track</em> erhält als Argument eine Tangente, wie als zweiter Rückgabewert von <em>navigate</em> erhalten, und prüft, ob der aktuelle Standpunkt nicht weiter als ein gewisser Schwellenwert (0.00001 hat sich als praktikabel erwiesen) von ebendieser Tangenten entfernt ist. Wenn die Entfernung kleiner als das ist, befindet sich das Auto noch auf dieser Linie, ist also <em>on track</em>, es wird True zurückgegeben. Wenn sie größer ist, wird False zurückgegeben – es gab wohl aus irgendeinem Grund (Hindernisse, Ungenauigkeit der GPS-Daten, Ungenauigkeit im Abfahren der Kreisbahn) eine Abweichung vom navigierten Pfad, woraufhin die Hauptroutine die Navigation erneut starten wird.
 			</p>
-			<!-- TODO: Graphik -->
+			<img src="pictures/navigation.png" alt="Beispielhafte Navigation" />
 			<h3>Kleine Helferlein</h3>
 			<p>
 Die Datei <em>helpers.py</em> enthält einige Hilfsfunktionen.
