@@ -326,8 +326,15 @@ Alarm gibt die zuletzt gemessenen Abstände zu Objekten auf der linken und recht
 fragt die Ultraschallsensoren ab und füllt jeweils eine Liste für jeden Sensor mit Messwerten.
 			</p>
 			<h3>obstancle</h3>
+			<pre>
+			if (R > L):
+						if(R*movefactor > 0.715):
+							steer(R*movefactor)
+						else:
+							steer(0.715)
+			</pre>
 			<p>
-Hauptroutine der Hinderniserkennung. Fragt über alarm 
+Hauptroutine der Hinderniserkennung. Fragt über alarm die Entfernungen zu Hindernissen ab und reagiert entsprechend. Beispielhaft ist hier der Code für die Lenkung nach Rechts dargestellt. Ist die Distanz zum rechten Sensor (R) größer als zu linken (L) gibt obstancle den Befehl die Räder nach links einzuschlagen. Wichtig ist in diesem Fall die Skalierung mit der Entfernung. Weit entfernte Hindernisse werden deshalb mit nur minimaler Änderung umfahren und auch bei einem großen Ausweichmanöver sorgt die Routine dafür, dass das Objekt ohne ruckartige Manöver entsprechend dem Verhalten eines echten Autofahrers umfährt. Simple but effective!
 			</p>
 			<h2>Hardwarenaher Code</h2>
 			<p>
