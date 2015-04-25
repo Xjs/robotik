@@ -29,6 +29,9 @@
 		<div style="clear: all; height: 2.5em; margin-top: -4px; width: 100%;"></div>
 		<hr style="position: relative; top: -2px;" />
 		<div class="container" id="body">
+			<p>
+Am Ende des Projektes steht ein funktionsfähiger Roboter, welcher der Aufgabenstellung entsprechend autonom seinen Weg zu eingegebenen GPS-Koordinaten findet ohne dabei gegen Hindernisse zu fahren.
+			</p>
 			<h1>1. Planung</h1>
 			<p>
 Nach intensiver Recherche und ausführlichen Teambesprechungen wurde die Entscheidung gefällt, den Roboter so modular wie möglich aufzubauen:
@@ -144,16 +147,16 @@ Fährt das Auto gerade, so wird lediglich die Variable driving auf True gesetzt.
 			</p>
 			<pre>
 	while True:
-		if is_at(curPos, tracker.getPosition()): 	#Car stands still
+		if is_at(curPos, tracker.getPosition()):	# car stands still
 			print "standing"
 			start = time.time()
 			print "driving at", speed
-			drive(speed)					 #Drive for a few meters.
-			while (time.time() - start) < 2: #While driving save positions to tracker.
+			drive(speed)			#drive for 5m
+			while (time.time() - start) < 2:	#while driving (ca. 2 s) save 								 positions to tracker
 				watcher.obstancle()
 				tracker.getPosition()
 			stop()
-		
+			# renavigate
 			line = None
 		else:
 			driving = True
@@ -252,8 +255,21 @@ Die Datei <em>helpers.py</em> enthält einige Hilfsfunktionen.
 Die Hinderniserkennungsroutine wird durch die Klasse Watcher umgesetzt, welche folgenden Funktionen enthält:
 			</p>
 			<h3>alarm</h3>
+			<pre>
+def alarm(self):
+		alarmL=self.watchlistL[-1]
+		alarmR=self.watchlistR[-1]
+		
+		if((self.watchlistL[-1]-self.watchlistR[-1])*(self.watchlistL[-2]-self.watchlistR[-2]) < 0):
+			if(alarmL < alarmR):
+				alarmR = alarmR - bias
+			if(alarmL > alarmR):
+				alarmL = alarmL - bias
+		
+		return (alarmL, alarmR)
+			</pre>
 			<p>
-gibt die zuletzt gemessenen Abstände zu Objekten auf der linken und rechten Seite des Autos zurück.
+gibt die zuletzt gemessenen Abstände zu Objekten auf der linken und rechten Seite des Autos zurück. Der wichtigste Teil dieser Routine ist allerdings die Funktion beim Wechsel der Richtung der größeren Distanz dieser einen bias abzuziehen. Das Prinzip ist denkbar einfach, aber sorgt dafür, dass Objekte direkt vor dem Auto, wo die Entfernungsmessung aufgrund ihres eigenen Messfehlers nicht entscheiden kann in welcher Richtung dieses liegt, trotzdem zuverlässig umfahren werden, da das Auto dazu gedrängt wird eine einmal eingeschlagene Richtung beizubehalten. Aufgrund der statistischen Schwankung im Bereich des Messfehlers ist diese Entscheidung dann mehr oder weniger zufällig, was bei direkt frontalen Objekten aber keinen Nachteil verursacht.
 			</p>
 			<h3>watch</h3>
 			<p>
@@ -261,7 +277,7 @@ fragt die Ultraschallsensoren ab und füllt jeweils eine Liste für jeden Sensor
 			</p>
 			<h3>obstancle</h3>
 			<p>
-prüft auf Hindernisse im Bereich von 1.5 Metern vor dem Auto und weicht aus, falls ein Hindernis erkannt wird. Wie stark hierbei gelenkt wird, um auszuweichen ist von der Distanz zum Hindernis abhängig. Das Auto weicht in die Richtung aus, in die eine größere Distanz zum Hindernis gemessen wird. Taucht ein Hindernis unerwarteterweise weniger als einen halben Meter vor dem Auto auf, so wird entweder rückwärts nach links (Hindernis auf der linken Seite; effektiv wird rückwärts nach rechts gefahren) oder rechts (Hindernis auf der rechten Seite; effektiv wird rückwärts nach links gefahren) gesteuert um auszuweichen.
+Hauptroutine der Hinderniserkennung. Fragt über alarm 
 			</p>
 			<h2>Hardwarenaher Code</h2>
 			<p>
