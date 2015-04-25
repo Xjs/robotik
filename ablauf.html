@@ -272,7 +272,7 @@ def alarm(self):
 		return (alarmL, alarmR)
 			</pre>
 			<p>
-gibt die zuletzt gemessenen Abstände zu Objekten auf der linken und rechten Seite des Autos zurück. Der wichtigste Teil dieser Routine ist allerdings die Funktion beim Wechsel der Richtung der größeren Distanz dieser einen bias abzuziehen. Das Prinzip ist denkbar einfach, aber sorgt dafür, dass Objekte direkt vor dem Auto, wo die Entfernungsmessung aufgrund ihres eigenen Messfehlers nicht entscheiden kann in welcher Richtung dieses liegt, trotzdem zuverlässig umfahren werden, da das Auto dazu gedrängt wird eine einmal eingeschlagene Richtung beizubehalten. Aufgrund der statistischen Schwankung im Bereich des Messfehlers ist diese Entscheidung dann mehr oder weniger zufällig, was bei direkt frontalen Objekten aber keinen Nachteil verursacht.
+Alarm gibt die zuletzt gemessenen Abstände zu Objekten auf der linken und rechten Seite des Autos zurück. Der wichtigste Teil dieser Routine ist allerdings die Funktion beim Wechsel der Richtung der größeren Distanz dieser einen bias abzuziehen. Das Prinzip ist denkbar einfach, aber sorgt dafür, dass Objekte direkt vor dem Auto, wo die Entfernungsmessung aufgrund ihres eigenen Messfehlers nicht entscheiden kann in welcher Richtung dieses liegt, trotzdem zuverlässig umfahren werden, da das Auto dazu gedrängt wird eine einmal eingeschlagene Richtung beizubehalten. Aufgrund der statistischen Schwankung im Bereich des Messfehlers ist diese Entscheidung dann mehr oder weniger zufällig, was bei direkt frontalen Objekten aber keinen Nachteil verursacht.
 			</p>
 			<h3>watch</h3>
 			<p>
