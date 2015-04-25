@@ -29,9 +29,6 @@
 		<div style="clear: all; height: 2.5em; margin-top: -4px; width: 100%;"></div>
 		<hr style="position: relative; top: -2px;" />
 		<div class="container" id="body">
-			<p>
-Am Ende des Projektes steht ein funktionsfähiger Roboter, welcher der Aufgabenstellung entsprechend autonom seinen Weg zu eingegebenen GPS-Koordinaten findet ohne dabei gegen Hindernisse zu fahren.
-			</p>
 			<h1>1. Planung</h1>
 			<p>
 Nach intensiver Recherche und ausführlichen Teambesprechungen wurde die Entscheidung gefällt, den Roboter so modular wie möglich aufzubauen:
@@ -147,16 +144,16 @@ Fährt das Auto gerade, so wird lediglich die Variable driving auf True gesetzt.
 			</p>
 			<pre>
 	while True:
-		if is_at(curPos, tracker.getPosition()):	# car stands still
+		if is_at(curPos, tracker.getPosition()): 	#Car stands still
 			print "standing"
 			start = time.time()
 			print "driving at", speed
-			drive(speed)			#drive for 5m
-			while (time.time() - start) < 2:	#while driving (ca. 2 s) save 								 positions to tracker
+			drive(speed)					 #Drive for a few meters.
+			while (time.time() - start) < 2: #While driving save positions to tracker.
 				watcher.obstancle()
 				tracker.getPosition()
 			stop()
-			# renavigate
+		
 			line = None
 		else:
 			driving = True
