@@ -20,14 +20,15 @@ from math import *
 #----------------------NO LONGER NEEDED- left in there for educational purposes---------------------#
 #threshold in [m] gibt die Maximaldistanz zu beachtender Objekte aus.
 #threshold = 1.5
-#bullshitdist in [m] gibt ungefaere Grenze sinnvoller Messung an.
-bullshitdist = 1.5
+
 #lowpass gibt den maximalen Abstand an, den ein sich Objekt innerhalb zweier Messungen herankommen kann.
 #lowpass = 0.2
 #averageminimum gives the minimum amound of elements in the average-list for getting a useful result.
 #averageminimum = 2
 #---------------------------------------------------------------------------------------------------#
 
+#bullshitdist in [m] gibt ungefaere Grenze sinnvoller Messung an.
+bullshitdist = 1.5
 #measrange gives Number of measurements stored in the watchlist
 measrange = 3
 #movefactor gives the strength of steering to overcome obstancles. The path-curvature scales linearly with the distance to the obstancle.
@@ -39,15 +40,18 @@ deaththreshold = 0.3
 bias = 0.05
 class Watcher():
 
+
+	#Init: Creating lists to store sensor-data.
 	def __init__(self):
-		#threading.Thread.__init__(self)
 		self.watchlistL = []
 		self.watchlistR = []
-
+	
+	#alarm: stores data from both sensors into watchlist.
 	def alarm(self):
 		alarmL=self.watchlistL[-1]
 		alarmR=self.watchlistR[-1]
-
+		
+		#To prevent the car from unstable motion in front of obstancles, in case the larger distance changes from one site to the other, the difference has to be larger than a certain bias about the size of the error of measurement.
 		if((self.watchlistL[-1]-self.watchlistR[-1])*(self.watchlistL[-2]-self.watchlistR[-2]) < 0):
 			if(alarmL < alarmR):
 				alarmR = alarmR - bias
@@ -55,7 +59,9 @@ class Watcher():
 				alarmL = alarmL - bias
 		
 		return (alarmL, alarmR)
-
+	
+	#watch: reads the sensors and fills the watchlist. In case of an improper signal, the maximum meaurement distance bullshitdist is written into the list.
+	#The list stores only the last few measurement-points, given by measrange.
 	def watch(self):
 		a=distance(0)
 		if(a>0):
@@ -72,19 +78,30 @@ class Watcher():
 		else:
 			self.watchlistR.append(bullshitdist)
 	
+	#obstancle: Main routine of obstancle. Fills the watchlists and then reacts to obstancles below the threshold by turning towards the larger distance.
 	def obstancle(self):
 #		return
 		start = time.time()
+		
+		#watching and waiting until the list is filled up
 		self.watch()
 		
 		while(len(self.watchlistL) < measrange and len(self.watchlistR) < measrange):
 			self.watch()
 		
+		#getting distance-measurements
 		(L,R) = self.alarm()
 		
+		#checking if distance is larger than a minimum-safety-distance. If this is not the case, the car goes backwards.
 		if (L > deaththreshold and R > deaththreshold):
+			
+			#obstancle takes the weel until no object is within the thresholddistance bullshitdist
 			while min(L,R) < bullshitdist:
+				
+				#again checking for safety-distance every measurement-cycle
 				if (self.watchlistL[-1] > deaththreshold and self.watchlistR[-1] > deaththreshold):
+					
+					#turning towards the larger distance. Curvature-radius scales linearly with distance and the gauge-value movefactor
 					if (L < R):
 						if(L*movefactor > 0.715):
 							steer(-L*movefactor) #negative curve radius steers to the right
@@ -92,6 +109,7 @@ class Watcher():
 							print("Ich lenke nach rechts" , L,-L*movefactor)
 							end = time.time()
 							print "this took", end-start
+						#Limiting to the maximum value for the steering-servo.
 						else:
 							steer(-0.715)
 							##Test
@@ -111,6 +129,7 @@ class Watcher():
 							print("Ich lenke nach links, maximal" , R, 0.715)
 							end = time.time()
 							print "this took", end-start
+				#going backwards:
 				else:
 					drive(-2)
 					time.sleep(0.5)
@@ -119,6 +138,7 @@ class Watcher():
 
 				(L,R) = self.alarm()
 				self.watch()
+		#going backwards:
 		else:
 			if (L < R):
 				steer_at(0.715,-1)
@@ -130,7 +150,6 @@ class Watcher():
 				print("Rueckwaerts nach rechts" , R, R*movefactor)
 
 
-																						   
 if __name__ == "__main__":
 	o = Watcher()
 	o.obstancle()
