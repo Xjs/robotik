@@ -29,6 +29,9 @@
 		<div style="clear: all; height: 2.5em; margin-top: -4px; width: 100%;"></div>
 		<hr style="position: relative; top: -2px;" />
 		<div class="container" id="body">
+			<p>
+Am Ende des Projektes steht ein funktionsfähiger Roboter, welcher der Aufgabenstellung entsprechend autonom seinen Weg zu eingegebenen GPS-Koordinaten findet ohne dabei gegen Hindernisse zu fahren.
+			</p>
 			<h1>1. Planung</h1>
 			<p>
 Nach intensiver Recherche und ausführlichen Teambesprechungen wurde die Entscheidung gefällt, den Roboter so modular wie möglich aufzubauen:
@@ -248,7 +251,10 @@ Die Datei <em>helpers.py</em> enthält einige Hilfsfunktionen.
 				<li><b>debug_print</b>: Gibt eine Ausgabe dann und nur dann, wenn die globale Variable DEBUG nicht auf False gesetzt ist.</li>
 			</ul>
 			<h2>Hinderniserkennungsroutine</h2>
+			<img src="pictures/obstancle.png" alt="Schema der Hinderniserkennung" />
 			<p>
+Die Hinderniserkennung basiert auf einem einfachen Prinzip. Zwei Untraschallsensoren messen regelmäßig die Zeit ausgesannter und wieder empfangener Schallpulse. Daraus lässt sich bei einer Reflexion eine Entfernung bestimmen. Anhand der Datenpunkte zweier Sensoren kann dann nicht nur die Entfernung, sondern auch die Richtung zu einem Objekt bestimmt werden. Dieses Prinzip machen wir uns zunutze. Jeder der Sensoren sendet in jedem main-Zyklus ein Signal und misst damit die Entfernung zu möglichen Hindernissen. Sieht das Programm ein Objekt unter einem gewissen Schwellwert, kann es anhand der beiden Daten entscheiden, auf welcher Seite es am einfachsten passieren kann und lenkt in Richtung der größeren Distanz. Da im Moment eines erkannten Hindernisses die Navigation zweirangig ist übernimmt das Programm bis zum Verschwinden (Maximaldistanz) des Hindernisses die Kontrolle.
+<br><br>
 Die Hinderniserkennungsroutine wird durch die Klasse Watcher umgesetzt, welche folgenden Funktionen enthält:
 			</p>
 			<h3>alarm</h3>
