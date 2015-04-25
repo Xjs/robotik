@@ -6,6 +6,12 @@
 {
 	color: gray;
 }
+.caption
+{
+	font-size: 0.8em;
+	font-style: italic;
+	margin-top: 0.1em;
+}
 hr {
 	display: block;
 	clear: all;
@@ -31,7 +37,7 @@ hr {
 	
 	font-family:"Helvetica Neue",sans-serif;
 	
-	background-color: #eee;
+	background-color: #fcc;
 }
 #navigation li a {
 	color: #444;
@@ -63,7 +69,7 @@ h3
 {
 	margin-top: 1.3em;
 	font-size: 0.9em;
-	border-bottom: 1px dashed silver;
+	border-bottom: 1px dashed crimson;
 }
 
 table
@@ -74,7 +80,7 @@ table
 
 th
 {
-	background-color: #ddd;
+	background-color: #fcc;
 	border: 1px solid gray;
 	text-align: left;
 }
