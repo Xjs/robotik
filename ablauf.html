@@ -68,7 +68,42 @@ Die ersten Aufgaben bestanden darin, sich mit der Elektronik vertraut zu machen 
 Servomotoren werden über PWM (Pulse-Width-Modulation) Signale gesteuert. Hierbei gibt die Länge des Signals vor, wie sich der Motor bewegt. Etwa alle 20 ms erwartet der Motor einen Input, dieser ist typischerweise zwischen 1 und 2 ms lang.
 Um die genauen Werte für den Motor und den Lenkservo des Autos zu bestimmen, wurden die von der Fernbedienung übermittelten Signale mit einem Oszilloskop gemessen.
 			</p>
-			<img src="pictures/servos.png" alt="Messergebnisse der PWM-Signale" />
+			<img src="pictures/servos.png" alt="Exemplarische PWM-Signale und Reaktionen der Motoren" />
+			Exemplarische PWM-Signale und Reaktionen der Motoren
+			
+			<table>
+				<tr>
+					<th>PWM-Signallänge</th>
+					<th>Reaktion Lenkservo</th>
+					<th>Reaktion Fahrtmotor</th>
+				</tr>
+				<tr>
+					<th>1000</th>
+					<th>---</th>
+					<th>Vollgas rückwärts</th>
+				</tr>
+				<tr>
+					<th>1170</th>
+					<th>Max. links</th>
+					<th>Rückwärts</th>
+				</tr>
+				<tr>
+					<th>1500</th>
+					<th>Nullposition</th>
+					<th>Ausgeschaltet</th>
+				</tr>
+				<tr>
+					<th>1800</th>
+					<th>Max. rechts</th>
+					<th>Vorwärts</th>
+				</tr>
+				<tr>
+					<th>1952</th>
+					<th>---</th>
+					<th>Vollgas vorwärts</th>
+				</tr>
+			</table>
+			Messergebnisse
 			<p>
 Die oben dargestellten Messergebnisse wurden dann in Code gegossen, um abstrahierende Fahrfunktionen zu implementieren. 
 Diese wurden zunächst auf dem ATmega in der Programmiersprache C unter Verwendung des Basis-Codes des Robotiklabors umgesetzt und funktionierten einwandfrei.
