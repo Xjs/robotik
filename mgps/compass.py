@@ -9,16 +9,22 @@ ADDR = 0x1e
 SCALE = 0.92
 
 class Compass:
+	"""
+	Provides an interface to a connected I2C compass (works with a ublox LEA 6H)
+	"""
 	def read_byte(self, adr):
+		"""Read a byte from I2C"""
 		return self.bus.read_byte_data(self.address, adr)
 	
 	def read_word(self, adr):
+		"""Read a word from I2C"""
 		high =self.bus.read_byte_data(self.address, adr)
 		low = self.bus.read_byte_data(self.address, adr+1)
 		val = (high << 8) + low
 		return val
 	
 	def read_word_2c(self, adr):
+		"""Read a word from I2C and do some signage calculations."""
 		val = self.read_word(adr)
 		if (val >= 0x8000):
 			return -((65535 - val) + 1)
@@ -26,6 +32,7 @@ class Compass:
 			return val
 	
 	def write_byte(self, adr, value):
+		"""Write a byte to I2C"""
 		self.bus.write_byte_data(self.address, adr, value)
 	 
 	def __init__(self, bus=BUS, address=ADDR, scale=SCALE):
@@ -34,16 +41,24 @@ class Compass:
 		self.scale = scale
 		
 	def initialize_compass(self):
+		"""
+		Initialize compass so that measurements can be made
+		"""
 		self.write_byte(0, 0b01110000) # Set to 8 samples @ 15Hz
 		self.write_byte(1, 0b00100000) # 1.3 gain LSb / Gauss 1090 (default)
 		self.write_byte(2, 0b00000000) # Continuous sampling
 		
 	def set_offset(self, x_offset, y_offset, angle_offset):
+		"""Set calibration data gained from manual calibration or calibrate()
+		angle_offset is the angle that is measured when the compass points
+		north"""
 		self.x_offset = x_offset
 		self.y_offset = y_offset
 		self.angle_offset = angle_offset
 		
 	def calibrate(self):
+		"""Record 500 points of data and average in order to find the 
+		midpoint"""
 		self.initialize_compass()
 		
 		min_x = 0
@@ -87,12 +102,15 @@ class Compass:
 		return x_offset, y_offset
 	
 	def getOrientation(self, debug=False):
+		"""Get orientation from compass"""
 		self.initialize_compass()
 		
+		# read raw data and scale
 		x = (self.read_word_2c(3) - self.x_offset) * self.scale
 		y = (self.read_word_2c(7) - self.y_offset) * self.scale
 		z = self.read_word_2c(5) * self.scale
 		
+		# trigonometry gives us an angle, subtracting the offset and normalizing
 		bearing = (atan2(y, x) - self.angle_offset)%(2*pi)
 		bearing = 2*pi - bearing # we want the clockwise angle between north and the compass
 		if debug:

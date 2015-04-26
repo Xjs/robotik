@@ -16,6 +16,8 @@ CW = -1
 THRESHOLD = 0.00001
 
 class Navigator:
+	"""Uses a GPSTracker object. Provides a method to navigate directly to a
+	given target point and one to check if the car is still on a given track"""
 	def __init__(self, tracker):
 		# Tracker be a mgps.GPSTracker object
 		self.tracker = tracker
@@ -58,7 +60,9 @@ class Navigator:
 		debug_print("my_long ", my_longitude)
 		debug_print("my_lat ", my_latitude)
 		
-		# TODO: Does the following always work, did I understand the trig correctly?
+		# Calculate the distances from my position to the midpoints of the 
+		# two circles I can drive. The longitude distance has to be adjusted
+		# depending on the latitude
 		d_lat = to_deg(r*sin(orientation)/EARTH_RADIUS)
 		d_lon = to_deg(r*cos(orientation)/EARTH_RADIUS)/(cos(to_rad(my_latitude)))
 		
@@ -67,6 +71,11 @@ class Navigator:
 		midpoint_b = (my_longitude - d_lon, my_latitude + d_lat)
 		distance_a = distance(midpoint_a, target_point)
 		distance_b = distance(midpoint_b, target_point)
+		
+		# choose the circle that is closer to the target. This defines the
+		# driving direction.
+		# fun is used later to pick out the correct angle because this depends
+		# too on the driving direction, and the angles are oriented
 		if distance_a < distance_b:
 			direction = CW
 			midpoint = midpoint_a
@@ -76,10 +85,19 @@ class Navigator:
 			midpoint = midpoint_b
 			fun = min
 		
+		# the intution (see also: documentation) is: We lay tangents on the
+		# circle and I drive until one of the tangent points, then I steer
+		# straight
+		# Use trigonometry (a rectangular triangle with my position, the 
+		# midpoint and the tangent point as corners) to find out which angle
+		# I have to drive
 		gamma = angle_to_north(midpoint, target_point)
 		alpha = acos(sqrt(d_lat**2+d_lon**2)/distance(midpoint, target_point))
+		# the epsilons are the angles to north of the two tangent points
 		epsilons = [normalize(gamma+alpha), normalize(gamma-alpha)]
 		
+		# oriented angles are the angles I have to drive to the two tangent 
+		# points
 		oriented_angles = [normalize(orientation + direction * pi/2) - eps for eps in epsilons]
 		
 		candidates = []
@@ -90,10 +108,14 @@ class Navigator:
 		debug_print("oriented_angles ", oriented_angles)
 		debug_print("direction ", direction)
 		
+		# normalize the angles so that they have the correct signage,
+		# append them to the candidate list
 		for a, eps in zip(oriented_angles, epsilons):
 			if sign(a) != direction:
 				a += direction*2*pi
 				debug_print("a is now ", a)
+			# calculate the coordinates of the tangent point in order to
+			# have a starting point for the straight line
 			d_lat = -to_deg(r*sin(eps)/EARTH_RADIUS)
 			d_lon = -to_deg(r*cos(eps)/EARTH_RADIUS)/(cos(to_rad(my_latitude)))
 			midpoint_x, midpoint_y = midpoint
@@ -102,12 +124,14 @@ class Navigator:
 			candidates.append((a, (start_y, start_x))) # TODO: start?
 		#debug_print("start ", start)
 		
+		# choose the smaller angle
 		angle, start = fun(candidates)
 		debug_print("start ", start)
 		return ((direction, angle, r), (start, target))
 	
 	def on_track(self, line):
-		"""Are we still on track? If not, better re-navigate"""
+		"""Are we still on track (that is, is our distance to the given line
+		small enough? If not, better re-navigate"""
 		if line is None:
 			return False
 		else:

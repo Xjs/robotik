@@ -12,6 +12,10 @@ MAX_POSITIONS = 20
 N_AVERAGES = 3
 
 class GPSPoller(threading.Thread):
+	"""
+	Provides an object that always queries gpsd in the background
+	and provides access to up-to-date GPS data all the time.
+	"""
 	def __init__(self):
 		threading.Thread.__init__(self)
 		global gpsd
@@ -25,7 +29,12 @@ class GPSPoller(threading.Thread):
 			gpsd.next()
 			
 class GPSTracker:
-	def __init__(self, n_averages=N_AVERAGES, x_offset=0, y_offset=0, angle_offset=0.0):	
+	"""
+	Reads out data from a GPSPoller object and a Compass object
+	and does some averaging calculations. Provides a high-level interface
+	to get position and orientation of the GPS module
+	"""
+	def __init__(self, n_averages=N_AVERAGES, x_offset=0, y_offset=0, angle_offset=0.0):
 		self.poller = GPSPoller()
 		self.latitude = -1
 		self.longitude = -1
@@ -37,11 +46,19 @@ class GPSTracker:
 		self.compass.set_offset(x_offset, y_offset, angle_offset)
 	
 	def getRawPosition(self):
+		"""
+		Returns latitude, longitude, altitude from the most current
+		GPS fix or None if no fix present
+		"""
 		if gpsd.fix.mode == MODE_NO_FIX:
 			return None
 		return (gpsd.fix.latitude, gpsd.fix.longitude, gpsd.fix.altitude)
 	
 	def getPosition(self):
+		"""
+		Averages over the last self.n_averages positions and returns the 
+		current position (lat, lon)
+		"""
 		positions = []
 		lat, lon, alt = 0.0, 0.0, 0.0
 		for i in xrange(self.n_averages):
@@ -66,9 +83,16 @@ class GPSTracker:
 		return position
 	
 	def getOrientation(self):
-		# TODO: calibrate compass
+		"""
+		Returns the orientation of the compass.
+		"""
 		return self.compass.getOrientation()
 		
+		# the following would calculate an orientation from the last saved
+		# positions. We don't use it anymore, but it worked as follows:
+		# The lastPositions list was split in halves, and an average position
+		# was calculated from each half. The orientation of the resulting line
+		# between both points was returned.
 		l = len(self.lastPositions)
 		if l < 2:
 			return -1
