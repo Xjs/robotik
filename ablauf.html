@@ -2,6 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
     <head>
+    	<meta charset="UTF-8">
         <title>GPS auf Rädern</title>
         <style type="text/css">
 			@import url('style.css');
@@ -26,7 +27,7 @@
 				<li><a href="links.html">Links</a></li>
 			</ul>
 		</div>
-		<div style="clear: all; height: 2.5em; margin-top: -4px; width: 100%;"></div>
+		<div style="clear: all; height: 2.9em; margin-top: -4px; width: 100%;"></div>
 		<hr style="position: relative; top: -2px;" />
 		<div class="container" id="body">
 			<h1>1. Planung</h1>
@@ -68,10 +69,12 @@ Die ersten Aufgaben bestanden darin, sich mit der Elektronik vertraut zu machen 
 Servomotoren werden über PWM (Pulse-Width-Modulation) Signale gesteuert. Hierbei gibt die Länge des Signals vor, wie sich der Motor bewegt. Etwa alle 20 ms erwartet der Motor einen Input, dieser ist typischerweise zwischen 1 und 2 ms lang.
 Um die genauen Werte für den Motor und den Lenkservo des Autos zu bestimmen, wurden die von der Fernbedienung übermittelten Signale mit einem Oszilloskop gemessen.
 			</p>
-			<img src="pictures/servos.png" style="width: 600px;" alt="Exemplarische PWM-Signale und Reaktionen der Motoren" />
+			<img src="pictures/servos.png" style="width: 800px;" alt="Exemplarische PWM-Signale und Reaktionen der Motoren" />
 			<p class="caption">
 				Exemplarische PWM-Signale und Reaktionen der Motoren
 			</p>
+			<p> </p>
+			<p>
 			<table>
 				<tr>
 					<th>PWM-Signallänge</th>
@@ -106,6 +109,7 @@ Um die genauen Werte für den Motor und den Lenkservo des Autos zu bestimmen, wu
 			</table>
 			<p class="caption">
 				Messergebnisse
+			</p>
 			</p>
 			<p>
 Die oben dargestellten Messergebnisse wurden dann in Code gegossen, um abstrahierende Fahrfunktionen zu implementieren. 
