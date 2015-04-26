@@ -84,9 +84,9 @@ Das Ziel des Projektes ist es, ein Modellauto mittels eines Raspberry Pis und GP
 				<li>
 					Ultraschall-Sensoren (Modell HC-SR04)
 					<ul>
-						<li>VCC +5V, GND 0V</li>
+						<li>VCC +5V; GND 0V</li>
 						<li>Distanzmessung: 2 – 400 cm</li>
-						<li>Messintervall: 20ms à max. 50 Messungen/Sekunde</li>
+						<li>Messintervall: 20ms --> max. 50 Messungen/Sekunde</li>
 						<li>Messwinkel: 15°</li>
 					</ul>
 				</li>
@@ -106,7 +106,7 @@ Das Ziel des Projektes ist es, ein Modellauto mittels eines Raspberry Pis und GP
 				<li>
 					Selbstentwickelter Code für:
 					<ul>
-						<li>GPS-Datenverarbeitung und Routenplanung</li>
+						<li>GPS-Datenverarbeitung und Wegfindung</li>
 						<li>Ansteuerung des Motorreglers und Lenkservos des Autos</li>
 						<li>Distanzmessung</li>
 						<li>Hinderniserkennung und -verarbeitung</li>
@@ -122,7 +122,7 @@ Das Ziel des Projektes ist es, ein Modellauto mittels eines Raspberry Pis und GP
 			</ul>
 			<h2>Funktionsweise</h2>
 			<p>
-Die Arbeitsweise des Roboters besteht aus einer bis zum Erreichen des Ziels ausgeführten Hauptroutine, die um an das Ziel zu kommen auf drei große Module zurückgreift. Für die Bewegung und Lenkung sorgen Fahrroutinen, die mit PWM-Signalen den ursprünglichen Motorregler bedienen. Die auf einem GPS-Modul aufbauenden Navigationsroutine gibt den Kurs vor und korrigiert ihn bei Abweichung. Um nicht mit Hindernissen zusammenzustoßen gibt das Modul zur Hinderniserkennung die Möglichkeit Objekten im Weg des Roboters auszuweichen. 
+Die Arbeitsweise des Roboters basiert auf einer bis zum Erreichen des Ziels ausgeführten Hauptroutine, die um an das Ziel zu kommen auf drei große Module zurückgreift. Für die Bewegung und Lenkung sorgen Fahrtroutinen, die mit PWM-Signalen den ursprünglichen Motorregler bedienen. Die auf einem GPS-Modul aufbauende Navigationsroutine gibt den Kurs vor und überprüft ob dieser eingehalten wird. Um nicht mit Hindernissen zusammenzustoßen gibt das Modul zur Hinderniserkennung die Möglichkeit Objekten im Weg des Roboters auszuweichen. 
 			</p>
 		</div>
     </body>

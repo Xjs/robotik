@@ -52,6 +52,13 @@ hr {
 {
 	font-family:"Georgia",serif;
 }
+ul#team{
+	font-family:"Georgia",serif;
+	font-size: 1.2em;
+	margin: 0;
+	padding-top:250px;
+	padding-left: 800px;
+}
 #body pre{
 }
 ol li
@@ -82,10 +89,10 @@ table
 
 th
 {
-	background-color: #7c2424;
+	background-color: #fcc;
 	border: 1px solid #510d0d;
 	text-align: left;
-	color: #fff;
+	color: #000;
 }
 
 td

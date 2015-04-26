@@ -79,7 +79,7 @@ Um die genauen Werte für den Motor und den Lenkservo des Autos zu bestimmen, wu
 			<p>
 			<table>
 				<tr>
-					<th>PWM-Signallänge</th>
+					<th>PWM-Signallänge [µs]</th>
 					<th>Reaktion Lenkservo</th>
 					<th>Reaktion Fahrtmotor</th>
 				</tr>
@@ -118,12 +118,11 @@ Die oben dargestellten Messergebnisse wurden dann in Code gegossen, um abstrahie
 Diese wurden zunächst auf dem ATmega in der Programmiersprache C unter Verwendung des Basis-Codes des Robotiklabors umgesetzt und funktionierten einwandfrei.
 Um den Fahrtregler und damit den Fahrtmotor und den Lenkservo anzusteuern, wurde der ATmega über die Antennenbuchse mit dem Fahrtregler verbunden.
 			</p>
-			<p><em>Grafik?</em></p><!--TODO-->
 			<p>
 Das Kernstück des Roboters ist der Raspberry Pi und mit diesem mussten alle anderen Komponenten verbunden werden. Die designierten  UART- und I²C-Pins des Raspberry Pis wurden verwendet um den GPS-Chip bzw. den Kompass anzuschließen.
-Da jedoch auch die Verbindung zwischen Raspberry und ATmega über UART hergestellt werden musste, wurden zwei GPIO-Pins des Pis verwendet um eine weitere UART-Schnittstelle zu bitbangen (über Software zu emulieren). Hierzu kam die PIGPIO Library zum Einsatz. Über das selbstgeschriebene Kommunikationsprotokoll sollten nun Pi und ATmega kommunizieren können, jedoch gab es trotz funktionierender Kommunikationsschnittstelle Komplikationen mit dem Mikrocontroller, die in sinnvoller Zeit nicht überwunden werden konnten. So musste der ursprüngliche Entwurf überarbeitet werden. 
-Der Mikrocontroller wurde aus dem Aufbau entfernt, die Fahrfunktionen mussten auf dem Raspberry Pi in Python neu implementiert werden, und die PWM-Signale, die der ATmega zuvor generiert hatte, mussten nun durch den Pi erzeugt werden. Für letzeres wurde die RPi.GPIO Library verwendet, welche Funktionen für die Generierung von PWM-Signalen bereitstellt.
-Außerdem mussten die beiden Ultraschallsensoren mit dem Raspberry verbunden werden. Dies geschah über eine kleine selbstverlötete Platine, welche sicherstellen soll, dass die fließenden Spannungen nicht zu hoch sind (die Ultraschallsensoren arbeiten mit 5V und senden auch Signale in dieser Höhe, die GPIO-Pins des Raspberrys dürfen jedoch nicht mehr als 3.3V erhalten).
+<br>Da jedoch auch die Verbindung zwischen Raspberry und ATmega über UART hergestellt werden musste, wurden zwei GPIO-Pins des Pis verwendet um eine weitere UART-Schnittstelle zu bitbangen (d. h. über Software zu emulieren). Hierzu kam die PIGPIO Library zum Einsatz. Über das selbstgeschriebene Kommunikationsprotokoll sollten nun Pi und ATmega kommunizieren können, jedoch gab es trotz funktionierender Kommunikationsschnittstelle Komplikationen mit dem Mikrocontroller, die in sinnvoller Zeit nicht überwunden werden konnten. So musste der ursprüngliche Entwurf überarbeitet werden.</br> 
+Der Mikrocontroller wurde aus dem Aufbau entfernt, die Fahrtfunktionen mussten auf dem Raspberry Pi in Python neu implementiert werden, und die PWM-Signale, die der ATmega zuvor generiert hatte, mussten nun durch den Pi erzeugt werden. Für letzeres wurde die RPi.GPIO Library verwendet, welche Funktionen für die Generierung von PWM-Signalen bereitstellt.
+<br>Außerdem mussten die beiden Ultraschallsensoren mit dem Raspberry verbunden werden. Dies geschah über eine kleine selbstverlötete Platine, welche sicherstellen soll, dass die fließenden Spannungen nicht zu hoch sind (die Ultraschallsensoren arbeiten mit 5V und senden auch Signale in dieser Höhe, die GPIO-Pins des Raspberrys dürfen jedoch nicht mehr als 3.3V erhalten).</br>
 			</p>
 			<img src="pictures/ultraschallsensoren.png" style="width: 700px;" alt="Schaltplan Ultraschallsensoren" />
 			<p class="caption">
@@ -138,24 +137,46 @@ Der Programmcode lässt sich in vier größere Sinnabschnitte gliedern:
 			</p>
 			<ul>
 				<li>die Hauptroutine, die das Grundgerüst bildet</li>
-				<li>die Navigationsroutine, die GPS-Daten verarbeitet und Routenberechnungen durchführt</li>
+				<li>die Navigationsroutine, die GPS-Daten verarbeitet und Wegberechnungen durchführt</li>
 				<li>die Hinderniserkennungsroutine, die Gegenständen auf der zu fahrenden Bahn ausweicht</li>
 				<li>Hardwarenaher Code, welcher Daten von Sensoren verarbeitet und die Motoren steuert</li>
 			</ul>
+			<p>
+			Im Folgenden wird nun genauer auf diese einzelnen Abschnitte eingegangen.
+			</p>
 			<h2>Hauptroutine</h2>
-			<img src="pictures/flussdiagramm.png" alt="Flussdiagramm der main-Funktion" />
-			<p class="caption">
-				Überblick über die Funktionsweise der Hauptroutine
-			</p>
-			<p>Die main-Funktion bedient sich zweier Hilfsfunktionen:</p>
-			<h3>is_at(current, target)</h3>
-			<p>
-prüft ob sich das Auto bis auf einen Schwellenwert genau am Ziel befindet
-			</p>
-			<h3>correct_course(direction, angle, radius, speed=SPEED, watcher=None)</h3>
-			<p>
-korrigiert den Kurs durch befahren einer Kreisbahn in der durch direction vorgegebenen Richtung. Die Länge der Kreisbahn ist durch angle und radius vorgegeben. Die Geschwindigkeit ist variabel, es wird jedoch empfohlen so langsam wie möglich zu fahren. Watcher ist ein Objekt der Klasse Watcher, welche für die Hinderniserkennung zuständig ist. Während der Kurskorrektur wird auf Hindernisse geprüft.
-			</p>
+			<p>Die main-Funktion bedient sich dreier Hilfsfunktionen:</p>
+			<ul>
+				<li><b>angular_speed(radius, speed):</b>
+							<br>
+							berechnet die Winkelgeschwindigkeit bei gegebenem Kurvenradius und gegebener Geschwindigkeit.
+							</br>
+				</li>
+				<p></p>
+				<li><b>is_at(current, target):</b>
+							<br>
+							prüft ob sich das Auto bis auf einen Schwellenwert genau am Ziel befindet.
+							</br>
+				</li>
+				<p></p>
+				<li><b>correct_course(direction, angle, radius, speed=SPEED, watcher=None):</b>
+							<br>
+							korrigiert den Kurs durch befahren einer Kreisbahn in der durch direction vorgegebenen Richtung. Die Länge der Kreisbahn ist durch angle und 								radius vorgegeben. Die Geschwindigkeit ist variabel, es wird jedoch empfohlen so langsam wie möglich zu fahren. Watcher ist ein Objekt der 								Klasse Watcher, welche für die Hinderniserkennung zuständig ist. Während der Kurskorrektur wird auf Hindernisse geprüft.
+							</br>
+				</li>
+			</ul>
+				<br></br>
+				<p>
+				Gehen wir nun näher auf die Funktionsweise der Hauptroutine ein.
+				<img src="pictures/flussdiagramm.png" alt="Flussdiagramm der main-Funktion" />
+					<p class="caption">
+					Überblick über die Funktionsweise der Hauptroutine
+					</p>
+				</p>
+				<br></br>
+				<p>
+				Zunächst wird überprüft, ob die über die Kommandozeile beim Starten des Programms eingegebenen Werte gültige Eingaben sind:
+				</p>
 			<pre>
 if __name__ == '__main__':
 	try:
@@ -183,14 +204,14 @@ Sind die Eingaben richtig, dann werden die nötigen Instanzen unterschiedlicher 
 	watcher = Watcher()
 			</pre>
 			<p>
-Die Klasse GPSTracker ermöglicht die Position des Autos sowie dessen Orientierung anhand der letzten Positionen zu bestimmen.
-Die Klasse Navigator berechnet den Kurs, der angesteuert werden muss um das Auto zum Ziel zu führen.
-Watcher implementiert die Überwachung der Strecke vor dem Auto sowie den Ausweichalgorithmus für etwaige Hindernisse.
+Die Klasse <em>GPSTracker</em> ermöglicht die Position des Autos sowie dessen Orientierung anhand der Kompassdaten zu bestimmen.
+Die Klasse <em>Navigator</em> berechnet den Kurs, der angesteuert werden muss um das Auto zum Ziel zu führen.
+<em>Watcher</em> implementiert die Überwachung der Strecke vor dem Auto sowie den Ausweichalgorithmus für etwaige Hindernisse.
 			</p>
 			<p>
-Als nächstes muss auf ein GPS-Signal gewartet werden. Sobald dieses vorliegt wird in eine Endlosschleife eingetreten und zunächst überprüft, ob das Auto gerade stillsteht. 
-Ist dies der Fall, so steht es noch am Anfang seiner Reise. Daher muss zunächst die Orientierung bestimmt werden, damit der Navigator den Kurs berechnen kann. Dazu muss die Liste der letzten Positionen des GPSTrackers gefüllt werden, also fährt das Auto zunächst ca. fünf Meter, füllt dabei über tracker.getPosition() die Liste und hält dann wieder an. Später wurde das GPS-Modul auf einer Stange befestigt, und damit wurde diese Weise der Orientierungsbestimmung überflüssig. In der letzten Version der Software wird die Orientierung über den Kompass abgefragt. 
-Fährt das Auto gerade, so wird lediglich die Variable driving auf True gesetzt.
+<br>Als Nächstes muss auf ein GPS-Signal gewartet werden. Sobald dieses vorliegt wird in eine Endlosschleife eingetreten und zunächst überprüft, ob das Auto gerade stillsteht.</br>
+Ist dies der Fall, so steht es noch am Anfang seiner Reise. Daher muss zunächst die Orientierung bestimmt werden, damit der Navigator den Kurs berechnen kann. Dazu muss die Liste der letzten Positionen des GPSTrackers gefüllt werden, also fährt das Auto zunächst einige Meter, füllt dabei über <em>tracker.getPosition()</em> die Liste und hält dann wieder an. Später wurde das GPS-Modul auf einer Stange befestigt, und damit wurde diese Weise der Orientierungsbestimmung überflüssig. In der letzten Version der Software wird die Orientierung über den Kompass abgefragt. Dennoch wurde dieser Code-Abschnitt beibehalten um bei Kompass-Störungen leicht auf diese gut funktionierende Art der Orientierungsfindung zurückgreifen zu können.
+<br>Fährt das Auto jedoch, so wird lediglich die Variable <em>driving</em> auf True gesetzt.</br>
 			</p>
 			<pre>
 	while True:
@@ -245,7 +266,7 @@ class GPSPoller(threading.Thread):
 Die <em>Compass</em>-Klasse muss zunächst auf I2C-Ebene mit dem Kompassmodul kommunizieren. Dazu wurden die Hilfsfunktionen read_byte, read_word, read_word_2c und write_byte geschrieben.
 			</p>
 			<p>
-Die Daten, die das Kompassmodul liefert, geben gewissermaßen die Position (x, y, z) der Spitze einer Kompassnadel an. Um hieraus eine Himmelsrichtung ermitteln zu können, wird das Modul einmal um 360 Grad gedreht, während kontinuierlich Samples genommen werden. Diese werden genutzt, um den Mittelpunkt einzustellen. Dann kann mit dem Arkustangens der Winkel zu Norden ermittelt werden. Weiter muß noch eine Eichung auf Norden durchgeführt werden. Hieraus ergeben sich die Werte x_offset, y_offset und angle_offset, die sich nach der Kalibrierung ergeben und zur Eichung des Kompasses verwendet werden.
+Die Daten, die das Kompassmodul liefert, geben gewissermaßen die Position (x, y, z) der Spitze einer Kompassnadel an. Um hieraus eine Himmelsrichtung ermitteln zu können, wird das Modul einmal um 360 Grad gedreht, während kontinuierlich Samples genommen werden. Diese werden genutzt, um den Mittelpunkt einzustellen. Dann kann mit dem Arkustangens der Winkel zu Norden ermittelt werden. Weiter muss noch eine Eichung auf Norden durchgeführt werden. Hieraus ergeben sich die Werte x_offset, y_offset und angle_offset, die sich nach der Kalibrierung ergeben und zur Eichung des Kompasses verwendet werden.
 			</p>
 			<p>
 <em>getOrientation</em> liest die Daten aus, errechnet trigonometrisch den Winkel und normalisiert ihn so, dass stets der Winkel im Uhrzeigersin zwischen Norden und der Kompassausrichtung angegeben wird.
@@ -258,7 +279,7 @@ Die Klasse <em>Navigator</em> nutzt ein GPSTracker-Objekt zur Positionsbestimmun
 Die Navigation funktioniert prinzipiell folgendermaßen: Ausgehend von der Position und Orientierung des Roboters und eines Kurvenradius, der im Voraus eingestellt wird, werden zwei Kreise betrachtet, die der Roboter bei entsprechendem Lenkeinschlag nach links oder rechts fahren kann. Es wird dann der Kreis ausgewählt, dessen Mittelpunkt näher am angesteuerten Zielpunkt liegt, und Tangenten an diesen Kreis durch den Zielpunkt gelegt. Diejenige Tangente, die auf dem Kreisbogen näher am Roboter liegt, wird dann angestrebt.
 			</p>
 			<p>
-Zu beachten ist bei der ganzen Berechnung, daß wir direkt auf GPS-Daten, d. h. Längen- und Breitengradangaben arbeiten. Die geometrische Berechnung erfolgt im Wesentlichen kartesisch, d. h. die Genauigkeit ist nur bei vergleichsweise geringen Distanzen (einige zehn Kilometer sollten kein Problem sein) gewährleistet. Um trotzdem keinen Unsinn zu berechnen, werden die Mittelpunkte der Kreise exakt anhand des Breitengrades berechnet.
+Zu beachten ist bei der ganzen Berechnung, dass wir direkt auf GPS-Daten, d. h. Längen- und Breitengradangaben arbeiten. Die geometrische Berechnung erfolgt im Wesentlichen kartesisch, d. h. die Genauigkeit ist nur bei vergleichsweise geringen Distanzen (einige zehn Kilometer sollten kein Problem sein) gewährleistet. Um trotzdem keinen Unsinn zu berechnen, werden die Mittelpunkte der Kreise exakt anhand des Breitengrades berechnet.
 			</p>
 			<p>
 <em>navigate</em> gibt nach dieser Berechnung folgenden Datensatz zurück:
@@ -290,15 +311,15 @@ Die Methode <em>on_track</em> erhält als Argument eine Tangente, wie als zweite
 Die Datei <em>helpers.py</em> enthält einige Hilfsfunktionen.
 			</p>
 			<ul>
-				<li><b>sign(x)</b>: Gibt das Vorzeichen der Zahl x zurück</li>
-				<li><b>angle_to_north(start, end)</b>: start und end sind jeweils Tupel (x, y) und definieren so eine Strecke. angle_to_north gibt den Winkel im Uhrzeigersinn zu Norden (sprich der y-Achse) zurück.</li>
-				<li><b>normalize(angle)</b>: Normalisiert einen Winkel in Radian auf [0..2π]</li>
-				<li><b>distance(a, b)</b>: Errechnet den kartesischen Abstand zwischen den Punkten a und b</li>
-				<li><b>to_rad</b>, <b>to_deg</b>, <b>point_to_rad</b>: Konvertieren zwischen Grad und Radian</li>
-				<li><b>great_circle_distance(p1, p2)</b>: Errechnet eine geometrisch korrekte Distanz in Metern zwischen zwei GPS-Koordinaten p1 und p2, basierend auf der <a href="http://www.movable-type.co.uk/scripts/latlong.html">gleichrechtwinkligen Näherung</a> (alternativ auch möglich und programmiert: mit der Haversine-Formel – aber der Genauigkeitsgewinn war nicht den Rechenaufwand wert).</li>
-				<li><b>distance_to_angular_distance</b>, <b>angular_distance_to_distance</b>: Konvertieren Abstände von GPS-Koordinaten zu Abständen in Metern</li>
-				<li><b>oriented_angle(v1, v2)</b>: berechnet den Winkel zwischen den Vektoren v1 und v2, wobei der Drehsinn von v1 nach v2 geht.</li>
-				<li><b>debug_print</b>: Gibt eine Ausgabe dann und nur dann, wenn die globale Variable DEBUG nicht auf False gesetzt ist.</li>
+				<li><b>sign(x)</b>: <br>Gibt das Vorzeichen der Zahl x zurück.</br></li><p></p>
+				<li><b>angle_to_north(start, end)</b>: <br>start und end sind jeweils Tupel (x, y) und definieren so eine Strecke. angle_to_north gibt den Winkel im Uhrzeigersinn zu Norden (sprich der y-Achse) zurück.</br></li><p></p>
+				<li><b>normalize(angle)</b>: <br>Normalisiert einen Winkel in Radian auf [0..2π].</br></li><p></p>
+				<li><b>distance(a, b)</b>: <br>Errechnet den kartesischen Abstand zwischen den Punkten a und b.</br></li><p></p>
+				<li><b>to_rad(arg)</b>, <b>to_deg(rad)</b>, <b>point_to_rad(*args)</b>: <br>Konvertieren zwischen Grad und Radian.</br></li><p></p>
+				<li><b>great_circle_distance(p1, p2)</b>: <br>Errechnet eine geometrisch korrekte Distanz in Metern zwischen zwei GPS-Koordinaten p1 und p2, basierend auf der <a href="http://www.movable-type.co.uk/scripts/latlong.html">gleichrechtwinkligen Näherung</a> (alternativ auch möglich und programmiert: mit der Haversine-Formel – aber der Genauigkeitsgewinn war nicht den Rechenaufwand wert).</br></li><p></p>
+				<li><b>distance_to_angular_distance(d)</b>, <b>angular_distance_to_distance(d)</b>: <br>Konvertieren Abstände von GPS-Koordinaten zu Abständen in Metern.</br></li><p></p>
+				<li><b>oriented_angle(v1, v2)</b>: <br>Berechnet den Winkel zwischen den Vektoren v1 und v2, wobei der Drehsinn von v1 nach v2 geht.<br></li><p></p>
+				<li><b>debug_print(*args)</b>: <br>Gibt eine Ausgabe dann und nur dann, wenn die globale Variable DEBUG nicht auf False gesetzt ist.</br></li><p></p>
 			</ul>
 			<h2>Hinderniserkennungsroutine</h2>
 			<img src="pictures/obstancle.png" style="width: 500px;" alt="Schema der Hinderniserkennung" />
@@ -306,11 +327,11 @@ Die Datei <em>helpers.py</em> enthält einige Hilfsfunktionen.
 				Schema der Hinderniserkennung
 			</p>
 			<p>
-Die Hinderniserkennung basiert auf einem einfachen Prinzip. Zwei Untraschallsensoren messen regelmäßig die Zeit ausgesannter und wieder empfangener Schallpulse. Daraus lässt sich bei einer Reflexion eine Entfernung bestimmen. Anhand der Datenpunkte zweier Sensoren kann dann nicht nur die Entfernung, sondern auch die Richtung zu einem Objekt bestimmt werden. Dieses Prinzip machen wir uns zunutze. Jeder der Sensoren sendet in jedem main-Zyklus ein Signal und misst damit die Entfernung zu möglichen Hindernissen. Sieht das Programm ein Objekt unter einem gewissen Schwellwert, kann es anhand der beiden Daten entscheiden, auf welcher Seite es am einfachsten passieren kann und lenkt in Richtung der größeren Distanz. Da im Moment eines erkannten Hindernisses die Navigation zweirangig ist übernimmt das Programm bis zum Verschwinden (Maximaldistanz) des Hindernisses die Kontrolle.
+Die Hinderniserkennung basiert auf einem einfachen Prinzip. Zwei Untraschallsensoren messen regelmäßig die Zeit ausgesandter und wieder empfangener Schallpulse. Daraus lässt sich bei einer Reflexion eine Entfernung bestimmen. Anhand der Datenpunkte zweier Sensoren kann dann nicht nur die Entfernung, sondern auch die Richtung zu einem Objekt bestimmt werden. Dieses Prinzip machen wir uns zunutze. Jeder der Sensoren sendet in jedem Programm-Zyklus mindestens ein Signal und misst damit die Entfernung zu möglichen Hindernissen. Sieht das Programm ein Objekt unter einem gewissen Schwellwert, kann es anhand der beiden Daten entscheiden, auf welcher Seite es am einfachsten passieren kann und lenkt in Richtung der größeren Distanz. Da im Moment eines erkannten Hindernisses die Navigation zweirangig ist übernimmt das Programm bis zum Verschwinden (Maximaldistanz) des Hindernisses die Kontrolle.
 <br><br>
-Die Hinderniserkennungsroutine wird durch die Klasse Watcher umgesetzt, welche folgenden Funktionen enthält:
+Die Hinderniserkennungsroutine wird durch die Klasse <em>Watcher</em> umgesetzt, welche folgende Funktionen enthält:
 			</p>
-			<h3>alarm</h3>
+			<h3>alarm()</h3>
 			<pre>
 def alarm(self):
 		alarmL=self.watchlistL[-1]
@@ -325,13 +346,13 @@ def alarm(self):
 		return (alarmL, alarmR)
 			</pre>
 			<p>
-Alarm gibt die zuletzt gemessenen Abstände zu Objekten auf der linken und rechten Seite des Autos zurück. Der wichtigste Teil dieser Routine ist allerdings die Funktion beim Wechsel der Richtung der größeren Distanz dieser einen bias abzuziehen. Das Prinzip ist denkbar einfach, aber sorgt dafür, dass Objekte direkt vor dem Auto, wo die Entfernungsmessung aufgrund ihres eigenen Messfehlers nicht entscheiden kann in welcher Richtung dieses liegt, trotzdem zuverlässig umfahren werden, da das Auto dazu gedrängt wird eine einmal eingeschlagene Richtung beizubehalten. Aufgrund der statistischen Schwankung im Bereich des Messfehlers ist diese Entscheidung dann mehr oder weniger zufällig, was bei direkt frontalen Objekten aber keinen Nachteil verursacht.
+<em>alarm</em> gibt die zuletzt gemessenen Abstände zu Objekten auf der linken und rechten Seite des Autos zurück. Der wichtigste Teil dieser Routine ist allerdings die Funktion beim Wechsel der Richtung von der größeren Distanz einen bias abzuziehen. Das Prinzip ist denkbar einfach, sorgt aber dafür, dass Objekte direkt vor dem Auto, wo die Entfernungsmessung aufgrund ihres eigenen Messfehlers nicht entscheiden kann in welcher Richtung dieses liegt, trotzdem zuverlässig umfahren werden, da das Auto dazu gedrängt wird eine einmal eingeschlagene Richtung beizubehalten. Aufgrund der statistischen Schwankung im Bereich des Messfehlers ist diese Entscheidung dann mehr oder weniger zufällig, was bei direkt frontalen Objekten aber keinen Nachteil verursacht.
 			</p>
-			<h3>watch</h3>
+			<h3>watch()</h3>
 			<p>
 fragt die Ultraschallsensoren ab und füllt jeweils eine Liste für jeden Sensor mit Messwerten.
 			</p>
-			<h3>obstancle</h3>
+			<h3>obstancle()</h3>
 			<pre>
 			if (R > L):
 						if(R*movefactor > 0.715):
@@ -340,25 +361,25 @@ fragt die Ultraschallsensoren ab und füllt jeweils eine Liste für jeden Sensor
 							steer(0.715)
 			</pre>
 			<p>
-Hauptroutine der Hinderniserkennung. Fragt über alarm die Entfernungen zu Hindernissen ab und reagiert entsprechend. Beispielhaft ist hier der Code für die Lenkung nach Rechts dargestellt. Ist die Distanz zum rechten Sensor (R) größer als zu linken (L) gibt obstancle den Befehl die Räder nach links einzuschlagen. Wichtig ist in diesem Fall die Skalierung mit der Entfernung. Weit entfernte Hindernisse werden deshalb mit nur minimaler Änderung umfahren und auch bei einem großen Ausweichmanöver sorgt die Routine dafür, dass das Objekt ohne ruckartige Manöver entsprechend dem Verhalten eines echten Autofahrers umfährt. Simple but effective!
+Hauptroutine der Hinderniserkennung. Fragt über <em>alarm</em> die Entfernungen zu Hindernissen ab und reagiert entsprechend. Beispielhaft ist hier der Code für die Lenkung nach Rechts dargestellt. Ist die Distanz zum rechten Sensor (R) größer als zu linken (L) gibt <em>obstancle</em> den Befehl die Räder nach links einzuschlagen. Wichtig ist in diesem Fall die Skalierung mit der Entfernung. Weit entfernte Hindernisse werden deshalb mit nur minimaler Änderung umfahren und auch bei einem großen Ausweichmanöver sorgt die Routine dafür, dass das Objekt ohne ruckartige Manöver entsprechend dem Verhalten eines echten Autofahrers umfährt. Simple but effective!
 			</p>
 			<h2>Hardwarenaher Code</h2>
 			<p>
-Der hardwarenahe Code umfasst zum einen die Dateien controlServos.py und drive.py, welche für die Ansteuerung der Motoren des Autos zuständig sind und die Fahrtfunktionen enthalten und zum anderen die Datei getDistance.py, welche die Ultraschallsensoren abfragt.
+Der hardwarenahe Code umfasst zum einen die Dateien <em>controlServos.py</em> und <em>drive.py</em>, welche für die Ansteuerung der Motoren des Autos zuständig sind und die Fahrtfunktionen enthalten und zum anderen die Datei <em>getDistance.py</em>, welche die Ultraschallsensoren abfragt.
 			</p>
 			<h3>controlServos.py</h3>
 			<p>
-definiert Variablen für die Länge der zu übermittelnden PWM-Signale für geradeaus lenken/nicht fahren (BASE), rechts lenken (RIGHT), links lenken (LEFT), vorwärts fahren (FORWARD) und rückwärts fahren (BACK). Um Gradierung in Lenkung und Geschwindigkeit zu erlauben, wurden diese Variablen in Abhängigkeit von BASE definiert, sodass man sie mit einem Faktor verwenden kann/muss.<br />
-Weiterhin werden die grundlegenden Fahrtfunktionen steerS(deg) und driveS(speed) implementiert, welche jeweils eine Fließkommazahl zwischen -1 (Anschlag rechts bzw. Vollgas rückwärts) und 1 (Anschlag links bzw. Vollgas vorwärts) erwarten.
+definiert Variablen für die Länge der zu übermittelnden PWM-Signale für geradeaus lenken/nicht fahren (BASE), rechts lenken (RIGHT), links lenken (LEFT), vorwärts fahren (FORWARD) und rückwärts fahren (BACK). Um Gradierung in Lenkung und Geschwindigkeit zu erlauben, wurden diese Variablen in Abhängigkeit von BASE definiert, sodass man sie mit einem Faktor verwenden kann/muss.</br>
+Weiterhin werden die grundlegenden Fahrtfunktionen <em>steerS(deg)</em> und <em>driveS(speed)</em> implementiert, welche jeweils eine Fließkommazahl zwischen -1 (Anschlag rechts bzw. Vollgas rückwärts) und 1 (Anschlag links bzw. Vollgas vorwärts) erwarten.
 			</p>
 			<h3>drive.py</h3>
 			<p>
-definiert Fahrfunktionen auf einer höheren Ebene. Anstelle von Gradierungen wird drive(speed) die gewünschte Geschwindigkeit in Metern pro Sekunde, steer_only(radius) der Kurvenradius in Metern und steer_at(speed, radius) beides übergeben. Die stop()-Funktion hält das Auto ohne Input an, während die stunt()-Funktion ein Easter Egg ist, welche einen kleinen Stunt ausführt.
+definiert Fahrfunktionen auf einer höheren Ebene. Anstelle von Gradierungen wird <em>drive(speed)</em> die gewünschte Geschwindigkeit in Metern pro Sekunde, <em>steer_only(radius)</em> der Kurvenradius in Metern und <em>steer_at(speed, radius)</em> beides übergeben. Die <em>stop</em>-Funktion hält das Auto ohne Input an.
 			</p>
 			<h3>getDistance.py</h3>
 			<p>
-setzt benötigte GPIO-Pins des Raspberry Pis so, dass sie für den Input (echo) und Output (trig) für die beiden Ultraschallsensoren verwendet werden können.
-Unter Verwendung der Zeit, die die Schallwellen benötigen um nach dem Senden wieder am Sensor anzukommen (timeElapsed) wird die Distanz zum erkannten Objekt in Metern berechnet und zurückgegeben.
+setzt benötigte GPIO-Pins des Raspberry Pis so, dass sie für den Input (echo) und Output (trig) für die beiden Ultraschall-Sensoren verwendet werden können.
+Unter Verwendung der Zeit, die die Schallwellen benötigen um nach dem Senden wieder am Sensor anzukommen (<em>timeElapsed</em>) wird die Distanz zum erkannten Objekt in Metern berechnet und zurückgegeben.
 			</p>
 		</div>
     </body>
