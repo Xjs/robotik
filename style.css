@@ -15,8 +15,8 @@
 hr {
 	display: block;
 	clear: all;
-	border: 2px solid #510d0d;
-	border-top: 2px solid #510d0d;
+	border: 0px solid black;
+	border-bottom: 1px solid #510d0d;
 }
 #head {
 	font-family:"Helvetica Neue",sans-serif;
@@ -25,9 +25,6 @@ hr {
 	margin-top: 1em;
 }
 #navigation li {
-	border: 1px double #510d0d;
-	border-bottom: 4px solid #510d0d;
-	
 	display: block;
 	width: 11%;
 	height: 1.9em;
@@ -35,15 +32,13 @@ hr {
 	text-align: center;
 	padding-top: .6em;
 	margin: 2px;
-	font-size: 1.1em;
 	
-	font-style: bold;
 	font-family:"Helvetica Neue",sans-serif;
 	
-	background-color: #7c2424;
+	background-color: #fcc;
 }
 #navigation li a {
-	color: #FFF;
+	color: #444;
 	text-decoration: none;
 }
 #navigation
@@ -55,10 +50,8 @@ hr {
 #body
 {
 	font-family:"Georgia",serif;
-	font-size: 1.1em;
 }
 #body pre{
-	font-size: 1.3em;
 }
 ol li
 {
@@ -67,19 +60,18 @@ ol li
 h1
 {
 	font-size: 2.5em;
-	border-bottom: 3px dashed #7c2424;
 }
 h2
 {
 	margin-top: 2em;
-	font-size: 1.8em;
+	font-size: 1.5em;
+	border-bottom: 1px dashed crimson;
 	text-decoration: underline;
 }
 h3
 {
 	margin-top: 1.3em;
-	font-size: 1.3em;
-	/*border-bottom: 1px dashed crimson;*/
+	font-size: 1.2em;
 }
 
 table
@@ -93,7 +85,7 @@ th
 	background-color: #7c2424;
 	border: 1px solid #510d0d;
 	text-align: left;
-	color: #FFF;
+	color: #fff;
 }
 
 td
