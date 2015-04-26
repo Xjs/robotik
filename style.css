@@ -17,6 +17,7 @@ hr {
 	clear: all;
 	border: 0px solid black;
 	border-bottom: 1px solid #510d0d;
+	margin-top: 2px;
 }
 #head {
 	font-family:"Helvetica Neue",sans-serif;
@@ -66,7 +67,6 @@ h2
 	margin-top: 2em;
 	font-size: 1.5em;
 	border-bottom: 1px dashed crimson;
-	text-decoration: underline;
 }
 h3
 {
