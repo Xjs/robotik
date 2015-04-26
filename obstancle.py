@@ -14,19 +14,6 @@ from math import *
 #Previous attempts of equipping the MERAV 5000 with intelligent algorithms to distinguish obstancles from false data and taking smart driving-decisions proved to be unstable, and
 #have therefore been discarded in favor of this approach, that is more simple, but apparently more effective as well.
 
-
-#to-do: Ueberlegen wie man aus Sackgassen und aehnlichen Fallen wieder rauskommt (Rueckwaerts fahren und so)
-
-#----------------------NO LONGER NEEDED- left in there for educational purposes---------------------#
-#threshold in [m] gibt die Maximaldistanz zu beachtender Objekte aus.
-#threshold = 1.5
-
-#lowpass gibt den maximalen Abstand an, den ein sich Objekt innerhalb zweier Messungen herankommen kann.
-#lowpass = 0.2
-#averageminimum gives the minimum amound of elements in the average-list for getting a useful result.
-#averageminimum = 2
-#---------------------------------------------------------------------------------------------------#
-
 #bullshitdist in [m] gibt ungefaere Grenze sinnvoller Messung an.
 bullshitdist = 1.5
 #measrange gives Number of measurements stored in the watchlist
