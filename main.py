@@ -12,10 +12,9 @@ from mgps.navigate import Navigator
 from mgps.helpers import great_circle_distance
 
 RADIUS = 0.715
-#TODO: this SPEED was the value for low battery - what did we use for a full battery?
 SPEED = 1.5 #for low battery: SPEED needs to be increased in order to drive 
 			#with the usual speed and guarantee correct course calculations
-#SPEED = ??? #for full battery
+#SPEED = 1.3 or 1.4 for full battery
 STDEV = 5 #deviation of GPS data in meters
 line = None
 
@@ -34,7 +33,10 @@ def is_at(current, target):
 def correct_course(direction, angle, radius, speed=SPEED, watcher=None):
 	#Calculates the path to be driven to correct the course and also executes
 	#the correction.
-	CAL = 1.2	#TODO: What exactly does CAL stand for? And how was the value obtained?
+	# CAL is a calibration value in seconds that is added to the time driven.
+	# It amounts for the time delay when the motors are starting up
+	# It was obtained by trial and error
+	CAL = 1.2
 	print "this is correct_course!"
 	print "direction = ", direction
 	print "angle = ", angle
